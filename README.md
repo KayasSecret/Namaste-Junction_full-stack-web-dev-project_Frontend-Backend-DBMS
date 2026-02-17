@@ -16,7 +16,7 @@
 **Namaste Junction** is a complete **Full Stack Web Development Project** built using modern web technologies.  
 It integrates **Frontend + Backend + Database (DBMS)** into one structured real-world application.
 
-🎯 Goal: Build a production-style full-stack web app  
+🎯 Goal: Build a production-style full-stack web application  
 📚 Level: Beginner → Intermediate  
 🔥 Focus: API Handling, CRUD Operations & Database Integration  
 
