@@ -50,11 +50,12 @@
 
         <div class="navbar-nav ms-auto">
               <a class="nav-link" href="/listings/new">Add new Listing</a>
-          <% if (!currUser) { %>
+          <% if (!locals.currUser) { %>
               <a class="nav-link" href="/signup"><b>Sign up</b></a>
               <a class="nav-link" href="/login"><b>Log in</b></a>
           <% } %>
-          <% if (currUser) { %>
+
+          <% if (locals.currUser) { %>
               <a class="nav-link" href="/logout"><b>Log out</b></a>
           <% } %>
         </div>
