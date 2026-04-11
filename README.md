@@ -19,6 +19,7 @@ It integrates **Frontend + Backend + Database (DBMS)** into one structured real-
 🎯 Goal: Build a production-style full-stack web application  
 📚 Level: Beginner → Intermediate  
 🔥 Focus: API Handling, CRUD Operations & Database Integration  
+❄ Link: https://namaste-junction.onrender.com/listings
 
 > “Build projects that prove your skills.” 💡  
 
