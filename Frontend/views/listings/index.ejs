@@ -1,164 +1,219 @@
 <% layout("/layouts/boilerplate") %>
-<body>
-    <!-- <h3>All Listings</h3> -->
-    <!-- <form action="/listings/new" method="GET">
-        <button>Create New Listing</button>
-    </form> -->
-    
-    <style>
-        #filters {
-            margin-top: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-        }
 
-        .filter {
-            text-align: center;
-            margin-right: 2rem;
-            opacity: 0.7;
-        }
+<%
+  const badgePresets = [
+    { label: "Guest Favorite", icon: "fa-fire", tone: "coral", rating: "4.95" },
+    { label: "Premier Stay", icon: "fa-crown", tone: "amber", rating: "4.92" },
+    { label: "Scenic Escape", icon: "fa-mountain-sun", tone: "emerald", rating: "4.89" },
+    { label: "Coastal Gem", icon: "fa-umbrella-beach", tone: "sky", rating: "4.96" },
+    { label: "Royal Heritage", icon: "fa-landmark", tone: "violet", rating: "4.94" },
+    { label: "Eco Sanctuary", icon: "fa-leaf", tone: "emerald", rating: "4.91" }
+  ];
+%>
 
-        .filter:hover {
-            opacity: 1;
-            cursor: pointer;
-        }
+<div class="nj-dashboard-page">
+  <!-- ====== Hero Discovery Banner ====== -->
+  <section class="nj-hero-banner" aria-labelledby="njHeroHeading">
+    <div class="nj-hero-orb nj-hero-orb-1" aria-hidden="true"></div>
+    <div class="nj-hero-orb nj-hero-orb-2" aria-hidden="true"></div>
 
-        .filter p {
-            font-size: 0.9rem;
-        }
+    <div class="nj-hero-content">
+      <div class="nj-hero-text">
+        <span class="nj-hero-eyebrow">
+          <i class="fa-solid fa-compass" aria-hidden="true"></i>
+          Curated Stays &amp; Signature Experiences
+        </span>
+        <h1 id="njHeroHeading" class="nj-hero-title">
+          Find your next <span>unforgettable</span> getaway
+        </h1>
+        <p class="nj-hero-subtitle">
+          Explore handpicked beachfront villas, mountain chalets, royal heritage havelis, and luxury retreats across India and around the world.
+        </p>
+      </div>
 
-        .tax-info {
-            display: none;
-        }
+      <div class="nj-hero-stats" aria-label="Platform highlights">
+        <div class="nj-stat-card">
+          <span class="nj-stat-icon"><i class="fa-solid fa-house-chimney-window" aria-hidden="true"></i></span>
+          <div>
+            <strong class="nj-stat-value" id="njVisibleCount"><%= allListings.length %></strong>
+            <span class="nj-stat-label">Curated Stays</span>
+          </div>
+        </div>
+        <div class="nj-stat-card">
+          <span class="nj-stat-icon nj-stat-icon-gold"><i class="fa-solid fa-star" aria-hidden="true"></i></span>
+          <div>
+            <strong class="nj-stat-value">4.9 / 5</strong>
+            <span class="nj-stat-label">Traveler Rating</span>
+          </div>
+        </div>
+        <div class="nj-stat-card">
+          <span class="nj-stat-icon nj-stat-icon-emerald"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i></span>
+          <div>
+            <strong class="nj-stat-value">100%</strong>
+            <span class="nj-stat-label">Verified Hosts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        .tax-toggle {
-            border: 1px solid rgb(75, 75, 75);
-            border-radius: 1rem;
-            height: 3.5rem;
-            padding: 1rem;
-        }
-    </style>
+  <!-- ====== Interactive Category Filter Bar & Tax Toggle ====== -->
+  <section class="nj-controls-bar" aria-label="Property category filters">
+    <div id="filters" class="nj-filters-track" role="tablist">
+      <button type="button" class="filter active" data-filter-query="" role="tab" aria-selected="true">
+        <div class="filter-icon"><i class="fa-solid fa-border-all" aria-hidden="true"></i></div>
+        <p>All Stays</p>
+      </button>
 
-    <div id="filters">
-        <!-- ===== # 1 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-fire"></i>
-            </div>    
-            <p>Trending</p>
-        </div>
-        <!-- ===== # 2 ===== -->   
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-bed"></i>
-            </div>    
-            <p>Rooms</p>
-        </div>
-        <!-- ===== # 3 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-umbrella-beach"></i>
-            </div>    
-            <p>Beach Front</p>
-        </div>
-        <!-- ===== # 4 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-brands fa-fort-awesome"></i>
-            </div>    
-            <p>Master Room</p>
-        </div>
-        <!-- ===== # 5 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-tree"></i>
-            </div>    
-            <p>Cold Place</p>
-        </div>
-        <!-- ===== # 6 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-umbrella"></i>
-            </div>    
-            <p>Rainy Place</p>
-        </div>
-        <!-- ===== # 7 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-mug-hot"></i>
-            </div>    
-            <p>Hot Place</p>
-        </div>
-        <!-- ===== # 8 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-plane"></i>
-            </div>    
-            <p>Haven</p>
-        </div>
-        <!-- ===== # 9 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-earth-americas"></i>
-            </div>    
-            <p>Companies</p>
-        </div>
-        <!-- ===== # 10 ===== -->
-        <div class="filter">
-            <div>
-                <i class="fa-solid fa-bowl-food"></i>
-            </div>    
-            <p>Canteen</p>
-        </div>
-         <!-- ===== # 11 ===== -->
-         <div class="filter">
-            <div>
-                <i class="fa-solid fa-heart"></i>
-            </div>    
-            <p>Favorits</p>
-        </div>
+      <button type="button" class="filter" data-filter-query="villa" role="tab" aria-selected="false">
+        <div class="filter-icon"><i class="fa-solid fa-fire" aria-hidden="true"></i></div>
+        <p>Trending</p>
+      </button>
 
-        <!-- ===== Check Filter Option ===== -->
-        <div class="tax-toggle">
-            <div class="form-check-reverse form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                <label class="form-check-label" for="flexSwitchCheckDefault">Desplay total after taxes</label>
-            </div>
-        </div>
+      <button type="button" class="filter" data-filter-query="hotel" role="tab" aria-selected="false">
+        <div class="filter-icon"><i class="fa-solid fa-bed" aria-hidden="true"></i></div>
+        <p>Luxury Rooms</p>
+      </button>
 
+      <button type="button" class="filter" data-filter-query="beach" role="tab" aria-selected="false">
+        <div class="filter-icon"><i class="fa-solid fa-umbrella-beach" aria-hidden="true"></i></div>
+        <p>Beach Front</p>
+      </button>
+
+      <button type="button" class="filter" data-filter-query="haveli" role="tab" aria-selected="false">
+        <div class="filter-icon"><i class="fa-brands fa-fort-awesome" aria-hidden="true"></i></div>
+        <p>Royal Heritage</p>
+      </button>
+
+      <button type="button" class="filter" data-filter-query="himalayan" role="tab" aria-selected="false">
+        <div class="filter-icon"><i class="fa-solid fa-snowflake" aria-hidden="true"></i></div>
+        <p>Mountain Chalets</p>
+      </button>
+
+      <button type="button" class="filter" data-filter-query="tea" role="tab" aria-selected="false">
+        <div class="filter-icon"><i class="fa-solid fa-mug-hot" aria-hidden="true"></i></div>
+        <p>Tea Estates</p>
+      </button>
+
+      <button type="button" class="filter" data-filter-query="backwater" role="tab" aria-selected="false">
+        <div class="filter-icon"><i class="fa-solid fa-water" aria-hidden="true"></i></div>
+        <p>Backwaters</p>
+      </button>
+
+      <button type="button" class="filter" data-filter-query="island" role="tab" aria-selected="false">
+        <div class="filter-icon"><i class="fa-solid fa-compass" aria-hidden="true"></i></div>
+        <p>Island Escapes</p>
+      </button>
     </div>
 
-    <!-- Cards Section -->
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-        <% for(let listing of allListings) { %>
-            <a href="/listings/<%= listing._id %>" class="listing-link">
-                <div class="card col listing-card">
-                    <img class="card-img-top" src="<%= listing.image.url %>" alt="listing_image" style="height: 20rem;">
-                    <div class="card-img-overlay"></div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <b><%= listing.title %></b><br>
-                            &#8377; <%= listing.price.toLocaleString("en-IN") %> / night
-                            <i class="tax-info"> &nbsp; &nbsp; +18% GST included</i>
-                        </p>
-                    </div>
+    <!-- Tax Display Switch -->
+    <div class="tax-toggle nj-tax-pill">
+      <div class="form-check-reverse form-switch mb-0">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault">
+          <i class="fa-solid fa-receipt nj-tax-icon" aria-hidden="true"></i>
+          Display total after taxes
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Listings Grid Section ====== -->
+  <section class="nj-listings-section" aria-label="Available property listings">
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4 nj-listings-grid" id="njListingsGrid">
+      <% for (let i = 0; i < allListings.length; i++) {
+           const listing = allListings[i];
+           const preset = badgePresets[i % badgePresets.length];
+           const basePrice = listing.price || 0;
+           const totalWithTax = Math.round(basePrice * 1.18);
+           const locationLabel = [listing.location, listing.country].filter(Boolean).join(", ") || "Featured Destination";
+      %>
+        <div class="col nj-listing-col">
+          <a
+            href="/listings/<%= listing._id %>"
+            class="listing-link"
+            data-search-text="<%= [listing.title, listing.description, listing.location, listing.country, preset.label].filter(Boolean).join(' ').toLowerCase() %>"
+          >
+            <article class="card listing-card nj-stay-card h-100">
+              <!-- Card Image & Badges -->
+              <div class="nj-card-media">
+                <img
+                  class="card-img-top nj-card-img"
+                  src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80' %>"
+                  alt="<%= listing.title %>"
+                  loading="lazy"
+                >
+                <div class="card-img-overlay nj-card-overlay"></div>
+
+                <!-- Top Overlay Badges -->
+                <div class="nj-card-top-badges">
+                  <span class="nj-badge-category nj-tone-<%= preset.tone %>">
+                    <i class="fa-solid <%= preset.icon %>" aria-hidden="true"></i>
+                    <%= preset.label %>
+                  </span>
+                  <span class="nj-badge-rating" aria-label="Rated <%= preset.rating %> out of 5">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                    <%= preset.rating %>
+                  </span>
                 </div>
-            </a>
-        <% } %>
+
+                <!-- Bottom Overlay Location Pill -->
+                <div class="nj-card-location-bar">
+                  <span class="nj-location-chip">
+                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                    <span><%= locationLabel %></span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Card Content Body -->
+              <div class="card-body nj-card-body">
+                <h2 class="nj-card-title"><%= listing.title %></h2>
+
+                <p class="nj-card-desc">
+                  <%= listing.description ? listing.description : "Handpicked luxury stay featuring scenic views, verified hospitality, and modern amenities." %>
+                </p>
+
+                <div class="nj-card-perks">
+                  <span><i class="fa-solid fa-wifi" aria-hidden="true"></i> Fast Wi-Fi</span>
+                  <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Free Cancellation</span>
+                </div>
+
+                <!-- Price & CTA Footer -->
+                <div class="nj-card-footer">
+                  <div class="nj-price-block">
+                    <div class="nj-price-main">
+                      <span class="nj-price-currency">&#8377;<%= basePrice.toLocaleString("en-IN") %></span>
+                      <span class="nj-price-unit">/ night</span>
+                    </div>
+                    <div class="tax-info nj-tax-badge">
+                      &#8377;<%= totalWithTax.toLocaleString("en-IN") %> total incl. 18% GST
+                    </div>
+                  </div>
+
+                  <span class="nj-card-cta">
+                    <span>Explore</span>
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </article>
+          </a>
+        </div>
+      <% } %>
     </div>
-    <!-- ====== Script Js File ====== -->
-    <script>
-        let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-        taxSwitch.addEventListener("click", () => {
-            let taxInfo = document.getElementsByClassName("tax-info");
-            for (info of taxInfo) {
-                if (info.style.display != "inline") {
-                    info.style.display = "inline";
-                } else {
-                    info.style.display = "none";
-                }
-            }
-        });
-    </script>
-</body>
+
+    <!-- Empty Filter / Search State -->
+    <div id="njEmptySearchState" class="nj-empty-state" hidden>
+      <div class="nj-empty-icon">
+        <i class="fa-solid fa-compass-drafting" aria-hidden="true"></i>
+      </div>
+      <h3>No matching stays found</h3>
+      <p>Try selecting another category tab or clearing your destination search filter.</p>
+      <button type="button" class="btn nj-btn-reset-filters" id="njResetFiltersBtn">
+        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+        Show All Stays
+      </button>
+    </div>
+  </section>
+</div>

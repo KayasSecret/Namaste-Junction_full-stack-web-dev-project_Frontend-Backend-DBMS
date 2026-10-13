@@ -1,50 +1,103 @@
 // Core Functionality in this users.js
 const User = require("../models/user.js");
+const Listing = require("../models/listing.js");
+const Review = require("../models/review.js");
 
 // Signup Page Rendering Controller
-module.exports.renderSignupForm = (req,res) => { 
-    res.render("users/signup.ejs")
+module.exports.renderSignupForm = (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.redirect("/listings");
+    }
+    res.render("users/signup.ejs");
 };
 
 // SignUp (POST) Route Controller
 module.exports.signup = async (req, res, next) => {
     try {
         let { username, email, password } = req.body;
-        const newUser = new User({email, username});
+        const newUser = new User({ email, username });
         const registeredUser = await User.register(newUser, password);
-        console.log(registeredUser);
         req.login(registeredUser, (err) => {
-            if(err) {
+            if (err) {
                 return next(err);
             }
             req.flash("success", "Welcome to NamasteJunction");
-            res.redirect("/listings");
-        })
-    } catch(err) {
+            return req.session.save(() => res.redirect("/listings"));
+        });
+    } catch (err) {
         req.flash("error", err.message);
-        res.redirect("/signup");
+        return req.session.save(() => res.redirect("/signup"));
     }
 };
 
 // Login Page Rendering Controller
-module.exports.renderLoginForm = (req,res) => { 
-    res.render("users/login.ejs")
+module.exports.renderLoginForm = (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.redirect("/listings");
+    }
+    res.render("users/login.ejs");
 };
 
 // Login Route Controller
 module.exports.login = async (req, res) => {
     req.flash("success", "Welcome back to NamasteJunction! You are logged in!");
     let redirectUrl = res.locals.redirectUrl || "/listings";
-    res.redirect(redirectUrl);
+    return req.session.save(() => res.redirect(redirectUrl));
 };
 
-// Logout Route Controller
-module.exports.logout = async (req, res, next) => {
+// Logout Route Controller — securely logs out and invalidates the authenticated session
+module.exports.logout = (req, res, next) => {
     req.logout((err) => {
-        if(err) {
-           return next(err);
+        if (err) {
+            return next(err);
         }
-        req.flash("success", "you are logged out!");
-        res.redirect("/listings");
-    })
+        req.flash("success", "You are logged out!");
+        return req.session.save(() => res.redirect("/listings"));
+    });
+};
+
+// Profile Page Rendering Controller (Strictly for the Logged-In User)
+module.exports.renderProfile = async (req, res) => {
+    // Always fetch the authenticated user's own record from MongoDB
+    const profileUser = await User.findById(req.user._id);
+    if (!profileUser) {
+        req.flash("error", "User account not found.");
+        return req.session.save(() => res.redirect("/listings"));
+    }
+
+    const userListings = await Listing.find({ owner: profileUser._id });
+    const userReviews = await Review.find({ author: profileUser._id });
+
+    res.render("users/profile.ejs", {
+        profileUser,
+        userListings,
+        userReviews
+    });
+};
+
+// Profile Update Controller (Strictly for the Logged-In User)
+module.exports.updateProfile = async (req, res) => {
+    const profileUser = await User.findById(req.user._id);
+    if (!profileUser) {
+        req.flash("error", "User account not found.");
+        return req.session.save(() => res.redirect("/listings"));
+    }
+
+    const { email, fullName, location, phone, bio } = req.body.profile || req.body || {};
+
+    if (!email || !String(email).trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim())) {
+        req.flash("error", "Please provide a valid email address.");
+        return req.session.save(() => res.redirect("/profile"));
+    }
+
+    profileUser.email = String(email).trim();
+    if (typeof fullName === "string") profileUser.fullName = fullName.trim().slice(0, 80);
+    if (typeof location === "string") profileUser.location = location.trim().slice(0, 100);
+    if (typeof phone === "string") profileUser.phone = phone.trim().slice(0, 30);
+    if (typeof bio === "string") profileUser.bio = bio.trim().slice(0, 500);
+
+    await profileUser.save();
+
+    req.flash("success", "Your profile information has been updated!");
+    return req.session.save(() => res.redirect("/profile"));
 };

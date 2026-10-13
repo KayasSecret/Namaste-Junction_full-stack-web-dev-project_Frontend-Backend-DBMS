@@ -227,6 +227,78 @@ const sampleListings = [
         location: "Scottish Highlands",
         country: "United Kingdom",
     },
+    {
+        title: "Emerald Backwater Villa & Pool",
+        description:
+        "Wake up to serene palm-fringed backwaters in this private heritage pool villa. Includes traditional houseboat sunset cruise and authentic Malabar dining.",
+        image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1000&q=80",
+        },
+        price: 14500,
+        location: "Alleppey, Kerala",
+        country: "India",
+    },
+    {
+        title: "Himalayan Cedar Glass Chalet",
+        description:
+        "Perched amidst snow-dusted deodar forests with floor-to-ceiling glass views of the Pir Panjal peaks, heated wooden interiors, and a private stargazing deck.",
+        image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=1000&q=80",
+        },
+        price: 11800,
+        location: "Manali, Himachal Pradesh",
+        country: "India",
+    },
+    {
+        title: "Royal Aravalli Courtyard Haveli",
+        description:
+        "Experience regal Mewar hospitality overlooking Lake Pichola. Features hand-carved sandstone arches, a rooftop infinity plunge pool, and candlelit courtyard evenings.",
+        image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80",
+        },
+        price: 22000,
+        location: "Udaipur, Rajasthan",
+        country: "India",
+    },
+    {
+        title: "Azure Cliffside Infinity Villa",
+        description:
+        "Contemporary Portuguese-inspired luxury villa perched above the Arabian Sea with a private infinity pool, tropical courtyard garden, and direct beach access.",
+        image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1000&q=80",
+        },
+        price: 18900,
+        location: "Vagator, Goa",
+        country: "India",
+    },
+    {
+        title: "Misty Tea Estate Bungalow",
+        description:
+        "Colonial-era planters bungalow surrounded by rolling emerald tea gardens with panoramic Kanchenjunga sunrise views, fireplace lounges, and guided estate walks.",
+        image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1000&q=80",
+        },
+        price: 9500,
+        location: "Darjeeling, West Bengal",
+        country: "India",
+    },
+    {
+        title: "Coral Lagoon Overwater Retreat",
+        description:
+        "Eco-luxury beachfront sanctuary steps from Radhanagar Beach. Enjoy crystal-clear turquoise lagoons, private sundecks, and guided coral reef snorkeling.",
+        image: {
+        filename: "listingimage",
+        url: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1000&q=80",
+        },
+        price: 26500,
+        location: "Havelock Island, Andaman",
+        country: "India",
+    },
 ];
 
 module.exports = { data: sampleListings };

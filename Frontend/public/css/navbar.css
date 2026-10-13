@@ -335,38 +335,74 @@
     -webkit-text-fill-color: #ffffff;
 }
 
-/* ------ Logged-in: User Avatar Badge & Logout ------ */
-.nj-user-badge {
+/* ------ Logged-in: User Profile Avatar Button & Logout ------ */
+.nj-user-badge,
+.nj-profile-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.28rem 0.75rem 0.28rem 0.32rem;
+    gap: 0.55rem;
+    padding: 0.3rem 0.85rem 0.3rem 0.35rem;
     border-radius: 999px;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
     font-size: 0.84rem;
     font-weight: 700;
-    color: #0f172a;
+    color: #0f172a !important;
+    text-decoration: none;
+    transition: all 0.22s ease;
+}
+
+.nj-profile-btn:hover,
+.nj-profile-btn.active-nav {
+    background: #fff1f2;
+    border-color: #fe424d;
+    color: #fe424d !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -4px rgba(254, 66, 77, 0.24);
 }
 
 .nj-user-avatar {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     background: linear-gradient(135deg, #fe424d, #ff8e53);
     color: #ffffff;
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 800;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 10px -2px rgba(254, 66, 77, 0.45);
+    flex-shrink: 0;
+}
+
+.nj-user-meta {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    text-align: left;
 }
 
 .nj-user-name {
-    max-width: 110px;
+    max-width: 115px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.nj-profile-btn:hover .nj-user-name,
+.nj-profile-btn.active-nav .nj-user-name {
+    color: #fe424d;
+}
+
+.nj-user-role {
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.02em;
 }
 
 .nj-btn-logout {
@@ -376,7 +412,7 @@
     font-size: 0.86rem;
     font-weight: 700;
     color: #ef4444 !important;
-    padding: 0.46rem 0.9rem !important;
+    padding: 0.48rem 0.95rem !important;
     border-radius: 999px;
     background: rgba(239, 68, 68, 0.08);
     border: 1px solid rgba(239, 68, 68, 0.2);

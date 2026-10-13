@@ -1,0 +1,315 @@
+<% layout("/layouts/boilerplate") %>
+
+<%
+  const username = profileUser.username || "traveler";
+  const displayName = profileUser.fullName && profileUser.fullName.trim() ? profileUser.fullName : username;
+  const initial = displayName.charAt(0).toUpperCase();
+  const email = profileUser.email || "Not provided";
+  const locationText = profileUser.location && profileUser.location.trim() ? profileUser.location : "Global Traveler";
+  const phoneText = profileUser.phone && profileUser.phone.trim() ? profileUser.phone : "Not added yet";
+  const bioText = profileUser.bio && profileUser.bio.trim()
+    ? profileUser.bio
+    : "Passionate explorer discovering handpicked stays and authentic hospitality on Namaste Junction.";
+  const joinedDate = profileUser.createdAt
+    ? new Date(profileUser.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" })
+    : "Verified Member";
+  const listingsCount = Array.isArray(userListings) ? userListings.length : 0;
+  const reviewsCount = Array.isArray(userReviews) ? userReviews.length : 0;
+%>
+
+<div class="nj-profile-page">
+  <!-- ====== Top Breadcrumb Bar ====== -->
+  <nav class="nj-show-breadcrumb mb-3" aria-label="Breadcrumb">
+    <a href="/listings" class="nj-back-pill">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      <span>Back to Explore</span>
+    </a>
+
+    <div class="nj-show-quick-links">
+      <a href="/bookings" class="nj-quick-chip">
+        <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+        <span>My Bookings &amp; Reservations</span>
+      </a>
+      <a href="/listings/new" class="nj-quick-chip">
+        <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+        <span>Host a New Stay</span>
+      </a>
+      <a href="/logout" class="nj-quick-chip nj-profile-logout-chip">
+        <i class="fa-solid fa-power-off" aria-hidden="true"></i>
+        <span>Log out</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ====== Profile Hero Banner ====== -->
+  <section class="nj-profile-hero-card" aria-label="User profile overview">
+    <div class="nj-profile-hero-orb nj-profile-orb-1" aria-hidden="true"></div>
+    <div class="nj-profile-hero-orb nj-profile-orb-2" aria-hidden="true"></div>
+
+    <div class="nj-profile-hero-inner">
+      <div class="nj-profile-identity">
+        <div class="nj-profile-avatar-xl" aria-hidden="true">
+          <span><%= initial %></span>
+          <span class="nj-profile-verified-dot" title="Verified Account">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+          </span>
+        </div>
+
+        <div class="nj-profile-identity-text">
+          <div class="nj-profile-badges-row">
+            <span class="nj-profile-role-pill">
+              <i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+              <%= listingsCount > 0 ? "Verified Property Host" : "Verified Traveler" %>
+            </span>
+            <span class="nj-profile-member-pill">
+              <i class="fa-regular fa-calendar-check" aria-hidden="true"></i>
+              <%= joinedDate %>
+            </span>
+          </div>
+
+          <h1 class="nj-profile-heading"><%= displayName %></h1>
+          <p class="nj-profile-handle">
+            <span>@<%= username %></span>
+            <span class="nj-profile-dot">&bull;</span>
+            <span><i class="fa-solid fa-envelope" aria-hidden="true"></i> <%= email %></span>
+            <span class="nj-profile-dot">&bull;</span>
+            <span><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <%= locationText %></span>
+          </p>
+        </div>
+      </div>
+
+      <div class="nj-profile-stats-row">
+        <div class="nj-profile-stat-box">
+          <strong><%= listingsCount %></strong>
+          <span><%= listingsCount === 1 ? "Hosted Stay" : "Hosted Stays" %></span>
+        </div>
+        <div class="nj-profile-stat-box">
+          <strong><%= reviewsCount %></strong>
+          <span><%= reviewsCount === 1 ? "Guest Review" : "Guest Reviews" %></span>
+        </div>
+        <div class="nj-profile-stat-box">
+          <strong>Active</strong>
+          <span>Account Status</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Main Two-Column Profile Content ====== -->
+  <div class="row g-4">
+    <!-- Left Column: Account Summary & Edit Profile Form -->
+    <div class="col-lg-5">
+      <!-- Current Account Details Card -->
+      <div class="nj-profile-card mb-4">
+        <div class="nj-profile-card-header">
+          <h2 class="nj-profile-card-title">
+            <i class="fa-solid fa-id-card" aria-hidden="true"></i>
+            Account Details
+          </h2>
+          <span class="nj-profile-private-tag">
+            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+            Private to you
+          </span>
+        </div>
+
+        <div class="nj-profile-info-list">
+          <div class="nj-profile-info-item">
+            <span class="nj-info-label">Username</span>
+            <strong class="nj-info-value">@<%= username %></strong>
+          </div>
+          <div class="nj-profile-info-item">
+            <span class="nj-info-label">Full Name</span>
+            <strong class="nj-info-value"><%= profileUser.fullName && profileUser.fullName.trim() ? profileUser.fullName : "Not set" %></strong>
+          </div>
+          <div class="nj-profile-info-item">
+            <span class="nj-info-label">Email Address</span>
+            <strong class="nj-info-value"><%= email %></strong>
+          </div>
+          <div class="nj-profile-info-item">
+            <span class="nj-info-label">Location</span>
+            <strong class="nj-info-value"><%= locationText %></strong>
+          </div>
+          <div class="nj-profile-info-item">
+            <span class="nj-info-label">Phone</span>
+            <strong class="nj-info-value"><%= phoneText %></strong>
+          </div>
+          <div class="nj-profile-info-item nj-profile-bio-item">
+            <span class="nj-info-label">Traveler Bio</span>
+            <p class="nj-info-bio"><%= bioText %></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Basic Profile Information Card -->
+      <div class="nj-profile-card" id="editProfileSection">
+        <div class="nj-profile-card-header">
+          <h2 class="nj-profile-card-title">
+            <i class="fa-solid fa-user-pen" aria-hidden="true"></i>
+            Edit Profile Information
+          </h2>
+        </div>
+
+        <form action="/profile?_method=PUT" method="POST" novalidate class="needs-validation nj-profile-form" id="njProfileEditForm">
+          <div class="mb-3">
+            <label for="profileUsername" class="form-label nj-profile-label">Username (Account Handle)</label>
+            <input
+              type="text"
+              id="profileUsername"
+              class="form-control nj-profile-input"
+              value="@<%= username %>"
+              disabled
+              readonly
+            >
+            <small class="text-muted">Your unique Namaste Junction username cannot be changed.</small>
+          </div>
+
+          <div class="mb-3">
+            <label for="profileFullName" class="form-label nj-profile-label">Full Name</label>
+            <input
+              type="text"
+              id="profileFullName"
+              name="profile[fullName]"
+              class="form-control nj-profile-input"
+              value="<%= profileUser.fullName || '' %>"
+              placeholder="Enter your full name"
+              maxlength="80"
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="profileEmail" class="form-label nj-profile-label">Email Address <span class="text-danger">*</span></label>
+            <input
+              type="email"
+              id="profileEmail"
+              name="profile[email]"
+              class="form-control nj-profile-input"
+              value="<%= profileUser.email || '' %>"
+              placeholder="you@example.com"
+              required
+            >
+            <div class="invalid-feedback">Please provide a valid email address.</div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label for="profileLocation" class="form-label nj-profile-label">City / Country</label>
+              <input
+                type="text"
+                id="profileLocation"
+                name="profile[location]"
+                class="form-control nj-profile-input"
+                value="<%= profileUser.location || '' %>"
+                placeholder="e.g., Mumbai, India"
+                maxlength="100"
+              >
+            </div>
+            <div class="col-sm-6">
+              <label for="profilePhone" class="form-label nj-profile-label">Phone Number</label>
+              <input
+                type="text"
+                id="profilePhone"
+                name="profile[phone]"
+                class="form-control nj-profile-input"
+                value="<%= profileUser.phone || '' %>"
+                placeholder="+91 98765 43210"
+                maxlength="30"
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="profileBio" class="form-label nj-profile-label">About / Bio</label>
+            <textarea
+              id="profileBio"
+              name="profile[bio]"
+              rows="3"
+              class="form-control nj-profile-input"
+              placeholder="Share a little about your travel style or hosting philosophy..."
+              maxlength="500"
+            ><%= profileUser.bio || '' %></textarea>
+          </div>
+
+          <button type="submit" class="btn nj-btn-primary-gradient w-100" id="njSaveProfileBtn">
+            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+            <span>Save Profile Changes</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column: My Hosted Properties & Recent Activity -->
+    <div class="col-lg-7">
+      <div class="nj-profile-card">
+        <div class="nj-profile-card-header">
+          <div>
+            <h2 class="nj-profile-card-title">
+              <i class="fa-solid fa-house-chimney-window" aria-hidden="true"></i>
+              My Hosted Stays (<%= listingsCount %>)
+            </h2>
+            <p class="nj-profile-card-sub">Manage properties you have listed on Namaste Junction.</p>
+          </div>
+          <a href="/listings/new" class="btn nj-btn-add-photos">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            <span>New Listing</span>
+          </a>
+        </div>
+
+        <% if (listingsCount > 0) { %>
+          <div class="nj-profile-listings-grid">
+            <% userListings.forEach((stay) => {
+                 const stayImg = stay.image && stay.image.url
+                   ? stay.image.url
+                   : "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80";
+            %>
+              <article class="nj-profile-stay-item">
+                <a href="/listings/<%= stay._id %>" class="nj-profile-stay-thumb">
+                  <img src="<%= stayImg %>" alt="<%= stay.title %>" loading="lazy">
+                </a>
+
+                <div class="nj-profile-stay-body">
+                  <div>
+                    <h3 class="nj-profile-stay-title">
+                      <a href="/listings/<%= stay._id %>"><%= stay.title %></a>
+                    </h3>
+                    <p class="nj-profile-stay-loc">
+                      <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                      <%= [stay.location, stay.country].filter(Boolean).join(", ") %>
+                    </p>
+                  </div>
+
+                  <div class="nj-profile-stay-footer">
+                    <span class="nj-profile-stay-price">
+                      &#8377;<%= (stay.price || 0).toLocaleString("en-IN") %> <small>/ night</small>
+                    </span>
+
+                    <div class="nj-profile-stay-actions">
+                      <a href="/listings/<%= stay._id %>" class="btn btn-sm nj-btn-outline-soft">
+                        View
+                      </a>
+                      <a href="/listings/<%= stay._id %>/edit" class="btn btn-sm nj-btn-edit-mini">
+                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                        Edit
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <div class="nj-no-reviews-box">
+            <div class="nj-no-reviews-icon">
+              <i class="fa-solid fa-house-medical" aria-hidden="true"></i>
+            </div>
+            <h4>You haven't listed any properties yet</h4>
+            <p class="mb-3">Share your sanctuary with travelers across India and start hosting today.</p>
+            <a href="/listings/new" class="btn nj-btn-primary-gradient">
+              <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+              <span>Create Your First Listing</span>
+            </a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

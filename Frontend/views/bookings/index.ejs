@@ -1,0 +1,356 @@
+<% layout("/layouts/boilerplate") %>
+
+<%
+  const formatShortDate = (d) => {
+    if (!d) return "N/A";
+    return new Date(d).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  };
+
+  const allGuestBookings = Array.isArray(guestBookings) ? guestBookings : [];
+  const allHostBookings = Array.isArray(hostBookings) ? hostBookings : [];
+
+  const upcomingGuestBookings = allGuestBookings.filter(
+    (b) => b.status === "confirmed" && new Date(b.checkOut) >= todayUTC
+  );
+  const pastOrCancelledGuestBookings = allGuestBookings.filter(
+    (b) => !(b.status === "confirmed" && new Date(b.checkOut) >= todayUTC)
+  );
+
+  const activeHostReservations = allHostBookings.filter((b) => b.status === "confirmed");
+%>
+
+<div class="nj-bookings-dashboard-page">
+  <!-- Breadcrumb & Quick Actions -->
+  <nav class="nj-show-breadcrumb mb-3" aria-label="Bookings navigation">
+    <a href="/listings" class="nj-back-pill">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      <span>Explore Stays</span>
+    </a>
+
+    <div class="nj-show-quick-links">
+      <a href="/profile" class="nj-quick-chip">
+        <i class="fa-solid fa-id-badge" aria-hidden="true"></i>
+        <span>My Profile</span>
+      </a>
+      <a href="/listings/new" class="nj-quick-chip">
+        <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+        <span>Host a New Stay</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Summary Header -->
+  <section class="nj-bookings-hero-card mb-4" aria-label="Bookings overview">
+    <div class="nj-bookings-hero-content">
+      <div>
+        <span class="nj-bookings-kicker">
+          <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+          NAMASTE JUNCTION RESERVATION CENTER
+        </span>
+        <h1 class="nj-bookings-main-title">My Trips &amp; Property Reservations</h1>
+        <p class="nj-bookings-subtitle mb-0">
+          Manage your upcoming travel stays, download confirmation vouchers, or oversee guest bookings on your hosted properties.
+        </p>
+      </div>
+
+      <div class="nj-bookings-stats-bar">
+        <div class="nj-bookings-stat-pill">
+          <strong><%= upcomingGuestBookings.length %></strong>
+          <span>Upcoming Stays</span>
+        </div>
+        <div class="nj-bookings-stat-pill">
+          <strong><%= allGuestBookings.length %></strong>
+          <span>Total Guest Trips</span>
+        </div>
+        <div class="nj-bookings-stat-pill">
+          <strong><%= activeHostReservations.length %></strong>
+          <span>Active Host Bookings</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION 1: Guest Upcoming Stays ====== -->
+  <section class="nj-bookings-section mb-5" aria-labelledby="upcomingTripsHeading">
+    <div class="nj-bookings-section-header">
+      <div>
+        <h2 class="nj-bookings-section-title" id="upcomingTripsHeading">
+          <i class="fa-solid fa-suitcase-rolling" aria-hidden="true"></i>
+          Upcoming Confirmed Stays
+        </h2>
+        <p class="nj-bookings-section-sub">Your active reservations ready for check-in.</p>
+      </div>
+      <span class="nj-profile-count-badge"><%= upcomingGuestBookings.length %> active</span>
+    </div>
+
+    <% if (upcomingGuestBookings.length === 0) { %>
+      <div class="nj-bookings-empty-card">
+        <div class="nj-bookings-empty-icon">
+          <i class="fa-solid fa-compass" aria-hidden="true"></i>
+        </div>
+        <h3>No upcoming trips booked yet</h3>
+        <p>Select your check-in and check-out dates on any property page to reserve your next getaway.</p>
+        <a href="/listings" class="btn nj-btn-primary">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <span>Browse Verified Stays</span>
+        </a>
+      </div>
+    <% } else { %>
+      <div class="nj-bookings-grid">
+        <% for (const b of upcomingGuestBookings) { %>
+          <%
+            const itemListing = b.listing;
+            const itemTitle = itemListing && itemListing.title ? itemListing.title : "Reserved Property";
+            const itemLoc = itemListing ? [itemListing.location, itemListing.country].filter(Boolean).join(", ") : "India";
+            const itemImg = itemListing && itemListing.image && itemListing.image.url
+              ? itemListing.image.url
+              : "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80";
+            const canCancelItem = b.status === "confirmed" && new Date(b.checkIn) >= todayUTC;
+          %>
+          <article class="nj-booking-item-card">
+            <div class="nj-booking-item-media">
+              <img src="<%= itemImg %>" alt="<%= itemTitle %>" loading="lazy" />
+              <span class="nj-booking-badge nj-status-confirmed">
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i> Confirmed
+              </span>
+              <span class="nj-booking-code-chip"><%= b.bookingCode %></span>
+            </div>
+
+            <div class="nj-booking-item-body">
+              <div class="nj-booking-item-loc">
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <span><%= itemLoc %></span>
+              </div>
+              <h3 class="nj-booking-item-title">
+                <% if (itemListing && itemListing._id) { %>
+                  <a href="/listings/<%= itemListing._id %>"><%= itemTitle %></a>
+                <% } else { %>
+                  <%= itemTitle %>
+                <% } %>
+              </h3>
+
+              <div class="nj-booking-item-dates">
+                <div>
+                  <small>CHECK-IN</small>
+                  <strong><%= formatShortDate(b.checkIn) %></strong>
+                </div>
+                <div class="nj-booking-arrow">
+                  <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <small>CHECK-OUT</small>
+                  <strong><%= formatShortDate(b.checkOut) %></strong>
+                </div>
+              </div>
+
+              <div class="nj-booking-item-meta">
+                <span><i class="fa-solid fa-moon" aria-hidden="true"></i> <%= b.nights %> <%= b.nights === 1 ? "night" : "nights" %></span>
+                <span><i class="fa-solid fa-user-group" aria-hidden="true"></i> <%= b.guestsCount %> <%= b.guestsCount === 1 ? "guest" : "guests" %></span>
+                <strong class="nj-booking-item-price">&#8377;<%= Number(b.totalPrice).toLocaleString("en-IN") %></strong>
+              </div>
+
+              <div class="nj-booking-item-actions">
+                <a href="/bookings/<%= b._id %>" class="nj-booking-action-btn is-primary">
+                  <i class="fa-solid fa-receipt" aria-hidden="true"></i>
+                  <span>View Voucher</span>
+                </a>
+                <% if (canCancelItem) { %>
+                  <form
+                    action="/bookings/<%= b._id %>/cancel?from=dashboard&_method=PATCH"
+                    method="POST"
+                    onsubmit="return confirm('Cancel reservation <%= b.bookingCode %>?');"
+                  >
+                    <button type="submit" class="nj-booking-action-btn is-danger">
+                      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                      <span>Cancel</span>
+                    </button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          </article>
+        <% } %>
+      </div>
+    <% } %>
+  </section>
+
+  <!-- ====== SECTION 2: Past & Cancelled Guest Bookings ====== -->
+  <% if (pastOrCancelledGuestBookings.length > 0) { %>
+    <section class="nj-bookings-section mb-5" aria-labelledby="pastTripsHeading">
+      <div class="nj-bookings-section-header">
+        <div>
+          <h2 class="nj-bookings-section-title" id="pastTripsHeading">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+            Past &amp; Cancelled Bookings
+          </h2>
+          <p class="nj-bookings-section-sub">History of completed stays and cancelled reservations.</p>
+        </div>
+        <span class="nj-profile-count-badge"><%= pastOrCancelledGuestBookings.length %> records</span>
+      </div>
+
+      <div class="nj-bookings-grid">
+        <% for (const b of pastOrCancelledGuestBookings) { %>
+          <%
+            const itemListing = b.listing;
+            const itemTitle = itemListing && itemListing.title ? itemListing.title : "Reserved Property";
+            const itemLoc = itemListing ? [itemListing.location, itemListing.country].filter(Boolean).join(", ") : "India";
+            const itemImg = itemListing && itemListing.image && itemListing.image.url
+              ? itemListing.image.url
+              : "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80";
+          %>
+          <article class="nj-booking-item-card is-muted">
+            <div class="nj-booking-item-media">
+              <img src="<%= itemImg %>" alt="<%= itemTitle %>" loading="lazy" />
+              <span class="nj-booking-badge <%= b.status === 'cancelled' ? 'nj-status-cancelled' : 'nj-status-completed' %>">
+                <i class="fa-solid <%= b.status === 'cancelled' ? 'fa-ban' : 'fa-check-double' %>" aria-hidden="true"></i>
+                <%= b.status === "cancelled" ? "Cancelled" : "Completed" %>
+              </span>
+              <span class="nj-booking-code-chip"><%= b.bookingCode %></span>
+            </div>
+
+            <div class="nj-booking-item-body">
+              <div class="nj-booking-item-loc">
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <span><%= itemLoc %></span>
+              </div>
+              <h3 class="nj-booking-item-title"><%= itemTitle %></h3>
+
+              <div class="nj-booking-item-dates">
+                <div>
+                  <small>CHECK-IN</small>
+                  <strong><%= formatShortDate(b.checkIn) %></strong>
+                </div>
+                <div class="nj-booking-arrow">
+                  <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </div>
+                <div>
+                  <small>CHECK-OUT</small>
+                  <strong><%= formatShortDate(b.checkOut) %></strong>
+                </div>
+              </div>
+
+              <div class="nj-booking-item-meta">
+                <span><%= b.nights %> <%= b.nights === 1 ? "night" : "nights" %></span>
+                <span><%= b.guestsCount %> <%= b.guestsCount === 1 ? "guest" : "guests" %></span>
+                <strong class="nj-booking-item-price">&#8377;<%= Number(b.totalPrice).toLocaleString("en-IN") %></strong>
+              </div>
+
+              <div class="nj-booking-item-actions">
+                <a href="/bookings/<%= b._id %>" class="nj-booking-action-btn is-secondary w-100">
+                  <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+                  <span>View Details</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        <% } %>
+      </div>
+    </section>
+  <% } %>
+
+  <!-- ====== SECTION 3: Property Host Reservations Management ====== -->
+  <section class="nj-bookings-section" aria-labelledby="hostReservationsHeading">
+    <div class="nj-bookings-section-header">
+      <div>
+        <h2 class="nj-bookings-section-title" id="hostReservationsHeading">
+          <i class="fa-solid fa-building-user" aria-hidden="true"></i>
+          Guest Reservations on Your Properties (Host Panel)
+        </h2>
+        <p class="nj-bookings-section-sub">View and manage bookings made by travelers on listings you host.</p>
+      </div>
+      <span class="nj-profile-count-badge"><%= allHostBookings.length %> total</span>
+    </div>
+
+    <% if (allHostBookings.length === 0) { %>
+      <div class="nj-bookings-empty-card is-compact">
+        <p class="mb-0">No guest reservations on your hosted properties yet.</p>
+      </div>
+    <% } else { %>
+      <div class="nj-host-bookings-table-wrap">
+        <table class="nj-host-bookings-table">
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Property</th>
+              <th>Guest</th>
+              <th>Check-in &rarr; Check-out</th>
+              <th>Total (INR)</th>
+              <th>Status / Payment</th>
+              <th>Manage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (const hb of allHostBookings) { %>
+              <%
+                const hListing = hb.listing;
+                const hTitle = hListing && hListing.title ? hListing.title : "Hosted Property";
+                const guestLabel = hb.guest
+                  ? (hb.guest.fullName && hb.guest.fullName.trim() ? hb.guest.fullName : `@${hb.guest.username}`)
+                  : "Guest";
+                const guestMail = hb.guest && hb.guest.email ? hb.guest.email : "";
+              %>
+              <tr>
+                <td>
+                  <a href="/bookings/<%= hb._id %>" class="nj-table-code-link"><%= hb.bookingCode %></a>
+                </td>
+                <td>
+                  <% if (hListing && hListing._id) { %>
+                    <a href="/listings/<%= hListing._id %>" class="nj-table-prop-link"><%= hTitle %></a>
+                  <% } else { %>
+                    <span><%= hTitle %></span>
+                  <% } %>
+                </td>
+                <td>
+                  <div class="nj-table-guest-cell">
+                    <strong><%= guestLabel %></strong>
+                    <% if (guestMail) { %>
+                      <small><%= guestMail %></small>
+                    <% } %>
+                  </div>
+                </td>
+                <td>
+                  <span class="nj-table-dates">
+                    <%= formatShortDate(hb.checkIn) %> &rarr; <%= formatShortDate(hb.checkOut) %>
+                  </span>
+                  <small class="d-block text-muted"><%= hb.nights %> <%= hb.nights === 1 ? "night" : "nights" %> &bull; <%= hb.guestsCount %> <%= hb.guestsCount === 1 ? "guest" : "guests" %></small>
+                </td>
+                <td>
+                  <strong class="nj-table-amount">&#8377;<%= Number(hb.totalPrice).toLocaleString("en-IN") %></strong>
+                </td>
+                <td>
+                  <span class="nj-table-status-pill is-<%= hb.status %>"><%= hb.status.toUpperCase() %></span>
+                  <small class="d-block text-muted mt-1"><%= hb.paymentStatus.replace(/_/g, " ") %></small>
+                </td>
+                <td>
+                  <div class="nj-table-actions">
+                    <a href="/bookings/<%= hb._id %>" class="nj-table-btn" title="Manage Reservation">
+                      <i class="fa-solid fa-sliders" aria-hidden="true"></i> Manage
+                    </a>
+                    <% if (hb.status === "confirmed") { %>
+                      <form
+                        action="/bookings/<%= hb._id %>/status?from=dashboard&_method=PATCH"
+                        method="POST"
+                        class="d-inline"
+                      >
+                        <input type="hidden" name="status" value="completed" />
+                        <input type="hidden" name="paymentStatus" value="paid" />
+                        <button type="submit" class="nj-table-btn is-complete" title="Mark Stay Completed & Paid">
+                          <i class="fa-solid fa-check" aria-hidden="true"></i> Complete
+                        </button>
+                      </form>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </section>
+</div>

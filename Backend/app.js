@@ -107,6 +107,10 @@ app.use("/listings", listingRouter);
 // Path = /Backend/routes/review.js
 app.use("/listings/:id/reviews", reviewRouter);
 
+// Path = /Backend/routes/booking.js
+const bookingRouter = require("./routes/booking.js");
+app.use("/bookings", bookingRouter);
+
 // Path = /Backend/routes/user.js
 app.use("/", userRouter);
 

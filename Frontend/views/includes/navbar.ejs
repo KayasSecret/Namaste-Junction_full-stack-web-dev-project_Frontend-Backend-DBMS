@@ -60,14 +60,7 @@
 
       <!-- Right Actions & Auth Menu -->
       <div class="navbar-nav ms-lg-auto align-items-lg-center nj-nav-right">
-        <a class="nav-link nj-host-pill" href="/listings/new" data-nav-path="/listings/new">
-          <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
-          <span>Add new Listing</span>
-        </a>
-
-        <div class="nj-auth-divider d-none d-lg-block" aria-hidden="true"></div>
-
-        <% if (!locals.currUser) { %>
+        <% if (!currUser) { %>
           <div class="nj-auth-group">
             <a class="nj-btn-login" href="/login" data-nav-path="/login">
               <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>
@@ -80,15 +73,37 @@
           </div>
         <% } %>
 
-        <% if (locals.currUser) { %>
+        <% if (currUser) { %>
+          <a class="nav-link nj-host-pill" href="/bookings" data-nav-path="/bookings">
+            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+            <span>Bookings</span>
+          </a>
+
+          <a class="nav-link nj-host-pill" href="/listings/new" data-nav-path="/listings/new">
+            <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+            <span>Add new Listing</span>
+          </a>
+
+          <div class="nj-auth-divider d-none d-lg-block" aria-hidden="true"></div>
+
           <div class="nj-auth-group nj-user-logged">
-            <span class="nj-user-badge" title="Signed in as <%= currUser.username %>">
+            <a
+              class="nj-user-badge nj-profile-btn"
+              href="/profile"
+              data-nav-path="/profile"
+              title="View your profile (@<%= currUser.username %>)"
+              aria-label="My Profile (<%= currUser.username %>)"
+            >
               <span class="nj-user-avatar" aria-hidden="true">
                 <%= currUser.username ? currUser.username.charAt(0).toUpperCase() : "U" %>
               </span>
-              <span class="nj-user-name"><%= currUser.username %></span>
-            </span>
-            <a class="nj-btn-logout" href="/logout">
+              <span class="nj-user-meta">
+                <span class="nj-user-name"><%= currUser.fullName || currUser.username %></span>
+                <span class="nj-user-role">My Profile</span>
+              </span>
+            </a>
+
+            <a class="nj-btn-logout" href="/logout" aria-label="Log out">
               <i class="fa-solid fa-power-off" aria-hidden="true"></i>
               <span>Log out</span>
             </a>

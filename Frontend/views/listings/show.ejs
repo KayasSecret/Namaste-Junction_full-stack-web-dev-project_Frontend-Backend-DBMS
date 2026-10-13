@@ -1,101 +1,995 @@
 <% layout("/layouts/boilerplate") %>
-<script>
-    const mapToken = "<%= process.env.MAP_TOKEN %>";
-</script>
-<body>
-    <div class="row mt-3">
-        <div class="col-8 offset-3">
-            <h3><%= listing.title %></h3>
-        </div>
 
-        <div class="card col-6 offset-3 show-card listing-card">
-            <img class="card-img-top show-img" src="<%= listing.image && listing.image.url ? listing.image.url : '' %>" alt="listing_image">
-            <div class="card-body">
-                <p class="card-text"><b>Owned By - </b><b><i><%= listing.owner ? listing.owner.username : "Unknown Host" %></i></b></p>
-                <p class="card-text"><%= listing.description %></p>
-                <p class="card-text">&#8377; <%= listing.price ? listing.price.toLocaleString("en-IN") : 0 %></p>
-                <p class="card-text"><%= listing.location %></p>
-                <p class="card-text"><%= listing.country %></p>
-            </div>
-        </div>
-    
-        <% if (currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
-            <div class="btns">
-                <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
-        
-                <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-                    <button class="btn btn-dark offset-5">Delete</button>
-                </form>
-            </div>
-        <% } %>    
-        
-  <!-- ========== REVIEW SECTION ========== -->
-        <div class="col-8 offset-3 mb-3">
-            <hr>
-            <% if(currUser) { %>
-            <h4>Review Section</h4>
-                <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
-                    <div class="mb-3 mt-3">
-                        <label for="rating" class="form-label">Rating</label>
-                        <fieldset class="starability-slot">
-                            <input 
-                                type="radio" 
-                                id="no-rate" 
-                                class="input-no-rate" 
-                                name="review[rating]" 
-                                value="1" 
-                                checked aria-label="No rating." />
-                            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                            <label for="first-rate1" title="Terrible">1 star</label>
-                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                            <label for="first-rate2" title="Not good">2 stars</label>
-                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                            <label for="first-rate3" title="Average">3 stars</label>
-                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                            <label for="first-rate4" title="Very good">4 stars</label>
-                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                            <label for="first-rate5" title="Amazing">5 stars</label>
-                        </fieldset>
-                    </div>              
+<%
+  const basePrice = listing.price || 0;
+  const gstAmount = Math.round(basePrice * 0.18);
+  const totalWithTax = basePrice + gstAmount;
+  const hostName = listing.owner && listing.owner.username ? listing.owner.username : "NamasteHost";
+  const hostInitial = hostName.charAt(0).toUpperCase();
+  const fullLocation = [listing.location, listing.country].filter(Boolean).join(", ") || "Featured Destination";
+  const reviewCount = Array.isArray(listing.reviews) ? listing.reviews.length : 0;
+  const avgRating = reviewCount > 0
+    ? (listing.reviews.reduce((sum, r) => sum + (Number(r.rating) || 5), 0) / reviewCount).toFixed(2)
+    : "4.92";
 
-                    <div class="mb-3 mt-3">
-                        <label for="comment" class="form-label">Comments</label>
-                        <textarea id="comment" name="review[comment]" cols="30" rows="5" class="form-control" required></textarea>
-                        <div class="invalid-feedback">
-                            Please enter a comment for review.
-                        </div>
-                    </div>
-                    <br>    
-                    <button class="btn btn-outline-dark">Submit</button>
-                </form>
-                <hr>
-            <% } %>
-            <!-- All reviews part are here -->
-            <% if(listing.reviews.length>0) { %>
-                <div class="row">
-                    <p><b>All Reviews</b></p>
-                    <% for(review of listing.reviews) { %>
-                        <div class="card col-5 ms-3 mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">@<%= review.author ? review.author.username : "Anonymous" %></h5>
-                                <p class="card-text starability-result" data-rating="<%= review.rating %>"></p>
-                                <p class="card-text"><%= review.comment %></p>
-                                <form action="/listings/<%= listing.id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="mb-3">
-                                    <button class="btn btn-sm btn-danger">Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    <% } %> 
-                </div>
-            <% } %>
-        </div>
+  const isListingOwner = Boolean(currUser && listing.owner && listing.owner._id && listing.owner._id.equals(currUser._id));
 
-  <!-- ======== MAP SECTION ======== -->
-        <div class="col-6 offset-3 mb-3">
-            <h3>Where you'll be..!</h3>
-            <div id="map"></div>
-        </div>
+  const fallbackCoverUrl = "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80";
+  const primaryUrl = listing.image && listing.image.url ? listing.image.url : fallbackCoverUrl;
+
+  const galleryImages = [
+    {
+      id: "cover",
+      url: primaryUrl,
+      isCover: true,
+      caption: `${listing.title} — Featured Cover`
+    }
+  ];
+
+  if (Array.isArray(listing.images) && listing.images.length > 0) {
+    listing.images.forEach((img, idx) => {
+      if (img && img.url) {
+        galleryImages.push({
+          id: String(img._id || `extra-${idx}`),
+          url: img.url,
+          isCover: false,
+          caption: `${listing.title} — Gallery Photo ${galleryImages.length + 1}`
+        });
+      }
+    });
+  }
+
+  const totalPhotos = galleryImages.length;
+%>
+
+<div class="nj-show-page" data-gallery-images='<%- JSON.stringify(galleryImages).replace(/'/g, "&#39;") %>'>
+  <!-- ====== Top Breadcrumb & Quick Actions ====== -->
+  <nav class="nj-show-breadcrumb" aria-label="Breadcrumb">
+    <a href="/listings" class="nj-back-pill">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      <span>Back to All Stays</span>
+    </a>
+
+    <div class="nj-show-quick-links">
+      <button type="button" class="nj-quick-chip nj-quick-chip-btn" id="njHeaderOpenLightboxBtn">
+        <i class="fa-regular fa-images" aria-hidden="true"></i>
+        <span><%= totalPhotos %> <%= totalPhotos === 1 ? "Photo" : "Photos" %></span>
+      </button>
+      <a href="#reviewsSection" class="nj-quick-chip">
+        <i class="fa-solid fa-star" aria-hidden="true"></i>
+        <span><%= avgRating %> (<%= reviewCount %> <%= reviewCount === 1 ? "review" : "reviews" %>)</span>
+      </a>
     </div>
-    <script src="/js/map.js"></script>
-    <br>
-</body>
+  </nav>
+
+  <!-- ====== Property Title, Destination Header & Gallery Action Bar ====== -->
+  <header class="nj-show-header nj-show-header-flex">
+    <div class="nj-show-title-wrap">
+      <div class="nj-show-badges-row">
+        <span class="nj-show-eyebrow">
+          <i class="fa-solid fa-gem" aria-hidden="true"></i>
+          Curated Sanctuary
+        </span>
+        <span class="nj-show-verified-pill">
+          <i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+          Verified Stay
+        </span>
+      </div>
+      <h1 class="nj-show-title"><%= listing.title %></h1>
+      <p class="nj-show-location-line">
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+        <span><%= fullLocation %></span>
+      </p>
+    </div>
+
+    <div class="nj-gallery-header-actions">
+      <button
+        type="button"
+        class="btn nj-btn-gallery-fullscreen"
+        id="njOpenLightboxBtn"
+        aria-label="Open fullscreen photo slideshow"
+      >
+        <i class="fa-solid fa-expand" aria-hidden="true"></i>
+        <span>Fullscreen Gallery (<%= totalPhotos %>)</span>
+      </button>
+
+      <% if (isListingOwner) { %>
+        <button
+          type="button"
+          class="btn nj-btn-add-photos"
+          id="njToggleUploadDrawerBtn"
+          aria-expanded="false"
+          aria-controls="njOwnerUploadDrawer"
+        >
+          <i class="fa-solid fa-camera-retro" aria-hidden="true"></i>
+          <span>Add Photos</span>
+        </button>
+      <% } %>
+    </div>
+  </header>
+
+  <!-- ====== Owner-Only Multi-Photo Upload Drawer ====== -->
+  <% if (isListingOwner) { %>
+    <section
+      id="njOwnerUploadDrawer"
+      class="nj-owner-upload-drawer"
+      aria-label="Upload property photos"
+      hidden
+    >
+      <div class="nj-upload-drawer-inner">
+        <div class="nj-upload-drawer-top">
+          <div>
+            <span class="nj-upload-badge">
+              <i class="fa-solid fa-lock" aria-hidden="true"></i>
+              Host Exclusive
+            </span>
+            <h2 class="nj-upload-title">Add Property Photos to Gallery</h2>
+            <p class="nj-upload-subtitle">
+              Select one or multiple high-resolution photos (JPG, PNG, or WEBP, up to 5 MB each, max 10 per upload).
+            </p>
+          </div>
+          <button
+            type="button"
+            class="nj-upload-close-btn"
+            id="njCloseUploadDrawerBtn"
+            aria-label="Close photo upload panel"
+          >
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <form
+          id="njGalleryUploadForm"
+          action="/listings/<%= listing._id %>/photos"
+          method="POST"
+          enctype="multipart/form-data"
+          novalidate
+        >
+          <label for="njGalleryFilesInput" class="nj-upload-dropzone" id="njUploadDropzone">
+            <input
+              type="file"
+              id="njGalleryFilesInput"
+              name="photos"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              multiple
+              required
+              class="nj-upload-file-input"
+            >
+            <div class="nj-upload-dropzone-content">
+              <span class="nj-upload-icon-circle">
+                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+              </span>
+              <strong class="nj-upload-cta-text">Click to browse or drag &amp; drop property photos</strong>
+              <span class="nj-upload-hint-text">Supports multiple selection &bull; JPG, PNG, WEBP &bull; Max 5 MB per photo</span>
+            </div>
+          </label>
+
+          <div id="njUploadValidationAlert" class="nj-upload-error-alert" role="alert" hidden></div>
+
+          <div id="njUploadPreviewContainer" class="nj-upload-preview-wrap" hidden>
+            <div class="nj-upload-preview-header">
+              <span id="njSelectedFilesCount">0 photos selected</span>
+              <button type="button" class="nj-btn-clear-selection" id="njClearFilesBtn">
+                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                Clear selection
+              </button>
+            </div>
+            <div id="njUploadPreviewGrid" class="nj-upload-preview-grid"></div>
+          </div>
+
+          <div class="nj-upload-form-actions">
+            <button type="button" class="btn nj-btn-outline-soft" id="njCancelUploadBtn">
+              Cancel
+            </button>
+            <button type="submit" class="btn nj-btn-primary-gradient" id="njSubmitPhotosBtn">
+              <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+              <span>Upload to Gallery</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  <% } %>
+
+  <!-- ====== Balanced Showcase Gallery & Thumbnail Strip ====== -->
+  <section class="nj-gallery-section" aria-label="Property photo gallery">
+    <div class="nj-show-hero-card card show-card listing-card">
+      <div class="nj-show-media-wrap" id="njMainGalleryStage">
+        <!-- Main Stage Clickable Image -->
+        <img
+          id="njMainStageImg"
+          class="card-img-top show-img nj-show-hero-img"
+          src="<%= galleryImages[0].url %>"
+          alt="<%= galleryImages[0].caption %>"
+          role="button"
+          tabindex="0"
+          aria-label="View <%= listing.title %> photos in fullscreen lightbox"
+        >
+        <div class="nj-show-hero-gradient" aria-hidden="true"></div>
+
+        <!-- Top Stage Bar: Counter & Expand Pill -->
+        <div class="nj-stage-top-bar">
+          <span class="nj-stage-counter-pill" id="njMainStageCounter" aria-live="polite">
+            <i class="fa-regular fa-images" aria-hidden="true"></i>
+            <span id="njMainStageCounterText">1 / <%= totalPhotos %></span>
+          </span>
+
+          <button
+            type="button"
+            class="nj-stage-expand-pill"
+            id="njStageExpandBtn"
+            aria-label="Open fullscreen photo viewer"
+          >
+            <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
+            <span>Click photo to expand</span>
+          </button>
+        </div>
+
+        <!-- Inline Stage Previous / Next Arrows -->
+        <% if (totalPhotos > 1) { %>
+          <button
+            type="button"
+            class="nj-stage-nav-btn nj-stage-prev"
+            id="njStagePrevBtn"
+            aria-label="Previous property photo"
+          >
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button
+            type="button"
+            class="nj-stage-nav-btn nj-stage-next"
+            id="njStageNextBtn"
+            aria-label="Next property photo"
+          >
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        <% } %>
+
+        <!-- Bottom Floating Badges -->
+        <div class="nj-show-hero-badges">
+          <span class="nj-hero-float-pill">
+            <i class="fa-solid fa-camera" aria-hidden="true"></i>
+            <span id="njMainStageCaption">Destination Spotlight &bull; <%= fullLocation %></span>
+          </span>
+          <span class="nj-hero-rating-pill">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <strong><%= avgRating %></strong>
+            <span>Guest Rating</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Thumbnail Preview Strip -->
+      <div class="nj-gallery-thumbs-bar" role="region" aria-label="Photo thumbnails">
+        <div class="nj-thumbs-scroll" id="njStageThumbsList">
+          <% galleryImages.forEach((photo, idx) => { %>
+            <div class="nj-thumb-card-wrap <%= idx === 0 ? 'is-active' : '' %>" data-slide-index="<%= idx %>">
+              <button
+                type="button"
+                class="nj-thumb-btn <%= idx === 0 ? 'is-active' : '' %>"
+                data-slide-index="<%= idx %>"
+                aria-label="Preview photo <%= idx + 1 %> of <%= totalPhotos %>"
+                aria-current="<%= idx === 0 ? 'true' : 'false' %>"
+              >
+                <img src="<%= photo.url %>" alt="<%= photo.caption %>" loading="lazy">
+                <span class="nj-thumb-index-badge"><%= idx + 1 %></span>
+              </button>
+
+              <% if (isListingOwner && !photo.isCover) { %>
+                <form
+                  method="POST"
+                  action="/listings/<%= listing._id %>/photos/<%= photo.id %>?_method=DELETE"
+                  class="nj-thumb-delete-form"
+                  title="Remove this photo from gallery"
+                >
+                  <button
+                    type="submit"
+                    class="nj-thumb-delete-btn"
+                    aria-label="Delete photo <%= idx + 1 %>"
+                  >
+                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                  </button>
+                </form>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="nj-thumbs-bar-meta">
+          <button type="button" class="nj-thumbs-view-all-btn" id="njStripOpenLightboxBtn">
+            <i class="fa-solid fa-up-right-and-down-left-from-center" aria-hidden="true"></i>
+            <span>Lightbox Slideshow (<%= totalPhotos %>)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Main Two-Column Content Layout ====== -->
+  <div class="row g-4 nj-show-main-grid">
+    <!-- Left Column: Host Info, Description, Amenities & Owner Controls -->
+    <div class="col-lg-8">
+      <!-- Host & Property Overview Card -->
+      <div class="nj-detail-surface">
+        <div class="nj-host-header">
+          <div class="nj-host-profile">
+            <div class="nj-host-avatar" aria-hidden="true"><%= hostInitial %></div>
+            <div>
+              <span class="nj-host-label">Hosted by</span>
+              <h2 class="nj-host-name">@<%= hostName %></h2>
+            </div>
+          </div>
+          <span class="nj-superhost-badge">
+            <i class="fa-solid fa-award" aria-hidden="true"></i>
+            Premier Host
+          </span>
+        </div>
+
+        <!-- Highlights Strip -->
+        <div class="nj-highlights-grid">
+          <div class="nj-highlight-item">
+            <span class="nj-highlight-icon"><i class="fa-solid fa-key" aria-hidden="true"></i></span>
+            <div class="nj-highlight-text">
+              <strong>Effortless Check-in</strong>
+              <span>24/7 digital key &amp; concierge</span>
+            </div>
+          </div>
+          <div class="nj-highlight-item">
+            <span class="nj-highlight-icon"><i class="fa-solid fa-mountain-sun" aria-hidden="true"></i></span>
+            <div class="nj-highlight-text">
+              <strong>Prime Location</strong>
+              <span>Situated in <%= listing.location %></span>
+            </div>
+          </div>
+          <div class="nj-highlight-item">
+            <span class="nj-highlight-icon"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></span>
+            <div class="nj-highlight-text">
+              <strong>Flexible Peace of Mind</strong>
+              <span>Free cancellation within 48h</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="nj-section-divider">
+
+        <!-- About This Stay -->
+        <div class="nj-about-block">
+          <h3 class="nj-block-heading">
+            <i class="fa-solid fa-align-left" aria-hidden="true"></i>
+            About this sanctuary
+          </h3>
+          <p class="card-text nj-description-text">
+            <%= listing.description || "Experience elevated comfort, local charm, and thoughtful hospitality at this handpicked destination on Namaste Junction." %>
+          </p>
+        </div>
+
+        <hr class="nj-section-divider">
+
+        <!-- Signature Amenities -->
+        <div class="nj-amenities-block">
+          <h3 class="nj-block-heading">
+            <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+            Signature amenities included
+          </h3>
+          <div class="nj-amenities-grid">
+            <div class="nj-amenity-chip"><i class="fa-solid fa-wifi" aria-hidden="true"></i> High-Speed Wi-Fi</div>
+            <div class="nj-amenity-chip"><i class="fa-solid fa-snowflake" aria-hidden="true"></i> Climate Control</div>
+            <div class="nj-amenity-chip"><i class="fa-solid fa-mug-hot" aria-hidden="true"></i> Artisan Breakfast</div>
+            <div class="nj-amenity-chip"><i class="fa-solid fa-car" aria-hidden="true"></i> Complimentary Parking</div>
+            <div class="nj-amenity-chip"><i class="fa-solid fa-laptop" aria-hidden="true"></i> Dedicated Workspace</div>
+            <div class="nj-amenity-chip"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> 24/7 Security</div>
+          </div>
+        </div>
+
+        <!-- Owner Edit / Delete Controls (Preserved) -->
+        <% if (currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
+          <hr class="nj-section-divider">
+          <div class="nj-owner-actions-bar">
+            <div class="nj-owner-actions-text">
+              <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+              <span><strong>Host Controls:</strong> You own this listing and can update or remove it anytime.</span>
+            </div>
+            <div class="btns nj-owner-btns">
+              <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark edit-btn nj-btn-edit-listing">
+                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                <span>Edit Listing</span>
+              </a>
+
+              <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" class="d-inline">
+                <button type="submit" class="btn btn-dark nj-btn-delete-listing">
+                  <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                  <span>Delete</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Right Column: Sticky Hotel-Style Booking & Price Breakdown Panel -->
+    <div class="col-lg-4">
+      <%
+        const nowUTC = new Date();
+        const todayUTCDate = new Date(Date.UTC(nowUTC.getFullYear(), nowUTC.getMonth(), nowUTC.getDate()));
+        const todayISO = todayUTCDate.toISOString().slice(0, 10);
+        const safeReservedRanges = typeof reservedRanges !== "undefined" && Array.isArray(reservedRanges) ? reservedRanges : [];
+
+        // Find the first available 2-night window starting from tomorrow
+        const isRangeBooked = (inMs, outMs) => {
+          return safeReservedRanges.some((rng) => {
+            const rIn = Date.parse(rng.checkIn + "T00:00:00Z");
+            const rOut = Date.parse(rng.checkOut + "T00:00:00Z");
+            return !Number.isNaN(rIn) && !Number.isNaN(rOut) && rIn < outMs && rOut > inMs;
+          });
+        };
+
+        let candidateStartMs = todayUTCDate.getTime() + 86400000;
+        const defaultNights = 2;
+        for (let offset = 1; offset <= 90; offset++) {
+          const tryIn = todayUTCDate.getTime() + offset * 86400000;
+          const tryOut = tryIn + defaultNights * 86400000;
+          if (!isRangeBooked(tryIn, tryOut)) {
+            candidateStartMs = tryIn;
+            break;
+          }
+        }
+
+        const defaultInUTCDate = new Date(candidateStartMs);
+        const defaultOutUTCDate = new Date(candidateStartMs + defaultNights * 86400000);
+        const defaultCheckInISO = defaultInUTCDate.toISOString().slice(0, 10);
+        const defaultCheckOutISO = defaultOutUTCDate.toISOString().slice(0, 10);
+
+        const formatDisplayDate = (dateObj) =>
+          dateObj.toLocaleDateString("en-IN", {
+            weekday: "short",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            timeZone: "UTC",
+          });
+
+        const defaultBaseTotal = basePrice * defaultNights;
+        const defaultTaxTotal = Math.round(defaultBaseTotal * 0.18);
+        const defaultGrandTotal = defaultBaseTotal + defaultTaxTotal;
+      %>
+      <aside
+        class="nj-booking-card"
+        id="njBookingPanel"
+        aria-label="Property reservation and pricing panel"
+        data-listing-id="<%= listing._id %>"
+        data-nightly-rate="<%= basePrice %>"
+        data-today-iso="<%= todayISO %>"
+        data-reserved-ranges='<%- JSON.stringify(safeReservedRanges) %>'
+      >
+        <!-- 1. Nightly Rate & Rating Header -->
+        <div class="nj-booking-top">
+          <div>
+            <span class="nj-booking-eyebrow">Nightly Rate</span>
+            <div class="nj-booking-price-line">
+              <span class="nj-booking-price">&#8377;<%= basePrice.toLocaleString("en-IN") %></span>
+              <span class="nj-booking-per">/ night</span>
+            </div>
+          </div>
+          <div class="nj-booking-rating-pill">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            <strong><%= avgRating %></strong>
+            <span>(<%= reviewCount %>)</span>
+          </div>
+        </div>
+
+        <form
+          id="njHotelBookingForm"
+          class="nj-booking-form"
+          action="/listings/<%= listing._id %>/bookings"
+          method="POST"
+          novalidate
+        >
+          <!-- Hidden Inputs Synced with Custom Calendar -->
+          <input
+            type="hidden"
+            id="njCheckInInput"
+            name="booking[checkIn]"
+            value="<%= defaultCheckInISO %>"
+            required
+          >
+          <input
+            type="hidden"
+            id="njCheckOutInput"
+            name="booking[checkOut]"
+            value="<%= defaultCheckOutISO %>"
+            required
+          >
+
+          <!-- 2. Modern Date Range Selector & Custom Calendar Widget -->
+          <div class="nj-booking-section nj-booking-dates-section" id="njDatePickerSection">
+            <div class="nj-booking-section-head">
+              <span class="nj-booking-section-title">
+                <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
+                Select Stay Dates
+              </span>
+              <span class="nj-booking-nights-pill" id="njHeaderNightsBadge">
+                <%= defaultNights %> Nights
+              </span>
+            </div>
+
+            <!-- Interactive Check-In / Check-Out Trigger Box -->
+            <div class="nj-booking-dates-box" id="njDateTriggersBox" role="group" aria-label="Check-in and Check-out date selector">
+              <button
+                type="button"
+                class="nj-booking-date-trigger"
+                id="njCheckInTrigger"
+                data-picker-target="checkin"
+                aria-expanded="false"
+                aria-controls="njCalendarWidget"
+              >
+                <span class="nj-booking-field-label">
+                  <i class="fa-solid fa-plane-arrival" aria-hidden="true"></i> Check-In
+                </span>
+                <strong class="nj-date-trigger-display" id="njCheckInDisplayText">
+                  <%= formatDisplayDate(defaultInUTCDate) %>
+                </strong>
+                <span class="nj-date-trigger-sub" id="njCheckInSubText"><%= defaultCheckInISO %></span>
+              </button>
+
+              <div class="nj-booking-date-divider" aria-hidden="true"></div>
+
+              <button
+                type="button"
+                class="nj-booking-date-trigger"
+                id="njCheckOutTrigger"
+                data-picker-target="checkout"
+                aria-expanded="false"
+                aria-controls="njCalendarWidget"
+              >
+                <span class="nj-booking-field-label">
+                  <i class="fa-solid fa-plane-departure" aria-hidden="true"></i> Check-Out
+                </span>
+                <strong class="nj-date-trigger-display" id="njCheckOutDisplayText">
+                  <%= formatDisplayDate(defaultOutUTCDate) %>
+                </strong>
+                <span class="nj-date-trigger-sub" id="njCheckOutSubText"><%= defaultCheckOutISO %></span>
+              </button>
+            </div>
+
+            <!-- Interactive Custom Calendar Widget -->
+            <div class="nj-calendar-widget" id="njCalendarWidget" hidden aria-label="Interactive reservation calendar">
+              <div class="nj-calendar-mode-bar">
+                <span class="nj-calendar-mode-text" id="njCalModeHint">
+                  <i class="fa-regular fa-hand-pointer" aria-hidden="true"></i>
+                  Select your check-in date
+                </span>
+                <button type="button" class="nj-calendar-close-icon" id="njCalCloseTopBtn" aria-label="Close calendar">
+                  <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <div class="nj-calendar-nav-bar">
+                <button
+                  type="button"
+                  class="nj-cal-nav-btn"
+                  id="njCalPrevBtn"
+                  aria-label="Previous month"
+                >
+                  <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <strong class="nj-cal-month-label" id="njCalMonthYearLabel">October 2026</strong>
+                <button
+                  type="button"
+                  class="nj-cal-nav-btn"
+                  id="njCalNextBtn"
+                  aria-label="Next month"
+                >
+                  <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                </button>
+              </div>
+
+              <div class="nj-calendar-weekdays" aria-hidden="true">
+                <span>Su</span>
+                <span>Mo</span>
+                <span>Tu</span>
+                <span>We</span>
+                <span>Th</span>
+                <span>Fr</span>
+                <span>Sa</span>
+              </div>
+
+              <div class="nj-calendar-days-grid" id="njCalDaysGrid" role="grid" aria-label="Calendar dates"></div>
+
+              <div class="nj-calendar-footer">
+                <div class="nj-calendar-legend">
+                  <span class="nj-legend-item">
+                    <span class="nj-legend-dot is-selected"></span> Selected
+                  </span>
+                  <span class="nj-legend-item">
+                    <span class="nj-legend-dot is-range"></span> Stay Range
+                  </span>
+                  <span class="nj-legend-item">
+                    <span class="nj-legend-dot is-booked"></span> Reserved
+                  </span>
+                </div>
+                <div class="nj-calendar-footer-btns">
+                  <button type="button" class="nj-cal-reset-btn" id="njCalResetBtn">Reset</button>
+                  <button type="button" class="nj-cal-done-btn" id="njCalDoneBtn">Done</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Guests, Payment Option & Special Requests -->
+          <div class="nj-booking-options-box">
+            <div class="nj-booking-option-row">
+              <label for="njGuestsSelect" class="nj-booking-field-label">
+                <i class="fa-solid fa-user-group" aria-hidden="true"></i> Guests
+              </label>
+              <select
+                id="njGuestsSelect"
+                name="booking[guestsCount]"
+                class="form-select nj-booking-select"
+              >
+                <option value="1">1 Guest (Solo Traveler)</option>
+                <option value="2" selected>2 Guests (Standard Double)</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+                <option value="5">5 Guests</option>
+                <option value="6">6 Guests</option>
+                <option value="8">8 Guests (Group Stay)</option>
+              </select>
+            </div>
+
+            <div class="nj-booking-option-row">
+              <label for="njPaymentMethodSelect" class="nj-booking-field-label">
+                <i class="fa-solid fa-wallet" aria-hidden="true"></i> Payment Option
+              </label>
+              <select
+                id="njPaymentMethodSelect"
+                name="booking[paymentMethod]"
+                class="form-select nj-booking-select"
+              >
+                <option value="pay_at_property" selected>Pay at Property upon Check-in</option>
+                <option value="online_pending">Online Payment (Pending Link)</option>
+              </select>
+            </div>
+
+            <div class="nj-booking-option-row">
+              <label for="njSpecialRequestsInput" class="nj-booking-field-label">
+                <i class="fa-regular fa-message" aria-hidden="true"></i> Special Requests (Optional)
+              </label>
+              <input
+                type="text"
+                id="njSpecialRequestsInput"
+                name="booking[specialRequests]"
+                class="form-control nj-booking-text-input"
+                placeholder="Early check-in, dietary notes, airport pickup..."
+                maxlength="400"
+              >
+            </div>
+          </div>
+
+          <!-- 4. Live Availability Status & Reserved Dates -->
+          <div class="nj-booking-status-stack">
+            <div id="njAvailabilityBanner" class="nj-availability-banner is-available" role="status" aria-live="polite">
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+              <span id="njAvailabilityText">Dates are available for instant reservation!</span>
+            </div>
+
+            <% if (safeReservedRanges.length > 0) { %>
+              <div class="nj-reserved-dates-note">
+                <div class="nj-reserved-note-title">
+                  <i class="fa-solid fa-calendar-xmark" aria-hidden="true"></i>
+                  <span>Upcoming Reserved Dates</span>
+                </div>
+                <div class="nj-reserved-chips-wrap">
+                  <% safeReservedRanges.slice(0, 4).forEach((rng) => { %>
+                    <span class="nj-reserved-date-chip"><%= rng.checkIn %> &rarr; <%= rng.checkOut %></span>
+                  <% }) %>
+                </div>
+              </div>
+            <% } %>
+          </div>
+
+          <!-- 5. Transparent Server-Matched Price Breakdown -->
+          <div class="nj-price-breakdown" id="njPriceBreakdownBox">
+            <div class="nj-breakdown-header">
+              <i class="fa-solid fa-receipt" aria-hidden="true"></i>
+              <span>Price Breakdown</span>
+            </div>
+            <div class="nj-breakdown-row">
+              <span id="njBreakdownNightsLabel">
+                &#8377;<%= basePrice.toLocaleString("en-IN") %> &times; <strong id="njNightsCountText"><%= defaultNights %> nights</strong>
+              </span>
+              <span class="nj-breakdown-val" id="njBreakdownBaseAmount">&#8377;<%= defaultBaseTotal.toLocaleString("en-IN") %></span>
+            </div>
+            <div class="nj-breakdown-row">
+              <span>Taxes &amp; GST (18%)</span>
+              <span class="nj-breakdown-val" id="njBreakdownTaxAmount">&#8377;<%= defaultTaxTotal.toLocaleString("en-IN") %></span>
+            </div>
+            <div class="nj-breakdown-row">
+              <span>Service &amp; booking fee</span>
+              <span class="nj-free-tag">FREE</span>
+            </div>
+            <div class="nj-breakdown-total">
+              <span>Total (incl. taxes)</span>
+              <span id="njBreakdownTotalAmount">&#8377;<%= defaultGrandTotal.toLocaleString("en-IN") %></span>
+            </div>
+          </div>
+
+          <!-- 6. Reserve Now CTA or Host Notice -->
+          <div class="nj-booking-actions">
+            <% if (isListingOwner) { %>
+              <div class="nj-host-self-book-notice">
+                <i class="fa-solid fa-house-user" aria-hidden="true"></i>
+                <span>You are the host of this property and cannot book your own listing.</span>
+              </div>
+              <a href="/bookings" class="btn nj-btn-primary-gradient w-100">
+                <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+                <span>Manage Property Reservations</span>
+              </a>
+            <% } else { %>
+              <button type="submit" class="btn nj-btn-primary-gradient w-100 nj-btn-reserve-now" id="njReserveNowBtn">
+                <i class="fa-solid fa-calendar-check" id="njReserveBtnIcon" aria-hidden="true"></i>
+                <span id="njReserveBtnLabel">Reserve Now</span>
+              </button>
+              <p class="nj-booking-charge-note">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <span>Instant confirmation ID &bull; Free cancellation before check-in</span>
+              </p>
+            <% } %>
+          </div>
+        </form>
+
+        <div class="nj-booking-trust">
+          <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified Property</span>
+          <span><i class="fa-solid fa-bolt" aria-hidden="true"></i> Instant Support</span>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ====== Reviews & Star-Rating Section ====== -->
+  <section id="reviewsSection" class="nj-reviews-section" aria-labelledby="reviewsHeading">
+    <div class="nj-section-header">
+      <div>
+        <span class="nj-section-eyebrow">
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          Traveler Feedback
+        </span>
+        <h2 id="reviewsHeading" class="nj-section-title">
+          Guest Reviews &amp; Ratings
+        </h2>
+      </div>
+
+      <div class="nj-reviews-summary-pill">
+        <i class="fa-solid fa-star" aria-hidden="true"></i>
+        <strong><%= avgRating %></strong>
+        <span>&bull; <%= reviewCount %> <%= reviewCount === 1 ? "verified review" : "verified reviews" %></span>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Review Submission Form Column -->
+      <div class="col-lg-5">
+        <% if (currUser) { %>
+          <div class="nj-review-form-card">
+            <h3 class="nj-form-card-title">
+              <i class="fa-solid fa-pen-nib" aria-hidden="true"></i>
+              Share your experience
+            </h3>
+            <p class="nj-form-card-sub">
+              How was your stay at <strong><%= listing.title %></strong>? Select a star rating and leave a comment below.
+            </p>
+
+            <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
+              <div class="nj-rating-field-box">
+                <div class="nj-rating-label-row">
+                  <label for="rating" class="form-label mb-0">Overall Rating</label>
+                  <span class="nj-rating-live-pill" id="njRatingLiveText">Select stars</span>
+                </div>
+
+                <fieldset class="starability-slot">
+                  <input
+                    type="radio"
+                    id="no-rate"
+                    class="input-no-rate"
+                    name="review[rating]"
+                    value="1"
+                    checked
+                    aria-label="No rating."
+                  />
+                  <input type="radio" id="first-rate1" name="review[rating]" value="1" data-label="1 Star — Terrible" />
+                  <label for="first-rate1" title="Terrible">1 star</label>
+                  <input type="radio" id="first-rate2" name="review[rating]" value="2" data-label="2 Stars — Subpar" />
+                  <label for="first-rate2" title="Not good">2 stars</label>
+                  <input type="radio" id="first-rate3" name="review[rating]" value="3" data-label="3 Stars — Good" />
+                  <label for="first-rate3" title="Average">3 stars</label>
+                  <input type="radio" id="first-rate4" name="review[rating]" value="4" data-label="4 Stars — Very Good" />
+                  <label for="first-rate4" title="Very good">4 stars</label>
+                  <input type="radio" id="first-rate5" name="review[rating]" value="5" data-label="5 Stars — Unforgettable!" />
+                  <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+              </div>
+
+              <div class="mb-3">
+                <label for="comment" class="form-label nj-comment-label">Your Review Comment</label>
+                <textarea
+                  id="comment"
+                  name="review[comment]"
+                  cols="30"
+                  rows="4"
+                  class="form-control nj-review-textarea"
+                  placeholder="Tell fellow travelers what you loved about the stay, location, and host..."
+                  required
+                ></textarea>
+                <div class="invalid-feedback">
+                  Please enter a comment for your review.
+                </div>
+              </div>
+
+              <button type="submit" class="btn nj-btn-primary-gradient w-100">
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                <span>Submit Guest Review</span>
+              </button>
+            </form>
+          </div>
+        <% } else { %>
+          <div class="nj-review-guest-prompt">
+            <div class="nj-guest-prompt-icon">
+              <i class="fa-regular fa-star" aria-hidden="true"></i>
+            </div>
+            <h3>Visited this property?</h3>
+            <p>Log in to your Namaste Junction account to rate this stay and share your travel tips with the community.</p>
+            <div class="nj-guest-prompt-btns">
+              <a href="/login" class="btn nj-btn-primary-gradient">
+                <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>
+                <span>Log In to Review</span>
+              </a>
+              <a href="/signup" class="btn nj-btn-outline-soft">
+                <span>Create Account</span>
+              </a>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Existing Reviews List Column -->
+      <div class="col-lg-7">
+        <% if (reviewCount > 0) { %>
+          <div class="row g-3">
+            <% for (let review of listing.reviews) {
+                 const reviewerName = review.author && review.author.username ? review.author.username : "Anonymous";
+                 const reviewerInitial = reviewerName.charAt(0).toUpperCase();
+            %>
+              <div class="col-md-6">
+                <article class="card nj-review-card h-100">
+                  <div class="card-body nj-review-card-body">
+                    <div class="nj-reviewer-top">
+                      <div class="nj-reviewer-info">
+                        <span class="nj-reviewer-avatar" aria-hidden="true"><%= reviewerInitial %></span>
+                        <div>
+                          <h4 class="card-title nj-reviewer-name">@<%= reviewerName %></h4>
+                          <span class="nj-reviewer-badge">Verified Guest</span>
+                        </div>
+                      </div>
+                      <span class="nj-review-score-badge">
+                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                        <%= review.rating %>/5
+                      </span>
+                    </div>
+
+                    <p class="card-text starability-result nj-starability-compact" data-rating="<%= review.rating %>"></p>
+                    <p class="card-text nj-review-comment-text"><%= review.comment %></p>
+
+                    <% if (currUser && review.author && review.author._id.equals(currUser._id)) { %>
+                      <form
+                        action="/listings/<%= listing.id %>/reviews/<%= review._id %>?_method=DELETE"
+                        method="POST"
+                        class="nj-review-delete-form"
+                      >
+                        <button type="submit" class="btn btn-sm nj-btn-review-delete">
+                          <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                          <span>Delete Review</span>
+                        </button>
+                      </form>
+                    <% } %>
+                  </div>
+                </article>
+              </div>
+            <% } %>
+          </div>
+        <% } else { %>
+          <div class="nj-no-reviews-box">
+            <div class="nj-no-reviews-icon">
+              <i class="fa-regular fa-comments" aria-hidden="true"></i>
+            </div>
+            <h4>No guest reviews yet</h4>
+            <p>Be the first traveler to share your experience at <strong><%= listing.title %></strong>!</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Fullscreen Lightbox & Slideshow Modal ====== -->
+  <div
+    id="njLightboxModal"
+    class="nj-lightbox-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-label="<%= listing.title %> fullscreen photo gallery"
+    hidden
+  >
+    <div class="nj-lightbox-backdrop" id="njLightboxBackdrop"></div>
+
+    <div class="nj-lightbox-content">
+      <!-- Top Bar: Counter, Title & Close (X) Button -->
+      <header class="nj-lightbox-topbar">
+        <div class="nj-lightbox-counter-badge" id="njLightboxCounter" aria-live="polite">
+          1 / <%= totalPhotos %>
+        </div>
+
+        <div class="nj-lightbox-title-wrap">
+          <strong class="nj-lightbox-title"><%= listing.title %></strong>
+          <span class="nj-lightbox-subtitle" id="njLightboxCaption"><%= galleryImages[0].caption %></span>
+        </div>
+
+        <button
+          type="button"
+          class="nj-lightbox-close-btn"
+          id="njLightboxCloseBtn"
+          aria-label="Close fullscreen gallery (Esc)"
+          title="Close (Esc)"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <!-- Main Lightbox Image Stage + Prev/Next Arrows -->
+      <div class="nj-lightbox-stage">
+        <button
+          type="button"
+          class="nj-lightbox-nav-btn nj-lightbox-prev"
+          id="njLightboxPrevBtn"
+          aria-label="Previous photo"
+          title="Previous photo (Left Arrow)"
+        >
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <figure class="nj-lightbox-figure">
+          <img
+            id="njLightboxImg"
+            class="nj-lightbox-img"
+            src="<%= galleryImages[0].url %>"
+            alt="<%= galleryImages[0].caption %>"
+          >
+        </figure>
+
+        <button
+          type="button"
+          class="nj-lightbox-nav-btn nj-lightbox-next"
+          id="njLightboxNextBtn"
+          aria-label="Next photo"
+          title="Next photo (Right Arrow)"
+        >
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- Bottom Thumbnail Filmstrip in Lightbox -->
+      <footer class="nj-lightbox-footer">
+        <div class="nj-lightbox-thumbs" id="njLightboxThumbsList">
+          <% galleryImages.forEach((photo, idx) => { %>
+            <button
+              type="button"
+              class="nj-lightbox-thumb-btn <%= idx === 0 ? 'is-active' : '' %>"
+              data-slide-index="<%= idx %>"
+              aria-label="Jump to photo <%= idx + 1 %> of <%= totalPhotos %>"
+            >
+              <img src="<%= photo.url %>" alt="<%= photo.caption %>" loading="lazy">
+            </button>
+          <% }) %>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

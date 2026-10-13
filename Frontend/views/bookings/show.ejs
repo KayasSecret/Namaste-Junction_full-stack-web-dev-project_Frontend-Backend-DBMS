@@ -1,0 +1,299 @@
+<% layout("/layouts/boilerplate") %>
+
+<%
+  const listing = booking.listing;
+  const listingTitle = listing && listing.title ? listing.title : "Namaste Junction Property";
+  const listingLocation = listing
+    ? [listing.location, listing.country].filter(Boolean).join(", ")
+    : "Destination Stay";
+  const listingImg = listing && listing.image && listing.image.url
+    ? listing.image.url
+    : "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80";
+
+  const formatDateReadable = (d) => {
+    if (!d) return "N/A";
+    return new Date(d).toLocaleDateString("en-IN", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  };
+
+  const formatISO = (d) => {
+    if (!d) return "";
+    return new Date(d).toISOString().slice(0, 10);
+  };
+
+  const checkInDateObj = new Date(booking.checkIn);
+  const canCancel = booking.status === "confirmed" && checkInDateObj >= todayUTC;
+
+  const guestName = booking.guest
+    ? (booking.guest.fullName && booking.guest.fullName.trim() ? booking.guest.fullName : booking.guest.username)
+    : "Registered Guest";
+  const guestEmail = booking.guest && booking.guest.email ? booking.guest.email : "N/A";
+
+  const hostName = booking.host
+    ? (booking.host.fullName && booking.host.fullName.trim() ? booking.host.fullName : booking.host.username)
+    : "Verified Host";
+  const hostEmail = booking.host && booking.host.email ? booking.host.email : "N/A";
+
+  let statusBadgeClass = "nj-status-confirmed";
+  let statusIcon = "fa-circle-check";
+  let statusLabel = "Confirmed Reservation";
+  if (booking.status === "cancelled") {
+    statusBadgeClass = "nj-status-cancelled";
+    statusIcon = "fa-circle-xmark";
+    statusLabel = "Cancelled";
+  } else if (booking.status === "completed") {
+    statusBadgeClass = "nj-status-completed";
+    statusIcon = "fa-flag-checkered";
+    statusLabel = "Completed Stay";
+  }
+
+  let paymentBadgeText = "Pay at Property (Check-in)";
+  if (booking.paymentStatus === "paid") {
+    paymentBadgeText = "Payment Settled (Paid)";
+  } else if (booking.paymentStatus === "pending") {
+    paymentBadgeText = "Online Payment Pending";
+  } else if (booking.paymentStatus === "refunded") {
+    paymentBadgeText = "Refunded";
+  }
+%>
+
+<div class="nj-booking-voucher-page">
+  <!-- Top Navigation Row -->
+  <nav class="nj-show-breadcrumb mb-3" aria-label="Reservation navigation">
+    <a href="/bookings" class="nj-back-pill">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      <span>All My Bookings</span>
+    </a>
+
+    <div class="nj-show-quick-links">
+      <% if (listing && listing._id) { %>
+        <a href="/listings/<%= listing._id %>" class="nj-quick-chip">
+          <i class="fa-solid fa-hotel" aria-hidden="true"></i>
+          <span>View Property Page</span>
+        </a>
+      <% } %>
+      <button type="button" class="nj-quick-chip nj-print-voucher-btn" onclick="window.print()">
+        <i class="fa-solid fa-print" aria-hidden="true"></i>
+        <span>Print Voucher</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Reservation Voucher Card -->
+  <section class="nj-voucher-card" aria-label="Booking confirmation voucher">
+    <!-- Top Banner -->
+    <div class="nj-voucher-banner <%= booking.status === 'cancelled' ? 'is-cancelled' : '' %>">
+      <div class="nj-voucher-banner-left">
+        <span class="nj-voucher-status-pill <%= statusBadgeClass %>">
+          <i class="fa-solid <%= statusIcon %>" aria-hidden="true"></i>
+          <%= statusLabel %>
+        </span>
+        <h1 class="nj-voucher-title">
+          <% if (booking.status === "confirmed") { %>
+            Your Stay is Reserved!
+          <% } else if (booking.status === "completed") { %>
+            Completed Stay Summary
+          <% } else { %>
+            Reservation Cancelled
+          <% } %>
+        </h1>
+        <p class="nj-voucher-subtitle">
+          Booked on <%= new Date(booking.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) %>
+          <% if (booking.status === "cancelled" && booking.cancelledBy) { %>
+            &bull; Cancelled by <%= booking.cancelledBy === "guest" ? "Guest" : "Host" %>
+          <% } %>
+        </p>
+      </div>
+
+      <div class="nj-voucher-code-box">
+        <span class="nj-voucher-code-label">BOOKING ID</span>
+        <strong class="nj-voucher-code-value" id="njBookingCodeValue"><%= booking.bookingCode %></strong>
+        <span class="nj-voucher-payment-pill">
+          <i class="fa-solid fa-wallet" aria-hidden="true"></i>
+          <%= paymentBadgeText %>
+        </span>
+      </div>
+    </div>
+
+    <div class="nj-voucher-body">
+      <div class="row g-4">
+        <!-- Left Column: Property Summary & Stay Timeline -->
+        <div class="col-lg-7">
+          <!-- Property Preview Box -->
+          <div class="nj-voucher-property-box">
+            <img
+              src="<%= listingImg %>"
+              alt="<%= listingTitle %>"
+              class="nj-voucher-property-img"
+            />
+            <div class="nj-voucher-property-info">
+              <span class="nj-voucher-kicker">
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <%= listingLocation %>
+              </span>
+              <h2 class="nj-voucher-property-title">
+                <% if (listing && listing._id) { %>
+                  <a href="/listings/<%= listing._id %>"><%= listingTitle %></a>
+                <% } else { %>
+                  <%= listingTitle %>
+                <% } %>
+              </h2>
+              <p class="nj-voucher-host-line">
+                Hosted by <strong><%= hostName %></strong> (<%= hostEmail %>)
+              </p>
+            </div>
+          </div>
+
+          <!-- Check-In / Check-Out Timeline Grid -->
+          <div class="nj-voucher-dates-grid">
+            <div class="nj-voucher-date-card">
+              <span class="nj-voucher-date-label">
+                <i class="fa-regular fa-calendar-check" aria-hidden="true"></i>
+                CHECK-IN
+              </span>
+              <strong class="nj-voucher-date-main"><%= formatDateReadable(booking.checkIn) %></strong>
+              <span class="nj-voucher-date-sub">From 12:00 PM onwards (<%= formatISO(booking.checkIn) %>)</span>
+            </div>
+
+            <div class="nj-voucher-date-card">
+              <span class="nj-voucher-date-label">
+                <i class="fa-regular fa-calendar-minus" aria-hidden="true"></i>
+                CHECK-OUT
+              </span>
+              <strong class="nj-voucher-date-main"><%= formatDateReadable(booking.checkOut) %></strong>
+              <span class="nj-voucher-date-sub">Before 11:00 AM (<%= formatISO(booking.checkOut) %>)</span>
+            </div>
+          </div>
+
+          <!-- Stay Details & Guest Information -->
+          <div class="nj-voucher-meta-grid">
+            <div class="nj-voucher-meta-item">
+              <span class="nj-meta-label">Total Duration</span>
+              <strong class="nj-meta-val"><%= booking.nights %> <%= booking.nights === 1 ? "Night" : "Nights" %></strong>
+            </div>
+            <div class="nj-voucher-meta-item">
+              <span class="nj-meta-label">Registered Guests</span>
+              <strong class="nj-meta-val"><%= booking.guestsCount %> <%= booking.guestsCount === 1 ? "Guest" : "Guests" %></strong>
+            </div>
+            <div class="nj-voucher-meta-item">
+              <span class="nj-meta-label">Primary Guest</span>
+              <strong class="nj-meta-val"><%= guestName %></strong>
+            </div>
+            <div class="nj-voucher-meta-item">
+              <span class="nj-meta-label">Guest Email</span>
+              <strong class="nj-meta-val"><%= guestEmail %></strong>
+            </div>
+          </div>
+
+          <% if (booking.specialRequests && booking.specialRequests.trim()) { %>
+            <div class="nj-voucher-requests-box">
+              <h6>
+                <i class="fa-regular fa-comment-dots" aria-hidden="true"></i>
+                Special Requests / Arrival Notes
+              </h6>
+              <p class="mb-0"><%= booking.specialRequests %></p>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Right Column: Itemized Price Breakdown & Actions -->
+        <div class="col-lg-5">
+          <div class="nj-voucher-price-card">
+            <h3 class="nj-voucher-price-heading">
+              <i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i>
+              Transparent Price Breakdown
+            </h3>
+
+            <div class="nj-voucher-price-rows">
+              <div class="nj-voucher-price-row">
+                <span>&#8377;<%= Number(booking.nightlyRate).toLocaleString("en-IN") %> &times; <%= booking.nights %> <%= booking.nights === 1 ? "night" : "nights" %></span>
+                <strong>&#8377;<%= Number(booking.basePrice).toLocaleString("en-IN") %></strong>
+              </div>
+              <div class="nj-voucher-price-row">
+                <span>Hospitality &amp; Cleaning Fee</span>
+                <strong class="nj-free-tag">FREE</strong>
+              </div>
+              <div class="nj-voucher-price-row">
+                <span>GST &amp; Occupancy Taxes (18%)</span>
+                <strong>&#8377;<%= Number(booking.taxAmount).toLocaleString("en-IN") %></strong>
+              </div>
+              <div class="nj-voucher-price-row nj-voucher-price-total">
+                <span>Total Amount (INR)</span>
+                <strong>&#8377;<%= Number(booking.totalPrice).toLocaleString("en-IN") %></strong>
+              </div>
+            </div>
+
+            <div class="nj-voucher-payment-box">
+              <div class="nj-voucher-payment-line">
+                <span>Payment Mode:</span>
+                <strong><%= booking.paymentMethod === "online_pending" ? "Online Transfer / UPI at Check-in" : "Pay at Property upon Check-in" %></strong>
+              </div>
+              <div class="nj-voucher-payment-line">
+                <span>Payment Status:</span>
+                <strong class="text-uppercase"><%= booking.paymentStatus.replace(/_/g, " ") %></strong>
+              </div>
+            </div>
+
+            <!-- Cancellation Action (For Guest or Host if Confirmed & Upcoming) -->
+            <% if (canCancel) { %>
+              <div class="nj-voucher-actions-block">
+                <form
+                  action="/bookings/<%= booking._id %>/cancel?_method=PATCH"
+                  method="POST"
+                  onsubmit="return confirm('Are you sure you want to cancel reservation <%= booking.bookingCode %>? This will release the reserved dates immediately.');"
+                >
+                  <button type="submit" class="nj-btn-cancel-booking w-100">
+                    <i class="fa-solid fa-ban" aria-hidden="true"></i>
+                    <span>Cancel Reservation</span>
+                  </button>
+                </form>
+                <small class="nj-cancel-policy-hint">
+                  <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                  Free cancellation before check-in date. Reserved dates are released immediately.
+                </small>
+              </div>
+            <% } %>
+
+            <!-- Host Management Panel (Only shown when logged-in user is the Property Host) -->
+            <% if (isHost) { %>
+              <div class="nj-host-manage-card mt-3">
+                <h4 class="nj-host-manage-title">
+                  <i class="fa-solid fa-user-gear" aria-hidden="true"></i>
+                  Host Reservation Controls
+                </h4>
+                <form action="/bookings/<%= booking._id %>/status?_method=PATCH" method="POST" class="nj-host-status-form">
+                  <div class="mb-2">
+                    <label class="form-label small fw-bold mb-1" for="hostBookingStatus">Reservation Status</label>
+                    <select id="hostBookingStatus" name="status" class="form-select form-select-sm">
+                      <option value="confirmed" <%= booking.status === "confirmed" ? "selected" : "" %>>Confirmed</option>
+                      <option value="completed" <%= booking.status === "completed" ? "selected" : "" %>>Completed Stay</option>
+                      <option value="cancelled" <%= booking.status === "cancelled" ? "selected" : "" %>>Cancelled</option>
+                    </select>
+                  </div>
+                  <div class="mb-2">
+                    <label class="form-label small fw-bold mb-1" for="hostPaymentStatus">Payment Status</label>
+                    <select id="hostPaymentStatus" name="paymentStatus" class="form-select form-select-sm">
+                      <option value="pay_at_property" <%= booking.paymentStatus === "pay_at_property" ? "selected" : "" %>>Pay at Property</option>
+                      <option value="pending" <%= booking.paymentStatus === "pending" ? "selected" : "" %>>Pending</option>
+                      <option value="paid" <%= booking.paymentStatus === "paid" ? "selected" : "" %>>Paid</option>
+                      <option value="refunded" <%= booking.paymentStatus === "refunded" ? "selected" : "" %>>Refunded</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn nj-btn-primary btn-sm w-100">
+                    <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                    <span>Update Reservation Status</span>
+                  </button>
+                </form>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

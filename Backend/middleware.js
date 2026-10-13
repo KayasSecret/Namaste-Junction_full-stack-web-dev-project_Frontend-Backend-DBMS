@@ -6,11 +6,16 @@ const { listingSchema } = require("./schema.js");
 
 // LoggedIn Middleware
 module.exports.isLoggedIn = (req, res, next) => {
-    if(!req.isAuthenticated()){
-        // Redirect URL save
+    if (!req.isAuthenticated()) {
         req.session.redirectUrl = req.originalUrl;
-        req.flash("error", "You must be logged in to create listing!");
-        return res.redirect("/login")
+        const isProfileRoute = req.originalUrl && req.originalUrl.startsWith("/profile");
+        req.flash(
+            "error",
+            isProfileRoute
+                ? "You must be logged in to view your profile!"
+                : "You must be logged in to create listing!"
+        );
+        return req.session.save(() => res.redirect("/login"));
     }
     next();
 };
@@ -18,6 +23,19 @@ module.exports.isLoggedIn = (req, res, next) => {
 module.exports.saveRedirectUrl = (req, res, next) => {
     if(req.session.redirectUrl) {
         res.locals.redirectUrl = req.session.redirectUrl;
+    }
+    next();
+};
+
+// Profile Identity Verification Middleware (Prevents accessing another user's private profile)
+module.exports.isProfileOwner = (req, res, next) => {
+    if (!req.isAuthenticated() || !req.user) {
+        req.flash("error", "You must be logged in to view your profile!");
+        return req.session.save(() => res.redirect("/login"));
+    }
+    if (req.params.id && String(req.params.id) !== String(req.user._id)) {
+        req.flash("error", "Access denied: You cannot access another user's private profile.");
+        return req.session.save(() => res.redirect("/profile"));
     }
     next();
 };
@@ -31,7 +49,7 @@ module.exports.isOwner = async(req, res, next) => {
             req.flash("error", "Listing you requested for does not exist!");
             return res.redirect("/listings");
         }
-        if (!listing.owner.equals(res.locals.currUser._id)) {
+        if (!res.locals.currUser || !listing.owner || !listing.owner.equals(res.locals.currUser._id)) {
             req.flash("error", "You are not the owner of this listing");
             return res.redirect(`/listings/${id}`);  
         }

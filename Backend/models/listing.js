@@ -13,6 +13,22 @@ const listingSchema = new Schema({
         url: String,
         filename: String
     },
+    images: [
+        {
+            url: {
+                type: String,
+                required: true,
+            },
+            filename: {
+                type: String,
+                default: "listinggallery",
+            },
+            uploadedAt: {
+                type: Date,
+                default: Date.now,
+            },
+        },
+    ],
     price: Number,
     location: String,
     country: String,
