@@ -1,65 +1,100 @@
-<style>
-  .btn-search {
-    background-color: #fe424e;
-    color: white;
-    border-radius: 25px;
-    padding: 0 1rem 0 1rem;
-  }
+<nav class="navbar navbar-expand-lg nj-navbar sticky-top" id="njMainNavbar" aria-label="Primary Navigation">
+  <div class="container nj-nav-container">
+    <!-- Brand Logo & Identity -->
+    <a class="navbar-brand nj-brand" href="/listings" aria-label="Namaste Junction Home">
+      <span class="nj-brand-icon-wrap">
+        <i class="fa-regular fa-compass nj-compass-icon" aria-hidden="true"></i>
+      </span>
+      <span class="nj-brand-text">
+        <span class="nj-brand-title">Namaste<span>Junction</span></span>
+        <span class="nj-brand-tag">Stays &amp; Experiences</span>
+      </span>
+    </a>
 
-  .btn-search:hover {
-    background-color: #f3ef10;
-    color: white;
-  }
+    <!-- Mobile Hamburger Toggler -->
+    <button
+      class="navbar-toggler nj-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="nj-toggler-bar"></span>
+      <span class="nj-toggler-bar"></span>
+      <span class="nj-toggler-bar"></span>
+    </button>
 
-  .btn-search i {
-    display: inline;
-    margin-right: 0.5rem;
-  }
+    <!-- Collapsible Navigation Content -->
+    <div class="collapse navbar-collapse nj-nav-collapse" id="navbarNavAltMarkup">
+      <!-- Left Primary Link -->
+      <div class="navbar-nav nj-nav-left">
+        <a class="nav-link nj-nav-link" href="/listings" data-nav-path="/listings">
+          <i class="fa-solid fa-earth-asia nj-link-icon" aria-hidden="true"></i>
+          <span>Explore</span>
+        </a>
+      </div>
 
-  .search-input {
-    border-radius: 25px;
-    padding: 0.5rem 3rem;
-  }
-</style>
+      <!-- Center Interactive Destination Search Bar -->
+      <div class="navbar-nav mx-lg-auto my-2 my-lg-0 nj-search-wrapper">
+        <form class="d-flex nj-search-form" role="search" action="/listings" method="GET" id="njSearchForm">
+          <div class="nj-search-pill">
+            <i class="fa-solid fa-location-dot nj-search-pin" aria-hidden="true"></i>
+            <input
+              class="form-control search-input nj-search-input"
+              type="search"
+              name="q"
+              id="njDestinationSearch"
+              placeholder="Search destinations, villas, cities..."
+              aria-label="Search destinations"
+              autocomplete="off"
+            >
+            <button class="btn btn-search nj-btn-search" type="submit" aria-label="Search">
+              <i class="fa fa-search" aria-hidden="true"></i>
+              <span>Search</span>
+            </button>
+          </div>
+        </form>
+      </div>
 
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/listings"><i class="fa-regular fa-compass"></i></a>
-      <button class="navbar-toggler" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#navbarNavAltMarkup" 
-              aria-controls="navbarNavAltMarkup" 
-              aria-expanded="false" 
-              aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+      <!-- Right Actions & Auth Menu -->
+      <div class="navbar-nav ms-lg-auto align-items-lg-center nj-nav-right">
+        <a class="nav-link nj-host-pill" href="/listings/new" data-nav-path="/listings/new">
+          <i class="fa-solid fa-plus-circle" aria-hidden="true"></i>
+          <span>Add new Listing</span>
+        </a>
 
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="nj-auth-divider d-none d-lg-block" aria-hidden="true"></div>
 
-        <div class="navbar-nav">
-          <a class="nav-link" href="/listings">Explore</a>
-        </div>
+        <% if (!locals.currUser) { %>
+          <div class="nj-auth-group">
+            <a class="nj-btn-login" href="/login" data-nav-path="/login">
+              <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i>
+              <span>Log in</span>
+            </a>
+            <a class="nj-btn-signup" href="/signup" data-nav-path="/signup">
+              <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+              <span>Sign up</span>
+            </a>
+          </div>
+        <% } %>
 
-        <div class="navbar-nav ms-auto">
-          <form class="d-flex" role="search">
-            <input class="form-control me-2 search-input" type="search" placeholder="Search destinations">
-            <button class="btn btn-search" type="submit"><i class="fa fa-search" aria-hidden="true"></i>Search</button>
-          </form>
-        </div>
-
-        <div class="navbar-nav ms-auto">
-              <a class="nav-link" href="/listings/new">Add new Listing</a>
-          <% if (!locals.currUser) { %>
-              <a class="nav-link" href="/signup"><b>Sign up</b></a>
-              <a class="nav-link" href="/login"><b>Log in</b></a>
-          <% } %>
-
-          <% if (locals.currUser) { %>
-              <a class="nav-link" href="/logout"><b>Log out</b></a>
-          <% } %>
-        </div>
-
+        <% if (locals.currUser) { %>
+          <div class="nj-auth-group nj-user-logged">
+            <span class="nj-user-badge" title="Signed in as <%= currUser.username %>">
+              <span class="nj-user-avatar" aria-hidden="true">
+                <%= currUser.username ? currUser.username.charAt(0).toUpperCase() : "U" %>
+              </span>
+              <span class="nj-user-name"><%= currUser.username %></span>
+            </span>
+            <a class="nj-btn-logout" href="/logout">
+              <i class="fa-solid fa-power-off" aria-hidden="true"></i>
+              <span>Log out</span>
+            </a>
+          </div>
+        <% } %>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>

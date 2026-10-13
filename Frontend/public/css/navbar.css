@@ -1,0 +1,480 @@
+/* ==========================================================================
+   navbar.css — Premium Sticky Travel Navbar
+   Namaste Junction | Premium Travel Platform
+   ========================================================================== */
+
+.nj-navbar {
+    min-height: 4.85rem;
+    padding: 0.55rem 0;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.25s ease;
+    z-index: 1030;
+}
+
+.nj-navbar.nj-navbar-scrolled {
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.12);
+    border-bottom-color: rgba(226, 232, 240, 0.95);
+}
+
+.nj-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+/* ------ Brand Identity ------ */
+.nj-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    padding: 0.25rem 0;
+    transition: transform 0.25s ease;
+}
+
+.nj-brand:hover {
+    transform: translateY(-1px);
+}
+
+.nj-brand-icon-wrap {
+    width: 2.65rem;
+    height: 2.65rem;
+    border-radius: 0.85rem;
+    background: linear-gradient(135deg, #fe424d 0%, #ff7555 55%, #ff9966 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 18px -4px rgba(254, 66, 77, 0.45);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.nj-brand:hover .nj-brand-icon-wrap {
+    transform: rotate(15deg) scale(1.05);
+    box-shadow: 0 10px 22px -4px rgba(254, 66, 77, 0.6);
+}
+
+.nj-compass-icon {
+    color: #ffffff;
+    font-size: 1.45rem;
+}
+
+.nj-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.nj-brand-title {
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+}
+
+.nj-brand-title span {
+    background: linear-gradient(135deg, #fe424d 0%, #ff7a59 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nj-brand-tag {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 0.12rem;
+}
+
+/* ------ Left Navigation Link with Animated Indicator ------ */
+.nj-nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: #1e293b !important;
+    padding: 0.5rem 0.9rem !important;
+    border-radius: 999px;
+    transition: color 0.25s ease, background-color 0.25s ease;
+}
+
+.nj-link-icon {
+    color: #fe424d;
+    font-size: 0.95rem;
+    transition: transform 0.25s ease;
+}
+
+.nj-nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0.2rem;
+    left: 50%;
+    width: 0;
+    height: 2.5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #fe424d, #ff8e53);
+    transform: translateX(-50%);
+    transition: width 0.25s ease;
+}
+
+.nj-nav-link:hover,
+.nj-nav-link.active-nav {
+    color: #fe424d !important;
+    background-color: rgba(254, 66, 77, 0.06);
+}
+
+.nj-nav-link:hover .nj-link-icon,
+.nj-nav-link.active-nav .nj-link-icon {
+    transform: rotate(-12deg) scale(1.1);
+}
+
+.nj-nav-link:hover::after,
+.nj-nav-link.active-nav::after {
+    width: 55%;
+}
+
+/* ------ Interactive Destination Search Pill ------ */
+.nj-search-wrapper {
+    flex: 0 1 430px;
+    width: 100%;
+}
+
+.nj-search-form {
+    width: 100%;
+}
+
+.nj-search-pill {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 999px;
+    padding: 0.28rem 0.32rem 0.28rem 1rem;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nj-search-pill:hover {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+}
+
+.nj-search-pill:focus-within {
+    background: #ffffff;
+    border-color: #fe424d;
+    box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.12), 0 8px 22px rgba(15, 23, 42, 0.08);
+    transform: translateY(-1px);
+}
+
+.nj-search-pin {
+    color: #fe424d;
+    font-size: 0.95rem;
+    margin-right: 0.55rem;
+    transition: transform 0.25s ease;
+}
+
+.nj-search-pill:focus-within .nj-search-pin {
+    transform: scale(1.15);
+}
+
+.nj-search-input {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.9rem !important;
+    font-weight: 500;
+    color: #0f172a !important;
+    flex: 1;
+}
+
+.nj-search-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.nj-search-input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.nj-btn-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: linear-gradient(135deg, #fe424d 0%, #ff6b57 60%, #ff8e53 100%);
+    color: #ffffff !important;
+    border: none;
+    border-radius: 999px;
+    padding: 0.48rem 1.1rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(254, 66, 77, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    white-space: nowrap;
+}
+
+.nj-btn-search:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 16px rgba(254, 66, 77, 0.5);
+    filter: brightness(1.05);
+    color: #ffffff !important;
+}
+
+/* ------ Right Actions: Add Listing & Auth Buttons ------ */
+.nj-nav-right {
+    gap: 0.5rem;
+}
+
+.nj-host-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a !important;
+    padding: 0.5rem 0.95rem !important;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.04);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    transition: all 0.22s ease;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.nj-host-pill i {
+    color: #fe424d;
+    font-size: 0.95rem;
+    transition: transform 0.25s ease;
+}
+
+.nj-host-pill:hover,
+.nj-host-pill.active-nav {
+    background: rgba(254, 66, 77, 0.09);
+    border-color: rgba(254, 66, 77, 0.28);
+    color: #fe424d !important;
+    transform: translateY(-1px);
+}
+
+.nj-host-pill:hover i {
+    transform: rotate(90deg);
+}
+
+.nj-auth-divider {
+    width: 1px;
+    height: 1.65rem;
+    background: #e2e8f0;
+    margin: 0 0.25rem;
+}
+
+.nj-auth-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Login button — ghost outline style */
+.nj-btn-login {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b !important;
+    padding: 0.48rem 0.95rem !important;
+    border-radius: 999px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    transition: all 0.22s ease;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.nj-btn-login:hover,
+.nj-btn-login.active-nav {
+    border-color: #fe424d;
+    color: #fe424d !important;
+    background: rgba(254, 66, 77, 0.05);
+    transform: translateY(-1px);
+}
+
+/* Signup button — coral gradient filled */
+.nj-btn-signup {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ffffff !important;
+    padding: 0.5rem 1.05rem !important;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #fe424d 0%, #ff7555 100%);
+    box-shadow: 0 6px 14px -3px rgba(254, 66, 77, 0.45);
+    transition: all 0.22s ease;
+    white-space: nowrap;
+    text-decoration: none;
+    /* Override Bootstrap .nav-link color inheritance */
+    -webkit-text-fill-color: #ffffff;
+}
+
+.nj-btn-signup:hover,
+.nj-btn-signup.active-nav {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px -3px rgba(254, 66, 77, 0.6);
+    filter: brightness(1.05);
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
+}
+
+/* ------ Logged-in: User Avatar Badge & Logout ------ */
+.nj-user-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.28rem 0.75rem 0.28rem 0.32rem;
+    border-radius: 999px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.nj-user-avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fe424d, #ff8e53);
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nj-user-name {
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nj-btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #ef4444 !important;
+    padding: 0.46rem 0.9rem !important;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    transition: all 0.22s ease;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.nj-btn-logout:hover {
+    background: #ef4444;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px -3px rgba(239, 68, 68, 0.4);
+}
+
+/* ------ Custom Animated Mobile Hamburger Toggler ------ */
+.nj-toggler {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 0.75rem !important;
+    padding: 0.5rem 0.6rem !important;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 2.6rem;
+    height: 2.6rem;
+    box-shadow: none !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.nj-toggler:hover,
+.nj-toggler:focus-visible {
+    border-color: #fe424d !important;
+    background: rgba(254, 66, 77, 0.06);
+}
+
+.nj-toggler-bar {
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background-color: #0f172a;
+    transition: transform 0.28s ease, opacity 0.2s ease;
+}
+
+.nj-toggler[aria-expanded="true"] .nj-toggler-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+    background-color: #fe424d;
+}
+
+.nj-toggler[aria-expanded="true"] .nj-toggler-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.nj-toggler[aria-expanded="true"] .nj-toggler-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+    background-color: #fe424d;
+}
+
+/* ------ Responsive Mobile Collapse Menu ------ */
+@media (max-width: 991.98px) {
+    .nj-nav-collapse {
+        margin-top: 0.75rem;
+        padding: 1.1rem;
+        border-radius: 1.15rem;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 18px 38px -10px rgba(15, 23, 42, 0.14);
+    }
+
+    .nj-search-wrapper {
+        flex: 1 1 100%;
+        margin: 0.65rem 0 !important;
+    }
+
+    .nj-nav-right {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 0.65rem;
+        margin-top: 0.35rem;
+    }
+
+    .nj-host-pill {
+        justify-content: center;
+    }
+
+    .nj-auth-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+    }
+
+    .nj-btn-login,
+    .nj-btn-signup,
+    .nj-btn-logout {
+        justify-content: center;
+        text-align: center;
+    }
+}

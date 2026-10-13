@@ -1,27 +1,145 @@
 <% layout("/layouts/boilerplate") %>
-<body>
-    <div class="row mt-3">
-        <h1 class="col-6 offset-3">Login</h1>
-        <div class="col-6 offset-3">
-            <form action="/login" method="POST" novalidate class="needs-validation">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input name="username" id="username" type="text" placeholder="enter username" class="form-control" required>
-                    <div class="invalid-feedback">
-                        Please enter a Username!
+
+<section class="auth-page-wrapper" aria-labelledby="loginHeading">
+    <!-- Ambient Animated Glow Orbs -->
+    <div class="auth-ambient-orb auth-orb-1"></div>
+    <div class="auth-ambient-orb auth-orb-2"></div>
+
+    <div class="row auth-split-row">
+        <!-- Left Visual Travel Showcase -->
+        <div class="col-lg-6 auth-visual-side auth-visual-login">
+            <div class="auth-visual-top">
+                <a href="/listings" class="auth-brand-pill">
+                    <i class="fa-regular fa-compass"></i>
+                    <span>Namaste Junction</span>
+                </a>
+            </div>
+
+            <div class="auth-visual-middle">
+                <h2 class="auth-visual-heading">
+                    Your next unforgettable <span>journey</span> awaits.
+                </h2>
+                <p class="auth-visual-subtext">
+                    Sign in to unlock handpicked stays, beachfront villas, mountain retreats, and authentic local experiences across the globe.
+                </p>
+
+                <div class="auth-floating-badges" aria-hidden="true">
+                    <span class="auth-float-chip">
+                        <i class="fa-solid fa-umbrella-beach"></i> Coastal Escapes
+                    </span>
+                    <span class="auth-float-chip">
+                        <i class="fa-solid fa-mountain-sun"></i> Alpine Cabins
+                    </span>
+                    <span class="auth-float-chip">
+                        <i class="fa-solid fa-shield-heart"></i> Verified Hosts
+                    </span>
+                </div>
+            </div>
+
+            <div class="auth-visual-bottom">
+                <div class="auth-glass-card">
+                    <div class="auth-glass-card-header">
+                        <span class="auth-glass-location">
+                            <i class="fa-solid fa-location-dot"></i> Malibu &amp; Bali Curated Stays
+                        </span>
+                        <span class="auth-glass-rating">
+                            <i class="fa-solid fa-star"></i> 4.9 / 5
+                        </span>
                     </div>
+                    <p class="auth-glass-quote">
+                        "Discovering unique stays and sharing reviews on Namaste Junction made our vacation effortless and memorable."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Authentication Form Panel -->
+        <div class="col-lg-6 auth-form-side">
+            <div class="auth-form-container">
+                <div class="auth-badge-eyebrow">
+                    <i class="fa-solid fa-plane-departure"></i> Welcome Back Explorer
+                </div>
+                <h1 id="loginHeading" class="auth-title">Log in to your account</h1>
+                <p class="auth-subtitle">Enter your credentials below to continue exploring stays.</p>
+
+                <form action="/login" method="POST" novalidate class="needs-validation">
+                    <!-- Username Field -->
+                    <div class="auth-field-group">
+                        <label for="username" class="form-label auth-label">
+                            <span>Username</span>
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-regular fa-user auth-input-icon" aria-hidden="true"></i>
+                            <input
+                                name="username"
+                                id="username"
+                                type="text"
+                                placeholder="Enter your username"
+                                autocomplete="username"
+                                class="form-control auth-input"
+                                required
+                            >
+                            <div class="valid-feedback">
+                                Username looks good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter your username to continue.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="auth-field-group">
+                        <label for="password" class="form-label auth-label">
+                            <span>Password</span>
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-lock auth-input-icon" aria-hidden="true"></i>
+                            <input
+                                name="password"
+                                id="password"
+                                type="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                class="form-control auth-input"
+                                required
+                            >
+                            <button
+                                type="button"
+                                class="auth-pw-toggle"
+                                data-target="password"
+                                aria-label="Show password"
+                                aria-pressed="false"
+                            >
+                                <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                            </button>
+                            <div class="invalid-feedback">
+                                Please enter your password to log in.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit CTA -->
+                    <button type="submit" class="btn btn-auth-submit" data-loading-text="Signing in...">
+                        <span>Log In to Namaste Junction</span>
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </form>
+
+                <div class="auth-trust-row">
+                    <span class="auth-trust-item">
+                        <i class="fa-solid fa-circle-check"></i> Secure Session
+                    </span>
+                    <span class="auth-trust-item">
+                        <i class="fa-solid fa-circle-check"></i> Instant Booking Access
+                    </span>
                 </div>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input name="password" id="password" type="password" placeholder="enter password" class="form-control" required>
-                    <div class="invalid-feedback">
-                        Are You Fool!
-                    </div>
-                </div>
-
-                <button class="btn btn-info">Login</button>
-            </form>
+                <p class="auth-switch-prompt">
+                    New to Namaste Junction?
+                    <a href="/signup" class="auth-switch-link">Create an account</a>
+                </p>
+            </div>
         </div>
     </div>
-</body>
+</section>

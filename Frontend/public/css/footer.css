@@ -1,0 +1,297 @@
+/* ==========================================================================
+   footer.css — Premium Travel Platform Footer
+   Namaste Junction | Premium Travel Platform
+   ========================================================================== */
+
+.nj-footer {
+    position: relative;
+    margin-top: auto;
+    background: radial-gradient(circle at 15% 15%, rgba(254, 66, 77, 0.14), transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(255, 142, 83, 0.12), transparent 45%),
+                linear-gradient(160deg, #0f172a 0%, #161e31 55%, #0b1120 100%);
+    color: #cbd5e1;
+    overflow: hidden;
+}
+
+/* Animated top gradient accent line */
+.nj-footer-accent-line {
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, #fe424d 0%, #ff758c 35%, #ff9966 70%, #fe424d 100%);
+    background-size: 200% 100%;
+    animation: footerGradientShift 8s linear infinite;
+}
+
+@keyframes footerGradientShift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+.nj-footer-container {
+    padding-top: 3.25rem;
+    padding-bottom: 1.75rem;
+}
+
+.nj-footer-main {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* ------ Brand Column ------ */
+.nj-footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    margin-bottom: 0.95rem;
+}
+
+.nj-footer-brand-icon {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, #fe424d, #ff8e53);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 6px 16px rgba(254, 66, 77, 0.4);
+}
+
+.nj-footer-brand-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+}
+
+.nj-footer-brand-name span {
+    background: linear-gradient(90deg, #ff758c, #ffb199);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nj-footer-desc {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: #94a3b8;
+    margin-bottom: 1.15rem;
+    max-width: 360px;
+}
+
+.nj-footer-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.nj-footer-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.nj-footer-pill i {
+    color: #ff758c;
+}
+
+/* ------ Column Headings & Link Lists ------ */
+.nj-footer-heading {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    margin-bottom: 1.1rem;
+    position: relative;
+    padding-bottom: 0.45rem;
+}
+
+.nj-footer-heading::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 1.8rem;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #fe424d, #ff8e53);
+}
+
+.nj-footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.nj-footer-list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.22s ease, transform 0.22s ease;
+}
+
+.nj-footer-list a i {
+    font-size: 0.78rem;
+    color: #fe424d;
+    transition: transform 0.22s ease;
+}
+
+.nj-footer-list a:hover {
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+.nj-footer-list a:hover i {
+    transform: translateX(2px);
+}
+
+/* ------ Social Buttons & Locale Badges ------ */
+.nj-footer-connect-text {
+    font-size: 0.86rem;
+    color: #94a3b8;
+    line-height: 1.55;
+    margin-bottom: 1rem;
+}
+
+.nj-footer-socials {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 1.15rem;
+}
+
+.nj-social-btn {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #f8fafc !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.nj-social-btn:hover {
+    transform: translateY(-3px);
+    border-color: transparent;
+    color: #ffffff !important;
+}
+
+.nj-social-fb:hover {
+    background: #1877f2;
+    box-shadow: 0 8px 18px -4px rgba(24, 119, 242, 0.55);
+}
+
+.nj-social-ig:hover {
+    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    box-shadow: 0 8px 18px -4px rgba(220, 39, 67, 0.55);
+}
+
+.nj-social-tw:hover {
+    background: #000000;
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 18px -4px rgba(0, 0, 0, 0.6);
+}
+
+.nj-social-li:hover {
+    background: #0a66c2;
+    box-shadow: 0 8px 18px -4px rgba(10, 102, 194, 0.55);
+}
+
+.nj-footer-locale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.nj-locale-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+/* ------ Bottom Legal & Copyright Bar ------ */
+.nj-footer-bottom {
+    padding-top: 1.35rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: transparent;
+    height: auto;
+}
+
+.nj-copyright {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    width: auto;
+}
+
+.nj-copyright strong {
+    color: #f8fafc;
+}
+
+.nj-legal-links {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: auto;
+}
+
+.nj-legal-links a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nj-legal-links a:hover {
+    color: #fe424d;
+    text-decoration: underline;
+}
+
+.nj-dot-sep {
+    color: #475569;
+    font-size: 0.75rem;
+}
+
+@media (max-width: 767.98px) {
+    .nj-footer-container {
+        padding-top: 2.5rem;
+    }
+    .nj-footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+    }
+}

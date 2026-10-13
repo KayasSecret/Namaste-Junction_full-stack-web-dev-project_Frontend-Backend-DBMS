@@ -1,15 +1,96 @@
-<footer>
-    <div class="f-info">
-        <div class="f-info-socials">
-            <i class="fa-brands fa-square-facebook"></i>
-            <i class="fa-brands fa-square-instagram"></i>
-            <i class="fa-brands fa-square-twitter"></i>
-            <i class="fa-brands fa-linkedin"></i>
+<footer class="nj-footer" role="contentinfo">
+  <!-- Top Animated Gradient Accent Line -->
+  <div class="nj-footer-accent-line" aria-hidden="true"></div>
+
+  <div class="container nj-footer-container">
+    <div class="row gy-4 nj-footer-main">
+      <!-- Column 1: Brand Identity & Mission -->
+      <div class="col-lg-4 col-md-6">
+        <a href="/listings" class="nj-footer-brand">
+          <span class="nj-footer-brand-icon">
+            <i class="fa-regular fa-compass" aria-hidden="true"></i>
+          </span>
+          <span class="nj-footer-brand-name">Namaste<span>Junction</span></span>
+        </a>
+        <p class="nj-footer-desc">
+          Discover handpicked stays, beachfront villas, mountain cabins, and unforgettable travel experiences curated by passionate hosts worldwide.
+        </p>
+        <div class="nj-footer-badges">
+          <span class="nj-footer-pill">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Verified Stays
+          </span>
+          <span class="nj-footer-pill">
+            <i class="fa-solid fa-headset" aria-hidden="true"></i> 24/7 Travel Support
+          </span>
         </div>
-        <div class="f-info-brand">&copy; NamasteJunction PVT Limited</div>
-        <div class="f-info-links">
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
+      </div>
+
+      <!-- Column 2: Explore & Navigation -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h6 class="nj-footer-heading">Explore</h6>
+        <ul class="nj-footer-list">
+          <li><a href="/listings"><i class="fa-solid fa-angle-right" aria-hidden="true"></i> All Listings</a></li>
+          <li><a href="/listings/new"><i class="fa-solid fa-angle-right" aria-hidden="true"></i> Add new Listing</a></li>
+          <% if (!locals.currUser) { %>
+            <li><a href="/login"><i class="fa-solid fa-angle-right" aria-hidden="true"></i> Log in</a></li>
+            <li><a href="/signup"><i class="fa-solid fa-angle-right" aria-hidden="true"></i> Sign up</a></li>
+          <% } else { %>
+            <li><a href="/logout"><i class="fa-solid fa-angle-right" aria-hidden="true"></i> Log out</a></li>
+          <% } %>
+        </ul>
+      </div>
+
+      <!-- Column 3: Top Categories & Stays -->
+      <div class="col-lg-3 col-md-6 col-6">
+        <h6 class="nj-footer-heading">Popular Stays</h6>
+        <ul class="nj-footer-list">
+          <li><a href="/listings?q=Beach"><i class="fa-solid fa-umbrella-beach" aria-hidden="true"></i> Beachfront Villas</a></li>
+          <li><a href="/listings?q=Mountain"><i class="fa-solid fa-mountain-sun" aria-hidden="true"></i> Mountain Retreats</a></li>
+          <li><a href="/listings?q=Villa"><i class="fa-brands fa-fort-awesome" aria-hidden="true"></i> Historic Castles &amp; Villas</a></li>
+          <li><a href="/listings?q=Cabin"><i class="fa-solid fa-tree" aria-hidden="true"></i> Cozy Nature Cabins</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Connect, Socials & Currency/Language -->
+      <div class="col-lg-3 col-md-6">
+        <h6 class="nj-footer-heading">Connect With Us</h6>
+        <p class="nj-footer-connect-text">
+          Follow our travel journal for curated destinations and seasonal getaway inspiration.
+        </p>
+        <div class="f-info-socials nj-footer-socials" aria-label="Social Media Links">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="nj-social-btn nj-social-fb" aria-label="Facebook">
+            <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="nj-social-btn nj-social-ig" aria-label="Instagram">
+            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="nj-social-btn nj-social-tw" aria-label="Twitter / X">
+            <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="nj-social-btn nj-social-li" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+          </a>
         </div>
+
+        <div class="nj-footer-locale">
+          <span class="nj-locale-badge"><i class="fa-solid fa-globe" aria-hidden="true"></i> English (IN)</span>
+          <span class="nj-locale-badge">&#8377; INR</span>
+        </div>
+      </div>
     </div>
+
+    <!-- Bottom Divider & Copyright / Legal Links -->
+    <div class="f-info nj-footer-bottom">
+      <div class="f-info-brand nj-copyright">
+        &copy; <%= new Date().getFullYear() %> <strong>NamasteJunction PVT Limited</strong>. Crafted for explorers everywhere.
+      </div>
+      <div class="f-info-links nj-legal-links">
+        <a href="/privacy">Privacy</a>
+        <span class="nj-dot-sep" aria-hidden="true">&bull;</span>
+        <a href="/terms">Terms</a>
+        <span class="nj-dot-sep" aria-hidden="true">&bull;</span>
+        <a href="/listings">Sitemap</a>
+      </div>
+    </div>
+  </div>
 </footer>

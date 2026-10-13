@@ -1,44 +1,187 @@
 <% layout("/layouts/boilerplate") %>
-<body>
-    <div class="row mt-3">
-        <h1 class="col-6 offset-3">SignUp on NamasteJunction</h1>
-        <div class="col-6 offset-3">
-            <form action="/signup" method="POST" novalidate class="needs-validation">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input name="username" id="username" type="text" placeholder="enter username" class="form-control" required>
-                    <div class="valid-feedback">
-                        This is Valid Username
+
+<section class="auth-page-wrapper" aria-labelledby="signupHeading">
+    <!-- Ambient Animated Glow Orbs -->
+    <div class="auth-ambient-orb auth-orb-1"></div>
+    <div class="auth-ambient-orb auth-orb-2"></div>
+
+    <div class="row auth-split-row">
+        <!-- Left Visual Travel Showcase -->
+        <div class="col-lg-6 auth-visual-side auth-visual-signup">
+            <div class="auth-visual-top">
+                <a href="/listings" class="auth-brand-pill">
+                    <i class="fa-regular fa-compass"></i>
+                    <span>Namaste Junction</span>
+                </a>
+            </div>
+
+            <div class="auth-visual-middle">
+                <h2 class="auth-visual-heading">
+                    Begin your world <span>adventure</span> today.
+                </h2>
+                <p class="auth-visual-subtext">
+                    Join a vibrant community of travelers and hosts. List your own sanctuary or discover extraordinary places to stay across every continent.
+                </p>
+
+                <div class="auth-floating-badges" aria-hidden="true">
+                    <span class="auth-float-chip">
+                        <i class="fa-solid fa-earth-americas"></i> Global Destinations
+                    </span>
+                    <span class="auth-float-chip">
+                        <i class="fa-solid fa-house-chimney-window"></i> Host Your Property
+                    </span>
+                    <span class="auth-float-chip">
+                        <i class="fa-solid fa-star"></i> Community Reviews
+                    </span>
+                </div>
+            </div>
+
+            <div class="auth-visual-bottom">
+                <div class="auth-glass-card">
+                    <div class="auth-glass-card-header">
+                        <span class="auth-glass-location">
+                            <i class="fa-solid fa-compass"></i> Banff &amp; Swiss Alps Collection
+                        </span>
+                        <span class="auth-glass-rating">
+                            <i class="fa-solid fa-bolt"></i> Free to Join
+                        </span>
                     </div>
-                    <div class="invalid-feedback">
-                        Please enter a Username!
+                    <p class="auth-glass-quote">
+                        "Hosting our mountain cabin on Namaste Junction connected us with wonderful travelers from around the world."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Registration Form Panel -->
+        <div class="col-lg-6 auth-form-side">
+            <div class="auth-form-container">
+                <div class="auth-badge-eyebrow">
+                    <i class="fa-solid fa-sparkles"></i> Start Your Journey
+                </div>
+                <h1 id="signupHeading" class="auth-title">Create your account</h1>
+                <p class="auth-subtitle">Sign up on Namaste Junction in less than a minute.</p>
+
+                <form action="/signup" method="POST" novalidate class="needs-validation">
+                    <!-- Username Field -->
+                    <div class="auth-field-group">
+                        <label for="username" class="form-label auth-label">
+                            <span>Username</span>
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-regular fa-user auth-input-icon" aria-hidden="true"></i>
+                            <input
+                                name="username"
+                                id="username"
+                                type="text"
+                                placeholder="Choose a unique username"
+                                autocomplete="username"
+                                class="form-control auth-input"
+                                required
+                            >
+                            <div class="valid-feedback">
+                                Great username choice!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please choose a username for your profile.
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- Email Field -->
+                    <div class="auth-field-group">
+                        <label for="email" class="form-label auth-label">
+                            <span>Email Address</span>
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-regular fa-envelope auth-input-icon" aria-hidden="true"></i>
+                            <input
+                                name="email"
+                                id="email"
+                                type="email"
+                                placeholder="you@example.com"
+                                autocomplete="email"
+                                class="form-control auth-input"
+                                required
+                            >
+                            <div class="valid-feedback">
+                                Email address looks valid!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Field with Strength Feedback -->
+                    <div class="auth-field-group">
+                        <label for="password" class="form-label auth-label">
+                            <span>Password</span>
+                        </label>
+                        <div class="auth-input-wrapper">
+                            <i class="fa-solid fa-lock auth-input-icon" aria-hidden="true"></i>
+                            <input
+                                name="password"
+                                id="password"
+                                type="password"
+                                placeholder="Create a strong password"
+                                autocomplete="new-password"
+                                data-strength-meter="true"
+                                class="form-control auth-input"
+                                required
+                            >
+                            <button
+                                type="button"
+                                class="auth-pw-toggle"
+                                data-target="password"
+                                aria-label="Show password"
+                                aria-pressed="false"
+                            >
+                                <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                            </button>
+                            <div class="valid-feedback">
+                                Password is ready!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please create a password to secure your account.
+                            </div>
+                        </div>
+
+                        <!-- Interactive Password Strength Meter -->
+                        <div class="pw-strength-container" aria-live="polite">
+                            <div class="pw-strength-bars" aria-hidden="true">
+                                <div class="pw-bar"></div>
+                                <div class="pw-bar"></div>
+                                <div class="pw-bar"></div>
+                                <div class="pw-bar"></div>
+                            </div>
+                            <div class="pw-strength-meta">
+                                <span id="pwStrengthLabel">Enter at least 6 characters</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit CTA -->
+                    <button type="submit" class="btn btn-auth-submit" data-loading-text="Creating your account...">
+                        <span>Sign Up &amp; Start Exploring</span>
+                        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </form>
+
+                <div class="auth-trust-row">
+                    <span class="auth-trust-item">
+                        <i class="fa-solid fa-shield-halved"></i> Encrypted Credentials
+                    </span>
+                    <span class="auth-trust-item">
+                        <i class="fa-solid fa-globe"></i> Instant Host &amp; Guest Access
+                    </span>
                 </div>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input name="email" id="email" type="email" placeholder="enter email" class="form-control" required>
-                    <div class="valid-feedback">
-                        This is valid Email
-                    </div>
-                    <div class="invalid-feedback">
-                        Please enter a valid email!
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input name="password" id="password" type="password" placeholder="enter password" class="form-control" required>
-                    <div class="valid-feedback">
-                        This is Valid Password
-                    </div>
-                    <div class="invalid-feedback">
-                        Are You Fool!
-                    </div>
-                </div>
-
-                <button class="btn btn-info">SignUp</button>
-            </form>
+                <p class="auth-switch-prompt">
+                    Already have an account?
+                    <a href="/login" class="auth-switch-link">Log in here</a>
+                </p>
+            </div>
         </div>
     </div>
-</body>
+</section>

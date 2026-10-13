@@ -1,0 +1,18 @@
+/* ==========================================================================
+   base.css — Body, Typography, Layout Foundations
+   Namaste Junction | Premium Travel Platform
+   ========================================================================== */
+
+/* ====== Main Body ====== */
+body {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-optical-sizing: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Keep the main content area flexible so footer stays at bottom */
+.container {
+    flex: 1;
+}

@@ -9,17 +9,17 @@
         </div>
 
         <div class="card col-6 offset-3 show-card listing-card">
-            <img class="card-img-top show-img" src="<%= listing.image.url %>" alt="listing_image">
+            <img class="card-img-top show-img" src="<%= listing.image && listing.image.url ? listing.image.url : '' %>" alt="listing_image">
             <div class="card-body">
-                <p class="card-text"><b>Owned By - </b><b><i><%= listing.owner.username %></i></b></p>
+                <p class="card-text"><b>Owned By - </b><b><i><%= listing.owner ? listing.owner.username : "Unknown Host" %></i></b></p>
                 <p class="card-text"><%= listing.description %></p>
-                <p class="card-text">&#8377; <%= listing.price.toLocaleString("en-IN") %></p>
+                <p class="card-text">&#8377; <%= listing.price ? listing.price.toLocaleString("en-IN") : 0 %></p>
                 <p class="card-text"><%= listing.location %></p>
                 <p class="card-text"><%= listing.country %></p>
             </div>
         </div>
     
-        <% if (currUser && listing.owner._id.equals(currUser._id)) { %>
+        <% if (currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
             <div class="btns">
                 <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
         
@@ -96,6 +96,6 @@
             <div id="map"></div>
         </div>
     </div>
-    <script src="../js/map.js"></script>
+    <script src="/js/map.js"></script>
     <br>
 </body>

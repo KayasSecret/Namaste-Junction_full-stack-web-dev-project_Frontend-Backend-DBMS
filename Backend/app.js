@@ -1,12 +1,12 @@
 // ===== Getting Started Getting Started ===== //
+const path = require("path");
 if(process.env.NODE_ENV != "production") {
-  require('dotenv').config()
+  require('dotenv').config({ path: path.resolve(__dirname, "../.env") })
 };
 
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
@@ -37,11 +37,11 @@ async function main() {
 }
 
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "../Frontend/views"));
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "../Frontend/public")));
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
@@ -51,7 +51,7 @@ const store = MongoStore.create({
   touchAfter: 24 * 3600,
 });
 
-store.on("error", () => {
+store.on("error", (err) => {
   console.log("ERROR in MONGO SESSION STORE", err)
 });
 
@@ -66,10 +66,6 @@ const sessionOption = ({
     httpOnly: true
   } 
 });
-
-// app.get("/", (req, res) => {
-//   res.send("Hi, I am root");
-// });
 
 app.use(session(sessionOption));
 app.use(flash());
@@ -100,13 +96,18 @@ app.use((req, res, next) => {
 //   res.send(registeredUser);
 // });
 
-// Path = /MajorProject/routes/listing.js
+// Root Route Redirect
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
+// Path = /Backend/routes/listing.js
 app.use("/listings", listingRouter);
 
-// Path = /MajorProject/routes/review.js
+// Path = /Backend/routes/review.js
 app.use("/listings/:id/reviews", reviewRouter);
 
-// Path = /MajorProject/routes/user.js
+// Path = /Backend/routes/user.js
 app.use("/", userRouter);
 
 // Error Route 
@@ -117,7 +118,7 @@ app.all("*", (req, res, next) => {
 // Error Handling (Middleware) 
 app.use((err, req, res, next) => {
   let {statusCode = 500, message = "Something went wrong..!"} = err;
-  res.status(statusCode).render("../views/error.ejs", { message });
+  res.status(statusCode).render("error.ejs", { message });
   // res.status(statusCode).send(message);
 });
 

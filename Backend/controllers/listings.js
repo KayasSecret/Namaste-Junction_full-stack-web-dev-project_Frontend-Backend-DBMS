@@ -9,12 +9,12 @@ const Listing = require("../models/listing.js");
 // Index Route Controller
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({});
-    res.render("../views/listings/index.ejs", { allListings });
+    res.render("listings/index.ejs", { allListings });
 };
 
 // New Listing Route Controller
 module.exports.renderNewForm = async (req, res) => {
-    res.render("../views/listings/new.ejs");
+    res.render("listings/new.ejs");
 };
 
 // Show Route Controller
@@ -31,10 +31,10 @@ module.exports.showListing = async (req, res) => {
     .populate("owner");
     if(!listing) {
         req.flash("error", "Listing you requested for does not exist!");
-        res.redirect("/listings");
+        return res.redirect("/listings");
     }
     console.log(listing);
-    res.render("../views/listings/show.ejs", { listing });  
+    res.render("listings/show.ejs", { listing });  
 };
 
 // Create Route Controller
@@ -49,13 +49,14 @@ module.exports.createListing = async (req, res, next) => {
     // console.log(response);  
     // res.send("done!");
 
-    let url = req.file.path;
-    let filename = req.file.filename;
-
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
     
-    newListing.image = {url, filename};
+    if (req.file) {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        newListing.image = {url, filename};
+    }
     await newListing.save();
 
     req.flash("success", "New Listing Created!");
@@ -68,10 +69,10 @@ module.exports.renderEditForm = async (req, res) => {
     const listing = await Listing.findById(id);
     if(!listing) {
         req.flash("error", "Listing you requested for does not exist!");
-        res.redirect("/listings");
+        return res.redirect("/listings");
     }
 
-    let originalImageUrl = listing.image.url;
+    let originalImageUrl = listing.image && listing.image.url ? listing.image.url : "";
     originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
     res.render("listings/edit.ejs", { listing, originalImageUrl });
 };
