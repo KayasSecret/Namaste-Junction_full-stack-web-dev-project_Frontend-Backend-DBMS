@@ -1524,4 +1524,158 @@
         // Start initial auto-dismiss timer
         startTimer();
     });
+
+    // =========================================================================
+    // 11. Create New Listing Interactive Form, Drag-and-Drop & Live Preview
+    // =========================================================================
+    const createForm = document.getElementById("njCreateListingForm");
+    if (createForm) {
+        const titleInput = document.getElementById("listingTitle");
+        const descInput = document.getElementById("listingDescription");
+        const priceInput = document.getElementById("listingPrice");
+        const locInput = document.getElementById("listingLocation");
+        const countryInput = document.getElementById("listingCountry");
+
+        const dropzone = document.getElementById("njPhotoDropzone");
+        const imageInput = document.getElementById("listingImageInput");
+        const previewWrap = document.getElementById("njImagePreviewWrap");
+        const previewImg = document.getElementById("njPreviewImg");
+        const previewFilename = document.getElementById("njPreviewFilename");
+        const previewFilesize = document.getElementById("njPreviewFilesize");
+        const removePhotoBtn = document.getElementById("njRemovePhotoBtn");
+
+        // Mock Card Elements
+        const mockTitle = document.getElementById("njMockTitle");
+        const mockDesc = document.getElementById("njMockDesc");
+        const mockPrice = document.getElementById("njMockPrice");
+        const mockLocation = document.getElementById("njMockLocation");
+        const mockImg = document.getElementById("njMockCardImg");
+
+        // Live text update handlers
+        if (titleInput && mockTitle) {
+            titleInput.addEventListener("input", () => {
+                mockTitle.textContent = titleInput.value.trim() || "Your Property Title";
+            });
+        }
+
+        if (descInput && mockDesc) {
+            descInput.addEventListener("input", () => {
+                mockDesc.textContent = descInput.value.trim() || "Your property description will appear here on the Explore dashboard...";
+            });
+        }
+
+        const updateLocationPreview = () => {
+            if (!mockLocation) return;
+            const locVal = locInput ? locInput.value.trim() : "";
+            const countryVal = countryInput ? countryInput.value.trim() : "";
+            const parts = [locVal, countryVal].filter(Boolean);
+            mockLocation.textContent = parts.length > 0 ? parts.join(", ") : "Featured Destination";
+        };
+
+        if (locInput) locInput.addEventListener("input", updateLocationPreview);
+        if (countryInput) countryInput.addEventListener("input", updateLocationPreview);
+
+        if (priceInput && mockPrice) {
+            priceInput.addEventListener("input", () => {
+                const numeric = Number(priceInput.value);
+                mockPrice.textContent = !isNaN(numeric) && numeric >= 0
+                    ? numeric.toLocaleString("en-IN")
+                    : "0";
+            });
+        }
+
+        // Image Selection & Drag-and-Drop Handler
+        const formatBytes = (bytes) => {
+            if (bytes === 0) return "0 Bytes";
+            const k = 1024;
+            const sizes = ["Bytes", "KB", "MB", "GB"];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+        };
+
+        const handleFileSelected = (file) => {
+            if (!file || !file.type.startsWith("image/")) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+                if (previewImg) previewImg.src = dataUrl;
+                if (mockImg) mockImg.src = dataUrl;
+                if (previewFilename) previewFilename.textContent = file.name;
+                if (previewFilesize) previewFilesize.textContent = formatBytes(file.size);
+
+                if (previewWrap) previewWrap.hidden = false;
+                if (dropzone) dropzone.style.display = "none";
+            };
+            reader.readAsDataURL(file);
+        };
+
+        if (imageInput) {
+            imageInput.addEventListener("change", () => {
+                if (imageInput.files && imageInput.files[0]) {
+                    handleFileSelected(imageInput.files[0]);
+                }
+            });
+        }
+
+        if (dropzone) {
+            ["dragenter", "dragover"].forEach((eventName) => {
+                dropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.classList.add("is-dragover");
+                });
+            });
+
+            ["dragleave", "drop"].forEach((eventName) => {
+                dropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.classList.remove("is-dragover");
+                });
+            });
+
+            dropzone.addEventListener("drop", (e) => {
+                const dt = e.dataTransfer;
+                if (dt && dt.files && dt.files.length > 0) {
+                    const file = dt.files[0];
+                    if (file && file.type.startsWith("image/")) {
+                        try {
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(file);
+                            imageInput.files = dataTransfer.files;
+                        } catch (err) {
+                            // Fallback for older browsers
+                        }
+                        handleFileSelected(file);
+                    }
+                }
+            });
+        }
+
+        if (removePhotoBtn) {
+            removePhotoBtn.addEventListener("click", () => {
+                if (imageInput) imageInput.value = "";
+                if (previewWrap) previewWrap.hidden = true;
+                if (dropzone) dropzone.style.display = "";
+                if (mockImg) {
+                    mockImg.src = "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80";
+                }
+            });
+        }
+
+        // Form Submit Loading Feedback
+        const submitBtn = document.getElementById("njSubmitListingBtn");
+        createForm.addEventListener("submit", () => {
+            if (createForm.checkValidity()) {
+                if (submitBtn) {
+                    const loadingText = submitBtn.getAttribute("data-loading-text") || "Publishing...";
+                    submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>${loadingText}</span>`;
+                    setTimeout(() => {
+                        submitBtn.disabled = true;
+                    }, 10);
+                }
+            }
+        });
+    }
 })();

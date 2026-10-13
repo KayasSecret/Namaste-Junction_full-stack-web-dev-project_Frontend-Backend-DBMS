@@ -1,62 +1,385 @@
 <% layout("/layouts/boilerplate") %>
-<body>
-    <div class="row mt-3">
-        <div class="col-8 offset-2">
-            <h3>Creating New Listings</h3>
-    <br>
-    <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input name="listing[title]" type="text" placeholder="enter title" class="form-control" required>
-            <div class="valid-feedback">
-                Nice Place!
-            </div>
-            <div class="invalid-feedback">
-                Are You Fool!
+
+<div class="nj-create-page">
+    <!-- Ambient Animated Glow Orbs -->
+    <div class="nj-create-orb nj-create-orb-1" aria-hidden="true"></div>
+    <div class="nj-create-orb nj-create-orb-2" aria-hidden="true"></div>
+
+    <!-- Top Breadcrumb & Host Badge -->
+    <nav class="nj-create-breadcrumb" aria-label="Breadcrumb">
+        <a href="/listings" class="nj-back-pill">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            <span>Back to Stays</span>
+        </a>
+        <span class="nj-badge-host-pill">
+            <i class="fa-solid fa-house-circle-check" aria-hidden="true"></i>
+            <span>Host Community &bull; Verified Partner</span>
+        </span>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="nj-create-header">
+        <span class="nj-create-eyebrow">
+            <i class="fa-solid fa-compass" aria-hidden="true"></i>
+            Host on Namaste Junction
+        </span>
+        <h1 class="nj-create-title">List Your <span>Sanctuary</span></h1>
+        <p class="nj-create-subtitle">
+            Share your unique retreat with passionate travelers across India and the globe. Set your own rates, showcase signature comforts, and welcome verified guests.
+        </p>
+    </header>
+
+    <div class="row g-4 align-items-start">
+        <!-- Main Form Column -->
+        <div class="col-lg-8">
+            <div class="nj-create-card">
+                <form
+                    method="POST"
+                    action="/listings"
+                    novalidate
+                    class="needs-validation"
+                    enctype="multipart/form-data"
+                    id="njCreateListingForm"
+                >
+                    <!-- 1. Basic Property Details -->
+                    <section class="nj-form-section">
+                        <div class="nj-section-header-compact">
+                            <span class="nj-section-icon-badge">
+                                <i class="fa-solid fa-heading" aria-hidden="true"></i>
+                            </span>
+                            <h2 class="nj-section-heading-text">Property Title &amp; Atmosphere</h2>
+                        </div>
+
+                        <!-- Title Input -->
+                        <div class="nj-form-group">
+                            <label for="listingTitle" class="nj-field-label">
+                                <span class="nj-label-left">
+                                    <i class="fa-solid fa-font" aria-hidden="true"></i>
+                                    <span>Property Title</span>
+                                </span>
+                                <span class="nj-field-hint">Catchy &amp; descriptive</span>
+                            </label>
+                            <div class="nj-input-wrapper">
+                                <input
+                                    name="listing[title]"
+                                    id="listingTitle"
+                                    type="text"
+                                    placeholder="e.g., Himalayan Cedar Glass Chalet"
+                                    class="nj-form-control"
+                                    required
+                                    autocomplete="off"
+                                >
+                            </div>
+                            <div class="valid-feedback">
+                                Sounds like a wonderful destination!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a descriptive title for your property.
+                            </div>
+                        </div>
+
+                        <!-- Description Input -->
+                        <div class="nj-form-group mb-0">
+                            <label for="listingDescription" class="nj-field-label">
+                                <span class="nj-label-left">
+                                    <i class="fa-solid fa-align-left" aria-hidden="true"></i>
+                                    <span>About This Sanctuary</span>
+                                </span>
+                                <span class="nj-field-hint">Key highlights &amp; experience</span>
+                            </label>
+                            <div class="nj-input-wrapper">
+                                <textarea
+                                    name="listing[description]"
+                                    id="listingDescription"
+                                    rows="4"
+                                    placeholder="Describe the unique atmosphere, panoramic views, signature comforts, local experiences, and amenities that make your stay unforgettable..."
+                                    class="nj-form-control"
+                                    required
+                                ></textarea>
+                            </div>
+                            <div class="valid-feedback">
+                                Detailed descriptions help travelers make confident reservations!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please describe your sanctuary for prospective guests.
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. Cover Photo Drag & Drop -->
+                    <section class="nj-form-section">
+                        <div class="nj-section-header-compact">
+                            <span class="nj-section-icon-badge">
+                                <i class="fa-solid fa-camera-retro" aria-hidden="true"></i>
+                            </span>
+                            <h2 class="nj-section-heading-text">Primary Cover Photo</h2>
+                        </div>
+
+                        <div class="nj-form-group mb-0">
+                            <!-- Visual Dropzone Box -->
+                            <div class="nj-dropzone" id="njPhotoDropzone">
+                                <input
+                                    name="listing[image]"
+                                    id="listingImageInput"
+                                    type="file"
+                                    class="nj-dropzone-input"
+                                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                                    required
+                                >
+                                <div class="nj-dropzone-content">
+                                    <span class="nj-dropzone-icon-circle">
+                                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                                    </span>
+                                    <strong class="nj-dropzone-title">
+                                        <span>Click to browse</span> or drag &amp; drop cover photo
+                                    </strong>
+                                    <p class="nj-dropzone-desc">
+                                        Supports JPG, PNG, WEBP &bull; Max 10 MB &bull; High resolution landscape photo recommended
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="valid-feedback">
+                                Photo selected and ready for upload!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please choose a cover photo to showcase your property.
+                            </div>
+
+                            <!-- Live Image Preview Card (Shown after file is selected) -->
+                            <div class="nj-image-preview-container" id="njImagePreviewWrap" hidden>
+                                <div class="nj-preview-img-wrap">
+                                    <img src="" alt="Selected cover preview" id="njPreviewImg" class="nj-preview-img">
+                                    <div class="nj-preview-overlay-info">
+                                        <div class="nj-preview-meta">
+                                            <span class="nj-preview-filename" id="njPreviewFilename">cover-photo.jpg</span>
+                                            <span class="nj-preview-filesize" id="njPreviewFilesize">2.4 MB</span>
+                                        </div>
+                                        <button type="button" class="nj-btn-remove-preview" id="njRemovePhotoBtn" aria-label="Remove selected photo">
+                                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                            <span>Change Photo</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. Pricing & Destination -->
+                    <section class="nj-form-section">
+                        <div class="nj-section-header-compact">
+                            <span class="nj-section-icon-badge">
+                                <i class="fa-solid fa-indian-rupee-sign" aria-hidden="true"></i>
+                            </span>
+                            <h2 class="nj-section-heading-text">Pricing &amp; Location</h2>
+                        </div>
+
+                        <!-- Price Field -->
+                        <div class="nj-form-group">
+                            <label for="listingPrice" class="nj-field-label">
+                                <span class="nj-label-left">
+                                    <i class="fa-solid fa-tag" aria-hidden="true"></i>
+                                    <span>Nightly Base Price</span>
+                                </span>
+                                <span class="nj-field-hint">Indian Rupees (INR)</span>
+                            </label>
+                            <div class="nj-input-group-price">
+                                <span class="nj-price-prefix">&#8377;</span>
+                                <input
+                                    name="listing[price]"
+                                    id="listingPrice"
+                                    type="number"
+                                    min="0"
+                                    step="100"
+                                    placeholder="2500"
+                                    value="2500"
+                                    class="form-control nj-form-control nj-price-input"
+                                    required
+                                >
+                                <span class="nj-price-suffix">/ night</span>
+                            </div>
+                            <div class="valid-feedback">
+                                Competitive nightly rates attract consistent bookings.
+                            </div>
+                            <div class="invalid-feedback">
+                                Please specify a valid nightly rate (minimum 0).
+                            </div>
+                        </div>
+
+                        <!-- Location & Country 2-Column Grid -->
+                        <div class="row g-3">
+                            <div class="col-md-7">
+                                <div class="nj-form-group mb-0">
+                                    <label for="listingLocation" class="nj-field-label">
+                                        <span class="nj-label-left">
+                                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                                            <span>Destination / City</span>
+                                        </span>
+                                    </label>
+                                    <div class="nj-input-wrapper">
+                                        <input
+                                            name="listing[location]"
+                                            id="listingLocation"
+                                            type="text"
+                                            placeholder="e.g., Manali, Himachal Pradesh"
+                                            class="nj-form-control"
+                                            required
+                                        >
+                                    </div>
+                                    <div class="valid-feedback">
+                                        Destination location confirmed.
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please provide the destination city or region.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="nj-form-group mb-0">
+                                    <label for="listingCountry" class="nj-field-label">
+                                        <span class="nj-label-left">
+                                            <i class="fa-solid fa-earth-americas" aria-hidden="true"></i>
+                                            <span>Country</span>
+                                        </span>
+                                    </label>
+                                    <div class="nj-input-wrapper">
+                                        <input
+                                            name="listing[country]"
+                                            id="listingCountry"
+                                            type="text"
+                                            placeholder="India"
+                                            value="India"
+                                            class="nj-form-control"
+                                            required
+                                        >
+                                    </div>
+                                    <div class="valid-feedback">
+                                        Country looks good!
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please specify the country.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Form Submission Actions -->
+                    <div class="nj-create-actions">
+                        <button
+                            type="submit"
+                            class="nj-btn-submit-listing"
+                            id="njSubmitListingBtn"
+                            data-loading-text="Publishing sanctuary..."
+                        >
+                            <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+                            <span>Publish Sanctuary</span>
+                            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                        </button>
+                        <a href="/listings" class="nj-btn-cancel-listing">
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                            <span>Cancel</span>
+                        </a>
+                    </div>
+
+                    <!-- Trust & Reassurance Badges -->
+                    <div class="nj-create-trust-footer">
+                        <span class="nj-trust-item">
+                            <i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+                            <span>Instant Host Verification</span>
+                        </span>
+                        <span class="nj-trust-item">
+                            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                            <span>Secure Gallery Storage</span>
+                        </span>
+                        <span class="nj-trust-item">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                            <span>Editable anytime from your profile</span>
+                        </span>
+                    </div>
+                </form>
             </div>
         </div>
-    
-        <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea name="listing[description]" type="text" placeholder="enter description" class="form-control" required></textarea>
-            <div class="invalid-feedback">
-                Please enter a valid discription!
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="image" class="form-label">Image Upload</label>
-            <input name="listing[image]" type="file" class="form-control" required>
-        </div>
-    
-        <!-- Here the price and country category are put together in one div  -->
-        <div class="row">
-            <div class="mb-3 col-md-4">
-                <label for="price" class="form-label">Price</label>
-                <input name="listing[price]" placeholder="enter price" value="2000" class="form-control" required>
-                <div class="invalid-feedback">
-                    Country should be price!
+
+        <!-- Right Column: Real-Time Live Card Preview & Host Tips -->
+        <div class="col-lg-4">
+            <aside class="nj-create-sidebar">
+                <!-- Live Preview Card Widget -->
+                <div class="nj-preview-widget-card">
+                    <div class="nj-preview-widget-header">
+                        <h3 class="nj-section-heading-text">Live Card Preview</h3>
+                        <span class="nj-preview-badge-live">
+                            <span class="nj-live-pulse-dot" aria-hidden="true"></span>
+                            <span>Live preview</span>
+                        </span>
+                    </div>
+
+                    <!-- Miniature Replica Stay Card -->
+                    <article class="nj-live-mock-card" aria-label="Live card preview">
+                        <div class="nj-mock-card-media">
+                            <img
+                                src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80"
+                                alt="Property preview thumbnail"
+                                id="njMockCardImg"
+                                class="nj-mock-card-img"
+                            >
+                            <div class="nj-mock-card-badges">
+                                <span class="nj-mock-badge-tag">
+                                    <i class="fa-solid fa-compass" aria-hidden="true"></i>
+                                    Sanctuary
+                                </span>
+                                <span class="nj-mock-badge-new">
+                                    <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+                                    New
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="nj-mock-card-body">
+                            <div class="nj-mock-location">
+                                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                                <span id="njMockLocation">Manali, India</span>
+                            </div>
+                            <h4 class="nj-mock-title" id="njMockTitle">Your Property Title</h4>
+                            <p class="nj-mock-desc" id="njMockDesc">
+                                Your property description will appear here on the Explore dashboard...
+                            </p>
+                            <div class="nj-mock-footer">
+                                <div class="nj-mock-price-wrap">
+                                    &#8377;<span id="njMockPrice">2,500</span>
+                                    <span class="nj-mock-price-unit">/ night</span>
+                                </div>
+                                <span class="text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                    + 18% GST
+                                </span>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-            </div>
-    
-            <div class="mb-3 col-md-8">
-                <label for="country" class="form-label">Country</label>
-                <input name="listing[country]" type="text" placeholder="enter country" value="India" class="form-control" required> 
-                <div class="invalid-feedback">
-                    Country should be valid!
+
+                <!-- Host Tips Accordion/Card -->
+                <div class="nj-host-tips-card">
+                    <div class="nj-tips-heading">
+                        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+                        <span>Tips for Top Bookings</span>
+                    </div>
+                    <ul class="nj-tips-list">
+                        <li>
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                            <span><strong>Vivid Cover Photo:</strong> Stays with bright, daylight landscape photos receive 3x more guest views.</span>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                            <span><strong>Clear Location:</strong> Include your neighborhood or landmark so travelers know nearby highlights.</span>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                            <span><strong>Multi-Photo Gallery:</strong> You can upload additional interior and amenity photos right after publishing!</span>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-        </div>
-    
-        <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
-            <input name="listing[location]" type="text" placeholder="enter location" class="form-control" required>
-            <div class="invalid-feedback">
-                Location should be valid!
-            </div>
-        </div>
-        <button class="btn btn-dark add-btn mt-3">Add</button>
-    </form>
+            </aside>
         </div>
     </div>
-    <br>
-</body>
+</div>

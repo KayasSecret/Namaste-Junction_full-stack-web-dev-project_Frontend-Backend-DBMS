@@ -1,0 +1,850 @@
+/* ==========================================================================
+   create.css — Create New Listing Page (Modern & Premium Experience)
+   Namaste Junction | Coral-Red Theme & Clean Typography
+   ========================================================================== */
+
+/* ------ Page Wrapper & Entrance Animation ------ */
+.nj-create-page {
+    position: relative;
+    padding: 1.5rem 0 4rem 0;
+    animation: createFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes createFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ambient Background Accent Orbs */
+.nj-create-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.45;
+}
+
+.nj-create-orb-1 {
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(254, 66, 77, 0.25) 0%, rgba(255, 117, 85, 0.05) 70%);
+    top: -40px;
+    left: -80px;
+}
+
+.nj-create-orb-2 {
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(255, 180, 0, 0.18) 0%, rgba(254, 66, 77, 0.04) 70%);
+    bottom: 20px;
+    right: -60px;
+}
+
+/* ------ Top Breadcrumb Navigation ------ */
+.nj-create-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.nj-create-breadcrumb .nj-back-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.48rem 1.05rem;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nj-create-breadcrumb .nj-back-pill:hover {
+    background: #f8fafc;
+    color: #fe424d;
+    border-color: #fecdd3;
+    transform: translateX(-2px);
+}
+
+.nj-badge-host-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(254, 66, 77, 0.08);
+    border: 1px solid rgba(254, 66, 77, 0.18);
+    color: #fe424d;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* ------ Page Header Banner ------ */
+.nj-create-header {
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.nj-create-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fe424d;
+    margin-bottom: 0.45rem;
+}
+
+.nj-create-title {
+    font-size: 2.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+}
+
+.nj-create-title span {
+    background: linear-gradient(135deg, #fe424d 0%, #ff7555 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nj-create-subtitle {
+    font-size: 1rem;
+    color: #64748b;
+    max-width: 680px;
+    margin-bottom: 0;
+    line-height: 1.55;
+}
+
+/* ------ Main Card Form Container ------ */
+.nj-create-card {
+    background: #ffffff;
+    border-radius: 1.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 35px -8px rgba(15, 23, 42, 0.07),
+                0 0 0 1px rgba(15, 23, 42, 0.02);
+    padding: 2.25rem 2.25rem;
+    position: relative;
+    z-index: 1;
+    transition: box-shadow 0.3s ease;
+}
+
+.nj-create-card:hover {
+    box-shadow: 0 18px 45px -10px rgba(15, 23, 42, 0.1),
+                0 0 0 1px rgba(254, 66, 77, 0.08);
+}
+
+/* ------ Form Section Grouping ------ */
+.nj-form-section {
+    margin-bottom: 2rem;
+}
+
+.nj-form-section:last-of-type {
+    margin-bottom: 1.5rem;
+}
+
+.nj-section-header-compact {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 1.15rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.nj-section-icon-badge {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+    background: linear-gradient(135deg, rgba(254, 66, 77, 0.12) 0%, rgba(255, 117, 85, 0.12) 100%);
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+.nj-section-heading-text {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0;
+    letter-spacing: -0.01em;
+}
+
+/* ------ Custom Field Styling ------ */
+.nj-form-group {
+    margin-bottom: 1.25rem;
+}
+
+.nj-field-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.45rem;
+}
+
+.nj-label-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.nj-label-left i {
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+.nj-field-hint {
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: #94a3b8;
+}
+
+/* Input Wrappers & Modern Controls */
+.nj-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+}
+
+.nj-form-control {
+    width: 100%;
+    padding: 0.72rem 1.05rem;
+    font-size: 0.94rem;
+    font-weight: 500;
+    color: #0f172a;
+    background-color: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 0.85rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.nj-form-control:hover {
+    border-color: #cbd5e1;
+    background-color: #fafbfc;
+}
+
+.nj-form-control:focus {
+    background-color: #ffffff;
+    border-color: #fe424d;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.12),
+                0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.nj-form-control::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* Textarea Customization */
+textarea.nj-form-control {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.6;
+}
+
+/* Price Input Prefix & Suffix Addons */
+.nj-input-group-price {
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 0.85rem;
+    background: #ffffff;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.nj-input-group-price:focus-within {
+    border-color: #fe424d;
+    box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.12);
+}
+
+.nj-price-prefix {
+    padding: 0.72rem 0.85rem 0.72rem 1.05rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    user-select: none;
+}
+
+.nj-price-input {
+    border: none !important;
+    box-shadow: none !important;
+    padding-left: 0.15rem !important;
+    padding-right: 0.5rem !important;
+    font-weight: 700 !important;
+    font-size: 1.05rem !important;
+    color: #0f172a !important;
+}
+
+.nj-price-suffix {
+    padding: 0.72rem 1.05rem 0.72rem 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #64748b;
+    white-space: nowrap;
+    user-select: none;
+}
+
+/* ------ Drag & Drop Image Upload Dropzone ------ */
+.nj-dropzone {
+    position: relative;
+    border: 2px dashed #cbd5e1;
+    border-radius: 1.15rem;
+    background: #f8fafc;
+    padding: 2.25rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    user-select: none;
+}
+
+.nj-dropzone:hover,
+.nj-dropzone.is-dragover {
+    border-color: #fe424d;
+    background: rgba(254, 66, 77, 0.03);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -6px rgba(254, 66, 77, 0.15);
+}
+
+.nj-dropzone-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.nj-dropzone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    position: relative;
+    z-index: 1;
+}
+
+.nj-dropzone-icon-circle {
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(254, 66, 77, 0.1) 0%, rgba(255, 117, 85, 0.15) 100%);
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    transition: transform 0.25s ease;
+}
+
+.nj-dropzone:hover .nj-dropzone-icon-circle {
+    transform: scale(1.08);
+}
+
+.nj-dropzone-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.15rem;
+}
+
+.nj-dropzone-title span {
+    color: #fe424d;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.nj-dropzone-desc {
+    font-size: 0.82rem;
+    color: #64748b;
+    max-width: 380px;
+    line-height: 1.45;
+}
+
+/* Image Preview Container */
+.nj-image-preview-container {
+    position: relative;
+    border-radius: 1.15rem;
+    overflow: hidden;
+    background: #0f172a;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+    margin-top: 0.75rem;
+    animation: previewSlideIn 0.35s ease;
+}
+
+@keyframes previewSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.nj-preview-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    background: #1e293b;
+    overflow: hidden;
+}
+
+.nj-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.nj-preview-overlay-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.85) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #ffffff;
+    z-index: 2;
+}
+
+.nj-preview-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.nj-preview-filename {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ffffff;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nj-preview-filesize {
+    font-size: 0.74rem;
+    color: #cbd5e1;
+}
+
+.nj-btn-remove-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.38rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.9);
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nj-btn-remove-preview:hover {
+    background: #dc2626;
+    transform: scale(1.04);
+}
+
+/* Validation Feedback Styles */
+.nj-form-group .invalid-feedback {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #ef4444;
+    margin-top: 0.35rem;
+    display: none;
+}
+
+.was-validated .nj-form-control:invalid ~ .invalid-feedback,
+.was-validated .nj-dropzone-input:invalid ~ .invalid-feedback {
+    display: block;
+}
+
+.nj-form-group .valid-feedback {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #10b981;
+    margin-top: 0.35rem;
+}
+
+/* ------ Form Action Buttons ------ */
+.nj-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.nj-btn-submit-listing {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.85rem 2rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #fe424d 0%, #ff5a5f 100%);
+    color: #ffffff;
+    font-size: 0.96rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -5px rgba(254, 66, 77, 0.4);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nj-btn-submit-listing:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -6px rgba(254, 66, 77, 0.5);
+    color: #ffffff;
+}
+
+.nj-btn-submit-listing:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(254, 66, 77, 0.3);
+}
+
+.nj-btn-cancel-listing {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.85rem 1.65rem;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.nj-btn-cancel-listing:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #cbd5e1;
+}
+
+.nj-create-trust-footer {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    flex-wrap: wrap;
+}
+
+.nj-trust-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.nj-trust-item i {
+    color: #fe424d;
+}
+
+/* ------ Right Sidebar: Real-Time Preview Card ------ */
+.nj-create-sidebar {
+    position: sticky;
+    top: 90px;
+    z-index: 1;
+}
+
+.nj-preview-widget-card {
+    background: #ffffff;
+    border-radius: 1.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.nj-preview-widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.15rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.nj-preview-badge-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+}
+
+.nj-live-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    animation: livePulse 1.8s infinite;
+}
+
+@keyframes livePulse {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.4); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* Miniature Mock Listing Card */
+.nj-live-mock-card {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.08);
+}
+
+.nj-mock-card-media {
+    position: relative;
+    width: 100%;
+    height: 190px;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+
+.nj-mock-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.nj-mock-card-badges {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.nj-mock-badge-tag {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.28rem 0.65rem;
+    border-radius: 999px;
+}
+
+.nj-mock-badge-new {
+    background: linear-gradient(135deg, #fe424d 0%, #ff5a5f 100%);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.28rem 0.65rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.nj-mock-card-body {
+    padding: 1.15rem;
+}
+
+.nj-mock-location {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fe424d;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.35rem;
+}
+
+.nj-mock-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.35rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.nj-mock-desc {
+    font-size: 0.82rem;
+    color: #64748b;
+    margin-bottom: 0.85rem;
+    line-height: 1.45;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.nj-mock-footer {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 0.65rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.nj-mock-price-wrap {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.nj-mock-price-unit {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #64748b;
+}
+
+/* Host Tips Card */
+.nj-host-tips-card {
+    background: #f8fafc;
+    border-radius: 1.25rem;
+    border: 1px dashed #cbd5e1;
+    padding: 1.25rem;
+}
+
+.nj-tips-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+}
+
+.nj-tips-heading i {
+    color: #f59e0b;
+}
+
+.nj-tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.nj-tips-list li {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    line-height: 1.4;
+}
+
+.nj-tips-list li i {
+    color: #10b981;
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+}
+
+/* ------ Responsive Breakpoints ------ */
+@media (max-width: 991.98px) {
+    .nj-create-sidebar {
+        position: static;
+        margin-top: 2rem;
+    }
+
+    .nj-create-card {
+        padding: 1.75rem 1.5rem;
+    }
+
+    .nj-create-title {
+        font-size: 1.85rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .nj-create-page {
+        padding-top: 0.75rem;
+    }
+
+    .nj-create-card {
+        padding: 1.35rem 1.15rem;
+        border-radius: 1.25rem;
+    }
+
+    .nj-create-title {
+        font-size: 1.6rem;
+    }
+
+    .nj-create-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .nj-btn-submit-listing,
+    .nj-btn-cancel-listing {
+        width: 100%;
+    }
+}

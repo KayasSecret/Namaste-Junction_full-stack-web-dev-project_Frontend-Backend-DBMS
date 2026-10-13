@@ -6,6 +6,7 @@ if(process.env.NODE_ENV != "production") {
 
 const express = require("express");
 const app = express();
+app.set("trust proxy", 1);
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
