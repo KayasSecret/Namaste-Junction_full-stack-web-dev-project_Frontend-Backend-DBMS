@@ -7,6 +7,8 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true,
+        lowercase: true,
+        unique: true,
     },
     fullName: {
         type: String,
@@ -34,6 +36,7 @@ const userSchema = new Schema({
     },
 });
 
+userSchema.index({ email: 1 }, { unique: true });
 userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model("User", userSchema);

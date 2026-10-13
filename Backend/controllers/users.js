@@ -15,6 +15,39 @@ module.exports.renderSignupForm = (req, res) => {
 module.exports.signup = async (req, res, next) => {
     try {
         let { username, email, password } = req.body;
+
+        username = (username || "").trim();
+        email = (email || "").trim().toLowerCase();
+        password = (password || "").trim();
+
+        if (!username || username.length < 3) {
+            req.flash("error", "Username must be at least 3 characters long.");
+            return req.session.save(() => res.redirect("/signup"));
+        }
+        if (username.length > 30) {
+            req.flash("error", "Username cannot exceed 30 characters.");
+            return req.session.save(() => res.redirect("/signup"));
+        }
+        if (!/^[a-zA-Z0-9_.-]+$/.test(username)) {
+            req.flash("error", "Username can only contain letters, numbers, dots, hyphens, and underscores.");
+            return req.session.save(() => res.redirect("/signup"));
+        }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            req.flash("error", "Please provide a valid email address.");
+            return req.session.save(() => res.redirect("/signup"));
+        }
+        if (!password || password.length < 6) {
+            req.flash("error", "Password must be at least 6 characters long.");
+            return req.session.save(() => res.redirect("/signup"));
+        }
+
+        // Duplicate email prevention
+        const existingEmailUser = await User.findOne({ email });
+        if (existingEmailUser) {
+            req.flash("error", "An account with this email address already exists. Please log in or use a different email.");
+            return req.session.save(() => res.redirect("/signup"));
+        }
+
         const newUser = new User({ email, username });
         const registeredUser = await User.register(newUser, password);
         req.login(registeredUser, (err) => {
@@ -23,8 +56,10 @@ module.exports.signup = async (req, res, next) => {
             }
             req.session.sessionCreatedAt = Date.now();
             req.session.lastActivity = Date.now();
-            req.flash("success", "Welcome to NamasteJunction");
-            return req.session.save(() => res.redirect("/listings"));
+            req.flash("success", "Welcome to NamasteJunction!");
+            let redirectUrl = res.locals.redirectUrl || req.session.redirectUrl || "/listings";
+            delete req.session.redirectUrl;
+            return req.session.save(() => res.redirect(redirectUrl));
         });
     } catch (err) {
         req.flash("error", err.message);
@@ -38,9 +73,9 @@ module.exports.renderLoginForm = (req, res) => {
         return res.redirect("/listings");
     }
     if (req.query.expired === "idle") {
-        req.flash("error", "Your session expired due to inactivity. Please log in again.");
+        res.locals.error = ["Your session expired due to inactivity. Please log in again."];
     } else if (req.query.expired === "absolute") {
-        req.flash("error", "Your session has expired. Please log in again.");
+        res.locals.error = ["Your session has expired. Please log in again."];
     }
     res.render("users/login.ejs");
 };
@@ -50,7 +85,8 @@ module.exports.login = async (req, res) => {
     req.session.sessionCreatedAt = Date.now();
     req.session.lastActivity = Date.now();
     req.flash("success", "Welcome back to NamasteJunction! You are logged in!");
-    let redirectUrl = res.locals.redirectUrl || "/listings";
+    let redirectUrl = res.locals.redirectUrl || req.session.redirectUrl || "/listings";
+    delete req.session.redirectUrl;
     return req.session.save(() => res.redirect(redirectUrl));
 };
 

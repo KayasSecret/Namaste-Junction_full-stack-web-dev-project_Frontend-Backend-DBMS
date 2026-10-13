@@ -15,10 +15,12 @@
                 } else {
                     // Show loading state on auth submit button when form is valid
                     const submitBtn = form.querySelector(".btn-auth-submit");
-                    if (submitBtn && !submitBtn.disabled) {
-                        submitBtn.disabled = true;
+                    if (submitBtn) {
                         const loadingText = submitBtn.getAttribute("data-loading-text") || "Please wait...";
                         submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>${loadingText}</span>`;
+                        setTimeout(() => {
+                            submitBtn.disabled = true;
+                        }, 10);
                     }
                 }
 
