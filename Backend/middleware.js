@@ -7,14 +7,38 @@ const { listingSchema } = require("./schema.js");
 // LoggedIn Middleware
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
-        req.session.redirectUrl = req.originalUrl;
-        const isProfileRoute = req.originalUrl && req.originalUrl.startsWith("/profile");
-        req.flash(
-            "error",
-            isProfileRoute
-                ? "You must be logged in to view your profile!"
-                : "You must be logged in to create listing!"
-        );
+        if (req.method === "GET") {
+            req.session.redirectUrl = req.originalUrl;
+        } else {
+            // For non-GET requests (e.g. POST booking or POST review),
+            // redirect back to the originating listing page or referer instead of a POST endpoint
+            const referer = req.get("Referer");
+            if (referer) {
+                try {
+                    const parsed = new URL(referer);
+                    req.session.redirectUrl = parsed.pathname;
+                } catch {
+                    req.session.redirectUrl = req.params.id ? `/listings/${req.params.id}` : "/listings";
+                }
+            } else if (req.params.id) {
+                req.session.redirectUrl = `/listings/${req.params.id}`;
+            } else {
+                req.session.redirectUrl = "/listings";
+            }
+        }
+
+        let errorMsg = "You must be logged in to access this page.";
+        if (req.originalUrl && req.originalUrl.startsWith("/profile")) {
+            errorMsg = "You must be logged in to view your profile!";
+        } else if (req.originalUrl && req.originalUrl.includes("/bookings")) {
+            errorMsg = "You must be logged in to reserve a stay or view your bookings!";
+        } else if (req.originalUrl && req.originalUrl.includes("/reviews")) {
+            errorMsg = "You must be logged in to leave or manage a review!";
+        } else if (req.originalUrl && req.originalUrl.startsWith("/listings/new")) {
+            errorMsg = "You must be logged in to create a listing!";
+        }
+
+        req.flash("error", errorMsg);
         return req.session.save(() => res.redirect("/login"));
     }
     next();
@@ -41,17 +65,18 @@ module.exports.isProfileOwner = (req, res, next) => {
 };
 
 // Listing Owner Middleware
-module.exports.isOwner = async(req, res, next) => {
+module.exports.isOwner = async (req, res, next) => {
     try {
         let { id } = req.params;
         let listing = await Listing.findById(id);
         if (!listing) {
             req.flash("error", "Listing you requested for does not exist!");
-            return res.redirect("/listings");
+            return req.session.save(() => res.redirect("/listings"));
         }
-        if (!res.locals.currUser || !listing.owner || !listing.owner.equals(res.locals.currUser._id)) {
-            req.flash("error", "You are not the owner of this listing");
-            return res.redirect(`/listings/${id}`);  
+        const currentUser = req.user || res.locals.currUser;
+        if (!currentUser || !listing.owner || !listing.owner.equals(currentUser._id)) {
+            req.flash("error", "You do not have permission to modify this listing.");
+            return req.session.save(() => res.redirect(`/listings/${id}`));
         }
         next();
     } catch (err) {
@@ -81,18 +106,19 @@ module.exports.validateReview = (req, res, next) => {
     }
 };
   
-// Listing Owner Middleware
-module.exports.isreviewAuthor = async(req, res, next) => {
+// Review Author Middleware
+module.exports.isreviewAuthor = async (req, res, next) => {
     try {
         let { id, reviewId } = req.params;
         let review = await Review.findById(reviewId);
         if (!review) {
             req.flash("error", "Review does not exist!");
-            return res.redirect(`/listings/${id}`);
+            return req.session.save(() => res.redirect(`/listings/${id}`));
         }
-        if (!review.author.equals(res.locals.currUser._id)) {
-            req.flash("error", "You are not the author of this review");
-            return res.redirect(`/listings/${id}`);  
+        const currentUser = req.user || res.locals.currUser;
+        if (!currentUser || !review.author || !review.author.equals(currentUser._id)) {
+            req.flash("error", "You are not authorized to delete this review.");
+            return req.session.save(() => res.redirect(`/listings/${id}`));
         }
         next();
     } catch (err) {

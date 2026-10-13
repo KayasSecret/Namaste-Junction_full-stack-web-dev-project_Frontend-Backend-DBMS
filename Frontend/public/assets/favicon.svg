@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Namaste Junction Brand Coral-to-Orange Linear Gradient -->
+    <linearGradient id="njFaviconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fe424d"/>
+      <stop offset="55%" stop-color="#ff7555"/>
+      <stop offset="100%" stop-color="#ff9966"/>
+    </linearGradient>
+    <filter id="njFaviconShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#fe424d" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle rounded background matching navbar logo -->
+  <rect width="512" height="512" rx="136" ry="136" fill="url(#njFaviconGrad)"/>
+
+  <!-- Crisp centered FontAwesome 6 Regular Compass Icon -->
+  <g transform="translate(114.16, 107.52) scale(0.572)">
+    <path fill="#ffffff" d="M347.94 129.86L203.6 195.83a31.938 31.938 0 0 0-15.77 15.77l-65.97 144.34c-7.61 16.65 9.54 33.81 26.2 26.2l144.34-65.97a31.938 31.938 0 0 0 15.77-15.77l65.97-144.34c7.61-16.66-9.54-33.81-26.2-26.2zm-77.36 148.72c-12.47 12.47-32.69 12.47-45.16 0-12.47-12.47-12.47-32.69 0-45.16 12.47-12.47 32.69-12.47 45.16 0 12.47 12.47 12.47 32.69 0 45.16zM248 8C111.03 8 0 119.03 0 256s111.03 248 248 248 248-111.03 248-248S384.97 8 248 8zm0 448c-110.28 0-200-89.72-200-200S137.72 56 248 56s200 89.72 200 200-89.72 200-200 200z"/>
+  </g>
+</svg>

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const review = require("./review");
 const Schema = mongoose.Schema;
 const Review = require("./review.js");
 
@@ -42,25 +41,60 @@ const listingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
-
-    //iss model ko khud se time laga ke create karna hai
-    
-    // category: {
-    //     type: String,
-    //     enum: [
-    //         "Trending", 
-    //         "Rooms", 
-    //         "Beach Front", 
-    //         "Master Room",
-    //         "Cold Place",
-    //         "Rainy Place",
-    //         "Hot Place",
-    //         "Haven",
-    //         "Companies",
-    //         "Canteen",
-    //         "Favorits"
-    //     ]
-    // }
+    roomTypes: [
+        {
+            code: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            name: {
+                type: String,
+                required: true,
+                trim: true,
+            },
+            price: {
+                type: Number,
+                required: true,
+                min: 0,
+            },
+            baseOccupancy: {
+                type: Number,
+                default: 2,
+                min: 1,
+            },
+            maxOccupancy: {
+                type: Number,
+                required: true,
+                min: 1,
+            },
+            extraGuestRate: {
+                type: Number,
+                default: 0,
+                min: 0,
+            },
+            bedConfig: {
+                type: String,
+                default: "1 King Bed",
+            },
+            roomSize: {
+                type: String,
+                default: "350 sq.ft",
+            },
+            amenities: {
+                type: [String],
+                default: [],
+            },
+            description: {
+                type: String,
+                default: "",
+            },
+            isAvailable: {
+                type: Boolean,
+                default: true,
+            },
+        },
+    ],
 });
 
 listingSchema.post("findOneAndDelete", async (listing) => {
@@ -68,6 +102,23 @@ listingSchema.post("findOneAndDelete", async (listing) => {
         await Review.deleteMany({ _id: { $in: listing.reviews }});
     }
 });
+
+// Generate default room types if not provided
+const { getDefaultRoomTypes } = require("../utils/pricing.js");
+
+listingSchema.pre("save", function (next) {
+    if (!this.roomTypes || this.roomTypes.length === 0) {
+        this.roomTypes = getDefaultRoomTypes(this.price || 3000);
+    }
+    next();
+});
+
+listingSchema.methods.getRoomTypes = function () {
+    if (this.roomTypes && this.roomTypes.length > 0) {
+        return this.roomTypes;
+    }
+    return getDefaultRoomTypes(this.price || 3000);
+};
 
 const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing;

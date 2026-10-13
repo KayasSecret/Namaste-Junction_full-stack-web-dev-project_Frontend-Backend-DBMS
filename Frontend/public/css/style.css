@@ -8,7 +8,13 @@
      base.css      — body, typography, layout shell
      navbar.css    — premium sticky travel navbar
      footer.css    — premium dark-gradient footer
-     listings.css  — listing cards, show page
+     listings.css  — master bundle importing listings/* components:
+                       listings/hero.css         — hero discovery banner & stats
+                       listings/filters.css      — category filter bar & tax toggle
+                       listings/cards.css        — property listing cards & grid
+                       listings/details.css      — listing details show page & reviews
+                       listings/booking.css      — booking panel & custom calendar UI
+                       listings/reservations.css — confirmation voucher & dashboard
      buttons.css   — CRUD action buttons, reduced-motion
      auth.css      — login / signup split-screen pages
 

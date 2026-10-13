@@ -14,8 +14,4 @@ router.get("/:bookingId", isLoggedIn, wrapAsync(bookingController.showBooking));
 router.patch("/:bookingId/cancel", isLoggedIn, wrapAsync(bookingController.cancelBooking));
 router.post("/:bookingId/cancel", isLoggedIn, wrapAsync(bookingController.cancelBooking));
 
-// Update Reservation / Payment Status (Host Only)
-router.patch("/:bookingId/status", isLoggedIn, wrapAsync(bookingController.updateHostBookingStatus));
-router.post("/:bookingId/status", isLoggedIn, wrapAsync(bookingController.updateHostBookingStatus));
-
 module.exports = router;

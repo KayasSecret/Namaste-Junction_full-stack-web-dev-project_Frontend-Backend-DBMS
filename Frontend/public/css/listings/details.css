@@ -1,0 +1,1659 @@
+/* ==========================================================================
+   details.css — Listing Details (Show Page) & Reviews
+   Namaste Junction | Premium Travel Platform
+   ========================================================================== */
+
+/* ==========================================================================
+   4. Listing Details (Show Page) — Modern Travel Experience
+   ========================================================================== */
+.listing-card {
+    border: none !important;
+    margin-bottom: 2rem;
+}
+
+.card-img-top {
+    border-radius: 1rem !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+.card-body {
+    padding: 0 !important;
+}
+
+.card-text {
+    font-weight: 400;
+}
+
+.show-img {
+    height: 40vh;
+}
+
+.btns {
+    display: flex;
+}
+
+.show-card {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nj-show-page {
+    padding: 1.5rem 0 4rem 0;
+}
+
+/* ------ Top Breadcrumb & Quick Links ------ */
+.nj-show-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.nj-back-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.48rem 1rem;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.22s ease;
+}
+
+.nj-back-pill i {
+    color: #fe424d;
+    transition: transform 0.22s ease;
+}
+
+.nj-back-pill:hover {
+    background: rgba(254, 66, 77, 0.08);
+    border-color: rgba(254, 66, 77, 0.28);
+    color: #fe424d;
+}
+
+.nj-back-pill:hover i {
+    transform: translateX(-3px);
+}
+
+.nj-show-quick-links {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.nj-quick-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.44rem 0.9rem;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 0.83rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    transition: all 0.22s ease;
+}
+
+.nj-quick-chip i {
+    color: #f59e0b;
+}
+
+.nj-quick-chip:last-child i {
+    color: #fe424d;
+}
+
+.nj-quick-chip:hover {
+    border-color: #fe424d;
+    color: #fe424d;
+    transform: translateY(-1px);
+}
+
+/* ------ Show Header & Gallery Actions ------ */
+.nj-show-header {
+    margin-bottom: 1.25rem;
+}
+
+.nj-show-header-flex {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.nj-quick-chip-btn {
+    cursor: pointer;
+}
+
+.nj-gallery-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.nj-btn-gallery-fullscreen {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.48rem;
+    padding: 0.58rem 1.05rem;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    color: #0f172a;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    transition: all 0.22s ease;
+}
+
+.nj-btn-gallery-fullscreen i {
+    color: #fe424d;
+}
+
+.nj-btn-gallery-fullscreen:hover {
+    border-color: #fe424d;
+    color: #fe424d;
+    background: #fff1f2;
+    transform: translateY(-1px);
+}
+
+.nj-btn-add-photos {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #fe424d 0%, #ff6b57 55%, #ff8e53 100%);
+    border: none;
+    color: #ffffff;
+    font-size: 0.86rem;
+    font-weight: 700;
+    box-shadow: 0 8px 20px -4px rgba(254, 66, 77, 0.45);
+    transition: all 0.24s ease;
+}
+
+.nj-btn-add-photos:hover,
+.nj-btn-add-photos:focus-visible {
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px -4px rgba(254, 66, 77, 0.6);
+}
+
+/* ------ Owner-Only Multi-Photo Upload Drawer ------ */
+.nj-owner-upload-drawer {
+    margin-bottom: 1.5rem;
+    animation: njSlideDown 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes njSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nj-upload-drawer-inner {
+    background: linear-gradient(180deg, #ffffff 0%, #fffafb 100%);
+    border: 1.5px solid #fecdd3;
+    border-radius: 1.35rem;
+    padding: 1.5rem 1.65rem;
+    box-shadow: 0 16px 38px -14px rgba(254, 66, 77, 0.16);
+}
+
+.nj-upload-drawer-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.1rem;
+}
+
+.nj-upload-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.22rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(254, 66, 77, 0.12);
+    color: #fe424d;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+}
+
+.nj-upload-title {
+    font-size: 1.18rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.2rem 0;
+}
+
+.nj-upload-subtitle {
+    font-size: 0.86rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.nj-upload-close-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.nj-upload-close-btn:hover {
+    border-color: #fe424d;
+    color: #fe424d;
+    background: #fff1f2;
+}
+
+.nj-upload-dropzone {
+    display: block;
+    position: relative;
+    border: 2px dashed #fda4af;
+    border-radius: 1.1rem;
+    background: #ffffff;
+    padding: 1.65rem 1.25rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.22s ease;
+}
+
+.nj-upload-dropzone:hover,
+.nj-upload-dropzone.is-dragover {
+    border-color: #fe424d;
+    background: #fff1f2;
+}
+
+.nj-upload-file-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.nj-upload-dropzone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    pointer-events: none;
+}
+
+.nj-upload-icon-circle {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(254, 66, 77, 0.12);
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 0.2rem;
+}
+
+.nj-upload-cta-text {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.nj-upload-hint-text {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.nj-upload-error-alert {
+    margin-top: 0.85rem;
+    padding: 0.7rem 1rem;
+    border-radius: 0.85rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+.nj-upload-preview-wrap {
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.nj-upload-preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.65rem;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #334155;
+}
+
+.nj-btn-clear-selection {
+    background: none;
+    border: none;
+    color: #fe424d;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0.2rem 0.45rem;
+    border-radius: 0.5rem;
+}
+
+.nj-btn-clear-selection:hover {
+    background: #fff1f2;
+}
+
+.nj-upload-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.65rem;
+}
+
+.nj-upload-preview-item {
+    position: relative;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    aspect-ratio: 4 / 3;
+}
+
+.nj-upload-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.nj-upload-preview-meta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.2rem 0.45rem;
+    background: rgba(15, 23, 42, 0.75);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nj-upload-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.65rem;
+    margin-top: 1.15rem;
+}
+
+.nj-show-badges-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.55rem;
+}
+
+.nj-show-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.78rem;
+    border-radius: 999px;
+    background: rgba(254, 66, 77, 0.1);
+    color: #fe424d;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.nj-show-verified-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.78rem;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.nj-show-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 0 0 0.45rem 0;
+}
+
+.nj-show-location-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0;
+}
+
+.nj-show-location-line i {
+    color: #fe424d;
+}
+
+/* ------ Balanced Showcase Gallery Card & Thumbnail Strip ------ */
+.nj-gallery-section {
+    margin-bottom: 2rem;
+}
+
+.nj-show-hero-card {
+    border-radius: 1.4rem !important;
+    overflow: hidden;
+    margin-bottom: 0 !important;
+    background: #ffffff;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 18px 42px -15px rgba(15, 23, 42, 0.16);
+}
+
+.nj-show-media-wrap {
+    position: relative;
+    height: 350px;
+    width: 100%;
+    overflow: hidden;
+    background: #0f172a;
+    border-radius: 1.35rem 1.35rem 0 0;
+}
+
+.card-img-top.show-img.nj-show-hero-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+    cursor: zoom-in;
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease;
+}
+
+.card-img-top.show-img.nj-show-hero-img.is-transitioning {
+    opacity: 0.38;
+    transform: scale(1.015);
+}
+
+.nj-show-media-wrap:hover .card-img-top.show-img.nj-show-hero-img:not(.is-transitioning) {
+    transform: scale(1.022);
+}
+
+.nj-show-hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(15, 23, 42, 0.32) 0%,
+        rgba(15, 23, 42, 0.02) 45%,
+        rgba(15, 23, 42, 0.68) 100%
+    );
+    pointer-events: none;
+}
+
+/* Top Stage Bar: Counter & Expand Pill */
+.nj-stage-top-bar {
+    position: absolute;
+    top: 1rem;
+    left: 1.2rem;
+    right: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.nj-stage-counter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.38rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    pointer-events: auto;
+}
+
+.nj-stage-counter-pill i {
+    color: #ff8e53;
+}
+
+.nj-stage-expand-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    padding: 0.38rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.2s ease;
+}
+
+.nj-stage-expand-pill:hover {
+    background: #fe424d;
+    border-color: #fe424d;
+}
+
+/* Stage Prev / Next Arrows */
+.nj-stage-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 2.65rem;
+    height: 2.65rem;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.68);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.22s ease;
+}
+
+.nj-stage-prev {
+    left: 1rem;
+}
+
+.nj-stage-next {
+    right: 1rem;
+}
+
+.nj-stage-nav-btn:hover {
+    background: #fe424d;
+    border-color: #ffffff;
+    transform: translateY(-50%) scale(1.07);
+}
+
+.nj-show-hero-badges {
+    position: absolute;
+    bottom: 1rem;
+    left: 1.2rem;
+    right: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.nj-hero-float-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.42rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.68);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.nj-hero-float-pill i {
+    color: #ff758c;
+}
+
+.nj-hero-rating-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.42rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-size: 0.82rem;
+}
+
+.nj-hero-rating-pill i {
+    color: #facc15;
+}
+
+.nj-hero-rating-pill span {
+    color: #cbd5e1;
+    font-size: 0.76rem;
+}
+
+/* ------ Thumbnail Preview Strip ------ */
+.nj-gallery-thumbs-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.15rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.nj-thumbs-scroll {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    overflow-x: auto;
+    padding-bottom: 0.15rem;
+    scrollbar-width: thin;
+}
+
+.nj-thumb-card-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.nj-thumb-btn {
+    position: relative;
+    width: 84px;
+    height: 58px;
+    padding: 0;
+    border-radius: 0.7rem;
+    overflow: hidden;
+    border: 2.5px solid transparent;
+    background: #0f172a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: block;
+}
+
+.nj-thumb-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.72;
+    transition: opacity 0.2s ease, transform 0.25s ease;
+}
+
+.nj-thumb-btn:hover img,
+.nj-thumb-btn.is-active img {
+    opacity: 1;
+}
+
+.nj-thumb-btn.is-active {
+    border-color: #fe424d;
+    box-shadow: 0 4px 12px rgba(254, 66, 77, 0.32);
+    transform: translateY(-1px);
+}
+
+.nj-thumb-index-badge {
+    position: absolute;
+    bottom: 3px;
+    right: 4px;
+    padding: 0.05rem 0.35rem;
+    border-radius: 0.35rem;
+    background: rgba(15, 23, 42, 0.75);
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.nj-thumb-delete-form {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    z-index: 3;
+}
+
+.nj-thumb-delete-btn {
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff;
+    background: #dc2626;
+    color: #ffffff;
+    font-size: 0.62rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.3);
+    transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.nj-thumb-delete-btn:hover {
+    background: #b91c1c;
+    transform: scale(1.12);
+}
+
+.nj-thumbs-bar-meta {
+    flex-shrink: 0;
+}
+
+.nj-thumbs-view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.48rem 0.95rem;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nj-thumbs-view-all-btn i {
+    color: #fe424d;
+}
+
+.nj-thumbs-view-all-btn:hover {
+    border-color: #fe424d;
+    color: #fe424d;
+    background: #fff1f2;
+}
+
+/* ------ Fullscreen Lightbox & Slideshow Viewer ------ */
+.nj-lightbox-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: njLightboxFadeIn 0.22s ease;
+}
+
+.nj-lightbox-modal[hidden] {
+    display: none !important;
+}
+
+@keyframes njLightboxFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.nj-lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.nj-lightbox-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.25rem 2rem;
+    pointer-events: none;
+}
+
+.nj-lightbox-topbar,
+.nj-lightbox-footer,
+.nj-lightbox-nav-btn,
+.nj-lightbox-figure {
+    pointer-events: auto;
+}
+
+.nj-lightbox-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: #ffffff;
+}
+
+.nj-lightbox-counter-badge {
+    padding: 0.42rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.86rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.nj-lightbox-title-wrap {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.nj-lightbox-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.nj-lightbox-subtitle {
+    font-size: 0.78rem;
+    color: #cbd5e1;
+}
+
+.nj-lightbox-close-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1.5px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    font-size: 1.15rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nj-lightbox-close-btn:hover {
+    background: #fe424d;
+    border-color: #fe424d;
+    transform: rotate(90deg);
+}
+
+.nj-lightbox-stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: 1rem 0;
+}
+
+.nj-lightbox-figure {
+    margin: 0;
+    max-width: min(1080px, 82vw);
+    max-height: 72vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nj-lightbox-img {
+    max-width: 100%;
+    max-height: 72vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 1rem;
+    box-shadow: 0 28px 65px rgba(0, 0, 0, 0.65);
+    transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nj-lightbox-img.is-transitioning {
+    opacity: 0.28;
+    transform: scale(0.975);
+}
+
+.nj-lightbox-nav-btn {
+    width: 3.1rem;
+    height: 3.1rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1.5px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.nj-lightbox-nav-btn:hover {
+    background: #fe424d;
+    border-color: #fe424d;
+    transform: scale(1.08);
+}
+
+.nj-lightbox-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.nj-lightbox-thumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    overflow-x: auto;
+    max-width: 90vw;
+    padding: 0.4rem 0.65rem;
+    border-radius: 1rem;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.nj-lightbox-thumb-btn {
+    width: 68px;
+    height: 48px;
+    padding: 0;
+    border-radius: 0.55rem;
+    overflow: hidden;
+    border: 2px solid transparent;
+    background: #0f172a;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.nj-lightbox-thumb-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+}
+
+.nj-lightbox-thumb-btn.is-active {
+    border-color: #fe424d;
+    transform: translateY(-2px);
+}
+
+.nj-lightbox-thumb-btn.is-active img,
+.nj-lightbox-thumb-btn:hover img {
+    opacity: 1;
+}
+
+/* ------ Property Overview Section Card ------ */
+.nj-show-overview-section,
+.nj-show-main-grid {
+    margin-bottom: 2.25rem;
+}
+
+.nj-detail-surface {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.65rem;
+    padding: 2.25rem 2.5rem;
+    box-shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.06);
+}
+
+.nj-host-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.nj-host-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.nj-host-avatar {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fe424d 0%, #ff8e53 100%);
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 18px -4px rgba(254, 66, 77, 0.45);
+}
+
+.nj-host-label {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+}
+
+.nj-host-name {
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.nj-superhost-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    padding: 0.42rem 0.9rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(254, 66, 77, 0.1), rgba(255, 142, 83, 0.14));
+    border: 1px solid rgba(254, 66, 77, 0.24);
+    color: #fe424d;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* Highlights Strip */
+.nj-highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.9rem;
+}
+
+.nj-highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.95rem 1rem;
+    border-radius: 1.1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.nj-highlight-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: rgba(254, 66, 77, 0.1);
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.nj-highlight-icon i {
+    display: block;
+    line-height: 1;
+}
+
+.nj-highlight-text {
+    min-width: 0;
+}
+
+.nj-highlight-text strong {
+    display: block;
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.12rem;
+}
+
+.nj-highlight-text span {
+    display: block;
+    font-size: 0.76rem;
+    color: #64748b;
+}
+
+.nj-section-divider {
+    margin: 1.65rem 0;
+    border-color: #e2e8f0;
+    opacity: 0.75;
+}
+
+.nj-block-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.85rem 0;
+}
+
+.nj-block-heading i {
+    color: #fe424d;
+    font-size: 1rem;
+}
+
+.nj-description-text {
+    font-size: 0.98rem;
+    line-height: 1.75;
+    color: #334155;
+    margin: 0;
+}
+
+/* Amenities Grid */
+.nj-amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.nj-amenity-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.72rem 0.95rem;
+    border-radius: 0.9rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.nj-amenity-chip i {
+    color: #fe424d;
+    width: 1.1rem;
+    text-align: center;
+}
+
+/* Owner Edit & Delete Bar */
+.nj-owner-actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border-radius: 1.15rem;
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+}
+
+.nj-owner-actions-text {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.88rem;
+    color: #881337;
+}
+
+.nj-owner-actions-text i {
+    color: #fe424d;
+}
+
+.nj-owner-btns {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.nj-btn-edit-listing,
+.nj-btn-delete-listing {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.52rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.nj-btn-delete-listing {
+    background: #0f172a;
+    border: none;
+    color: #ffffff;
+}
+
+.nj-btn-delete-listing:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+
+/* ==========================================================================
+   5. Reviews & Star-Rating Section
+   ========================================================================== */
+.nj-reviews-section {
+    padding-top: 2.25rem;
+    margin-bottom: 3rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.nj-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.65rem;
+}
+
+.nj-section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fe424d;
+    margin-bottom: 0.3rem;
+}
+
+.nj-section-title {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.nj-reviews-summary-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.48rem 1rem;
+    border-radius: 999px;
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 0.85rem;
+}
+
+.nj-reviews-summary-pill i {
+    color: #facc15;
+}
+
+.nj-reviews-summary-pill span {
+    color: #cbd5e1;
+}
+
+/* Review Form Card */
+.nj-review-form-card,
+.nj-review-guest-prompt {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.4rem;
+    padding: 1.75rem;
+    box-shadow: 0 12px 30px -12px rgba(15, 23, 42, 0.07);
+}
+
+.nj-form-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.4rem 0;
+}
+
+.nj-form-card-title i {
+    color: #fe424d;
+}
+
+.nj-form-card-sub {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin-bottom: 1.25rem;
+    line-height: 1.55;
+}
+
+.nj-rating-field-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.1rem;
+    padding: 1rem 1.15rem 0.65rem 1.15rem;
+    margin-bottom: 1.15rem;
+}
+
+.nj-rating-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.55rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.nj-rating-live-pill {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #475569;
+    transition: all 0.2s ease;
+}
+
+.nj-rating-live-pill.active {
+    background: rgba(254, 66, 77, 0.12);
+    color: #fe424d;
+}
+
+.nj-rating-field-box .starability-slot {
+    min-height: 36px;
+    margin-bottom: 0;
+}
+
+.nj-comment-label {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.nj-review-textarea {
+    border-radius: 0.95rem !important;
+    border: 1.5px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    padding: 0.85rem 1rem !important;
+    font-size: 0.92rem !important;
+    color: #0f172a !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+}
+
+.nj-review-textarea:focus {
+    background: #ffffff !important;
+    border-color: #fe424d !important;
+    box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.12) !important;
+}
+
+/* Guest Review Prompt */
+.nj-review-guest-prompt {
+    text-align: center;
+    padding: 2.25rem 1.75rem;
+}
+
+.nj-guest-prompt-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 1rem;
+    background: rgba(254, 66, 77, 0.1);
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 0.9rem;
+}
+
+.nj-review-guest-prompt h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.45rem;
+}
+
+.nj-review-guest-prompt p {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin-bottom: 1.3rem;
+}
+
+.nj-guest-prompt-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* Individual Review Cards */
+.card.nj-review-card {
+    border-radius: 1.25rem !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff;
+    box-shadow: 0 8px 22px -10px rgba(15, 23, 42, 0.06);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.card.nj-review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px -10px rgba(15, 23, 42, 0.12);
+}
+
+.card-body.nj-review-card-body {
+    padding: 1.25rem 1.35rem !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.nj-reviewer-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.nj-reviewer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.nj-reviewer-avatar {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0f172a, #334155);
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nj-reviewer-name {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.nj-reviewer-badge {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #10b981;
+}
+
+.nj-review-score-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
+    padding: 0.22rem 0.6rem;
+    border-radius: 999px;
+    background: #fef9c3;
+    color: #854d0e;
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+.nj-review-score-badge i {
+    color: #eab308;
+}
+
+.nj-starability-compact {
+    transform: scale(0.78);
+    transform-origin: left center;
+    margin-bottom: 0.45rem;
+}
+
+.nj-review-comment-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #334155;
+    margin-bottom: 0.85rem;
+    flex: 1;
+}
+
+.nj-review-delete-form {
+    margin-top: auto;
+}
+
+.nj-btn-review-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.32rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.nj-btn-review-delete:hover {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.nj-no-reviews-box {
+    height: 100%;
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    border-radius: 1.4rem;
+    background: #f8fafc;
+    border: 1.5px dashed #cbd5e1;
+}
+
+.nj-no-reviews-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 1rem;
+    background: rgba(254, 66, 77, 0.1);
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: 0.85rem;
+}
+
+.nj-no-reviews-box h4 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.3rem;
+}
+
+.nj-no-reviews-box p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+}
+
+
+/* ------ Listing Details & Reviews Responsive Styles ------ */
+@media (max-width: 991.98px) {
+    .nj-show-media-wrap {
+        height: 290px;
+    }
+    .nj-highlights-grid,
+    .nj-amenities-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .nj-lightbox-content {
+        padding: 1rem 1.25rem;
+    }
+    .nj-lightbox-figure {
+        max-width: 78vw;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .nj-show-page {
+        padding: 1rem 0 2.5rem 0;
+    }
+    .nj-show-title {
+        font-size: 1.55rem;
+    }
+    .nj-highlights-grid,
+    .nj-amenities-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .nj-show-media-wrap {
+        height: 220px;
+    }
+    .nj-stage-expand-pill span {
+        display: none;
+    }
+    .nj-gallery-thumbs-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.65rem;
+        padding: 0.75rem 0.9rem;
+    }
+    .nj-thumbs-view-all-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .nj-detail-surface,
+    .nj-review-form-card,
+    .nj-upload-drawer-inner {
+        padding: 1.35rem 1.15rem;
+    }
+    .nj-lightbox-content {
+        padding: 0.85rem;
+    }
+    .nj-lightbox-stage {
+        gap: 0.5rem;
+    }
+    .nj-lightbox-nav-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 0.95rem;
+    }
+    .nj-lightbox-figure {
+        max-width: 76vw;
+        max-height: 64vh;
+    }
+    .nj-lightbox-img {
+        max-height: 64vh;
+    }
+}

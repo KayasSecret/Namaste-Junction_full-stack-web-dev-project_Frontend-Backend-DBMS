@@ -1,0 +1,715 @@
+/* ==========================================================================
+   reservations.css — Booking Confirmation Voucher & Reservations Dashboard
+   Namaste Junction | Premium Travel Platform
+   ========================================================================== */
+
+/* ==========================================================================
+   Booking Confirmation Voucher Page (/bookings/:bookingId)
+   ========================================================================== */
+.nj-booking-voucher-page,
+.nj-bookings-dashboard-page {
+    padding: 1.5rem 0 3.5rem 0;
+}
+
+.nj-print-voucher-btn {
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.nj-voucher-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 20px 45px -18px rgba(15, 23, 42, 0.12);
+}
+
+.nj-voucher-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
+    color: #ffffff;
+    padding: 2rem 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
+.nj-voucher-banner.is-cancelled {
+    background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%);
+}
+
+.nj-voucher-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.32rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+}
+
+.nj-status-confirmed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.nj-status-cancelled {
+    background: rgba(248, 113, 113, 0.22);
+    color: #fca5a5;
+    border: 1px solid rgba(248, 113, 113, 0.45);
+}
+
+.nj-status-completed {
+    background: rgba(56, 189, 248, 0.2);
+    color: #7dd3fc;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.nj-voucher-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.02em;
+}
+
+.nj-voucher-subtitle {
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    margin: 0;
+}
+
+.nj-voucher-code-box {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 1.15rem;
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.nj-voucher-code-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+}
+
+.nj-voucher-code-value {
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    font-family: monospace;
+}
+
+.nj-voucher-payment-pill {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #fde047;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.nj-voucher-body {
+    padding: 2rem 2.25rem;
+}
+
+.nj-voucher-property-box {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    padding: 1rem;
+    border-radius: 1.15rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 1.25rem;
+}
+
+.nj-voucher-property-img {
+    width: 115px;
+    height: 86px;
+    object-fit: cover;
+    border-radius: 0.85rem;
+    flex-shrink: 0;
+}
+
+.nj-voucher-kicker {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.2rem;
+}
+
+.nj-voucher-property-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 0.25rem 0;
+}
+
+.nj-voucher-property-title a {
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.nj-voucher-property-title a:hover {
+    color: #fe424d;
+}
+
+.nj-voucher-host-line {
+    font-size: 0.82rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.nj-voucher-dates-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+    margin-bottom: 1.25rem;
+}
+
+.nj-voucher-date-card {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 1.1rem;
+    padding: 1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.nj-voucher-date-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #fe424d;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.nj-voucher-date-main {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.nj-voucher-date-sub {
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.nj-voucher-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.nj-voucher-meta-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.95rem;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.nj-meta-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.nj-meta-val {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.nj-voucher-requests-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 1rem;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.86rem;
+    color: #78350f;
+}
+
+.nj-voucher-requests-box h6 {
+    font-size: 0.82rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.nj-voucher-price-card {
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.35rem;
+}
+
+.nj-voucher-price-heading {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.nj-voucher-price-heading i {
+    color: #fe424d;
+}
+
+.nj-voucher-price-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 1rem;
+}
+
+.nj-voucher-price-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    color: #475569;
+}
+
+.nj-voucher-price-total {
+    padding-top: 0.75rem;
+    border-top: 1.5px dashed #cbd5e1;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.nj-voucher-payment-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.9rem;
+    padding: 0.75rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+}
+
+.nj-voucher-payment-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #475569;
+}
+
+.nj-btn-cancel-booking {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.7rem 1.1rem;
+    border-radius: 0.85rem;
+    background: #fef2f2;
+    border: 1.5px solid #fca5a5;
+    color: #b91c1c;
+    font-size: 0.86rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nj-btn-cancel-booking:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #ffffff;
+}
+
+.nj-cancel-policy-hint {
+    display: block;
+    margin-top: 0.45rem;
+    font-size: 0.74rem;
+    color: #64748b;
+    text-align: center;
+}
+
+
+/* ==========================================================================
+   Bookings & Reservations Dashboard (/bookings)
+   ========================================================================== */
+.nj-bookings-hero-card {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #334155 100%);
+    border-radius: 1.5rem;
+    padding: 2rem 2.25rem;
+    color: #ffffff;
+    box-shadow: 0 18px 40px -16px rgba(15, 23, 42, 0.25);
+}
+
+.nj-bookings-hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.nj-bookings-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #fda4af;
+    margin-bottom: 0.4rem;
+}
+
+.nj-bookings-main-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.02em;
+}
+
+.nj-bookings-subtitle {
+    font-size: 0.92rem;
+    color: #cbd5e1;
+    max-width: 600px;
+}
+
+.nj-bookings-stats-bar {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.nj-bookings-stat-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 1.1rem;
+    padding: 0.75rem 1.15rem;
+    min-width: 120px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.nj-bookings-stat-pill strong {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.nj-bookings-stat-pill span {
+    font-size: 0.74rem;
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.nj-bookings-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.nj-bookings-section-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 0.2rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nj-bookings-section-title i {
+    color: #fe424d;
+}
+
+.nj-bookings-section-sub {
+    font-size: 0.86rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.nj-bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 1.25rem;
+}
+
+.nj-booking-item-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 10px 25px -12px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.nj-booking-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px -12px rgba(15, 23, 42, 0.14);
+}
+
+.nj-booking-item-card.is-muted {
+    opacity: 0.88;
+}
+
+.nj-booking-item-media {
+    position: relative;
+    height: 175px;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.nj-booking-item-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nj-booking-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    backdrop-filter: blur(8px);
+}
+
+.nj-booking-code-chip {
+    position: absolute;
+    bottom: 0.65rem;
+    right: 0.65rem;
+    background: rgba(15, 23, 42, 0.82);
+    color: #ffffff;
+    font-family: monospace;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.5rem;
+}
+
+.nj-booking-item-body {
+    padding: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.nj-booking-item-loc {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: #fe424d;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.nj-booking-item-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.nj-booking-item-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.nj-booking-item-title a:hover {
+    color: #fe424d;
+}
+
+.nj-booking-item-dates {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    padding: 0.6rem 0.85rem;
+}
+
+.nj-booking-item-dates small {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #64748b;
+}
+
+.nj-booking-item-dates strong {
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.nj-booking-arrow {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+.nj-booking-item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #475569;
+    font-weight: 600;
+}
+
+.nj-booking-item-price {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.nj-booking-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: auto;
+}
+
+.nj-booking-item-actions form {
+    margin: 0;
+}
+
+.nj-booking-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.52rem 0.9rem;
+    border-radius: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.nj-booking-action-btn.is-primary {
+    flex: 1;
+    background: #0f172a;
+    color: #ffffff;
+}
+
+.nj-booking-action-btn.is-primary:hover {
+    background: #fe424d;
+    color: #ffffff;
+}
+
+.nj-booking-action-btn.is-secondary {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-color: #cbd5e1;
+}
+
+.nj-booking-action-btn.is-danger {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.nj-booking-action-btn.is-danger:hover {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.nj-bookings-empty-card {
+    background: #ffffff;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 1.35rem;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+}
+
+.nj-bookings-empty-card.is-compact {
+    padding: 1.5rem;
+    color: #64748b;
+}
+
+.nj-bookings-empty-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: rgba(254, 66, 77, 0.1);
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.nj-bookings-empty-card h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.35rem;
+}
+
+.nj-bookings-empty-card p {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin-bottom: 1.15rem;
+}
+
+
+
+/* ------ Reservations & Dashboard Responsive Styles ------ */
+@media (max-width: 767.98px) {
+    .nj-voucher-banner,
+    .nj-voucher-body,
+    .nj-bookings-hero-card {
+        padding: 1.35rem;
+    }
+    .nj-voucher-dates-grid,
+    .nj-voucher-meta-grid {
+        grid-template-columns: 1fr;
+    }
+    .nj-voucher-code-box {
+        width: 100%;
+        align-items: flex-start;
+    }
+}
+
+@media print {
+    .nj-show-breadcrumb,
+    .nj-voucher-actions-block,
+    #njMainNavbar,
+    footer {
+        display: none !important;
+    }
+    .nj-voucher-card {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}

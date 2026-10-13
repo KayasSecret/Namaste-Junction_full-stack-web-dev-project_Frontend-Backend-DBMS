@@ -609,7 +609,6 @@
     const bookingPanel = document.getElementById("njBookingPanel");
     if (bookingPanel) {
         const listingId = bookingPanel.getAttribute("data-listing-id");
-        const nightlyRate = Math.max(0, Number(bookingPanel.getAttribute("data-nightly-rate")) || 0);
         const serverTodayISO = bookingPanel.getAttribute("data-today-iso") || "";
         let reservedRanges = [];
         try {
@@ -618,9 +617,17 @@
             reservedRanges = [];
         }
 
+        let roomTypes = [];
+        try {
+            roomTypes = JSON.parse(bookingPanel.getAttribute("data-room-types") || "[]");
+        } catch (e) {
+            roomTypes = [];
+        }
+
         const bookingForm = document.getElementById("njHotelBookingForm") || document.getElementById("njBookingForm");
         const checkInInput = document.getElementById("njCheckInInput");
         const checkOutInput = document.getElementById("njCheckOutInput");
+        const roomTypeCodeInput = document.getElementById("njRoomTypeCodeInput");
 
         // Custom Calendar Trigger & Widget Elements
         const checkInTrigger = document.getElementById("njCheckInTrigger");
@@ -641,11 +648,34 @@
         const calResetBtn = document.getElementById("njCalResetBtn");
         const calDoneBtn = document.getElementById("njCalDoneBtn");
 
-        // Status & Breakdown Elements
+        // Dynamic Guests & Room Type Elements
+        const guestsSelect = document.getElementById("njGuestsSelect");
+        const roomTypeSelect = document.getElementById("njRoomTypeSelect");
+        const rateEyebrow = document.getElementById("njRateEyebrow");
+        const nightlyPriceDisplay = document.getElementById("njNightlyPriceDisplay");
+        const roomCapTag = document.getElementById("njRoomCapTag");
+        const guestsAllocatedPill = document.getElementById("njGuestsAllocatedPill");
+        const roomPreviewName = document.getElementById("njRoomPreviewName");
+        const roomPreviewBed = document.getElementById("njRoomPreviewBed");
+        const roomPreviewRate = document.getElementById("njRoomPreviewRate");
+        const roomPreviewCapacity = document.getElementById("njRoomPreviewCapacity");
+        const roomPreviewSize = document.getElementById("njRoomPreviewSize");
+        const roomPreviewAmenities = document.getElementById("njRoomPreviewAmenities");
+        const roomOccupancyAlert = document.getElementById("njRoomOccupancyAlert");
+        const roomOccupancyText = document.getElementById("njRoomOccupancyText");
+
+        // Status & Itemized Breakdown Elements
         const availabilityBanner = document.getElementById("njAvailabilityBanner");
         const availabilityText = document.getElementById("njAvailabilityText");
         const nightsCountText = document.getElementById("njNightsCountText");
+        const breakdownRoomName = document.getElementById("njBreakdownRoomName");
+        const breakdownRoomRate = document.getElementById("njBreakdownRoomRate");
+        const breakdownRoomsBadge = document.getElementById("njBreakdownRoomsBadge");
         const breakdownBaseAmount = document.getElementById("njBreakdownBaseAmount");
+        const extraGuestBreakdownRow = document.getElementById("njExtraGuestBreakdownRow");
+        const breakdownExtraGuestLabel = document.getElementById("njBreakdownExtraGuestLabel");
+        const breakdownExtraGuestAmount = document.getElementById("njBreakdownExtraGuestAmount");
+        const breakdownGstLabel = document.getElementById("njBreakdownGstLabel");
         const breakdownTaxAmount = document.getElementById("njBreakdownTaxAmount");
         const breakdownTotalAmount = document.getElementById("njBreakdownTotalAmount");
         const reserveNowBtn = document.getElementById("njReserveNowBtn");
@@ -673,6 +703,18 @@
 
         const formatINR = (num) => `\u20B9${Math.round(num).toLocaleString("en-IN")}`;
 
+        // Official Indian Hotel Accommodation GST Slabs
+        const getIndianHotelGSTRate = (dailyTariffPerRoom) => {
+            const val = Math.max(0, Number(dailyTariffPerRoom) || 0);
+            if (val > 7500) {
+                return { rate: 0.18, label: "GST (18%)" };
+            }
+            if (val > 1000) {
+                return { rate: 0.12, label: "GST (12%)" };
+            }
+            return { rate: 0.00, label: "GST (Exempt)" };
+        };
+
         const now = new Date();
         const todayUTC = parseISO(serverTodayISO) || new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0));
 
@@ -687,6 +729,76 @@
         let viewYear = selectedCheckIn ? selectedCheckIn.getUTCFullYear() : todayUTC.getUTCFullYear();
         let viewMonth = selectedCheckIn ? selectedCheckIn.getUTCMonth() : todayUTC.getUTCMonth();
 
+        // Helper to get active selected room object
+        const getActiveRoom = () => {
+            const selectedCode = (roomTypeSelect ? roomTypeSelect.value : "") ||
+                                 (roomTypeCodeInput ? roomTypeCodeInput.value : "") ||
+                                 "deluxe";
+            let matched = roomTypes.find((r) => r.code === selectedCode);
+            if (!matched && roomTypes.length > 0) {
+                matched = roomTypes[0];
+            }
+            return matched || {
+                code: "deluxe",
+                name: "Deluxe Room",
+                price: 5000,
+                baseOccupancy: 2,
+                maxOccupancy: 3,
+                extraGuestRate: 600,
+                bedConfig: "1 King Bed",
+                roomSize: "350 sq.ft",
+                amenities: ["Free Wi-Fi", "Balcony View"],
+            };
+        };
+
+        // Client-side local pricing engine reflecting official Indian GST and room allocation
+        const calculateClientPrice = (room, guests, nights) => {
+            const validNights = Math.max(1, Math.min(60, Number(nights) || 1));
+            const validGuests = Math.max(1, Math.min(12, Number(guests) || 2));
+            const baseOcc = Math.max(1, Number(room.baseOccupancy) || 2);
+            const maxOcc = Math.max(baseOcc, Number(room.maxOccupancy) || 3);
+            const extraRate = Math.max(0, Number(room.extraGuestRate) || 0);
+            const roomRate = Math.max(0, Number(room.price) || 0);
+
+            let roomsRequired = 1;
+            let occupancyWarning = null;
+            if (validGuests > maxOcc) {
+                roomsRequired = Math.ceil(validGuests / maxOcc);
+                occupancyWarning = `${validGuests} guests allocated across ${roomsRequired} rooms (max ${maxOcc} guests per ${room.name}).`;
+            }
+
+            const totalBaseCapacity = baseOcc * roomsRequired;
+            let extraGuestsCount = 0;
+            if (validGuests > totalBaseCapacity) {
+                extraGuestsCount = validGuests - totalBaseCapacity;
+            }
+
+            const roomBaseCharge = roomRate * roomsRequired * validNights;
+            const extraGuestCharge = extraGuestsCount * extraRate * validNights;
+            const subtotal = roomBaseCharge + extraGuestCharge;
+
+            const dailyTariffPerRoom = (roomRate * roomsRequired + (extraGuestsCount * extraRate)) / roomsRequired;
+            const gst = getIndianHotelGSTRate(dailyTariffPerRoom);
+            const taxAmount = Math.round(subtotal * gst.rate);
+            const totalPrice = subtotal + taxAmount;
+
+            return {
+                room,
+                nights: validNights,
+                guests: validGuests,
+                roomsRequired,
+                extraGuestsCount,
+                roomBaseCharge,
+                extraGuestCharge,
+                subtotal,
+                gstRate: gst.rate,
+                gstLabel: gst.label,
+                taxAmount,
+                totalPrice,
+                occupancyWarning,
+            };
+        };
+
         // Check if a night [d, d + 1 day) is inside any confirmed reservation [rIn, rOut)
         const isNightBooked = (dateObj) => {
             const ms = dateObj.getTime();
@@ -697,7 +809,7 @@
             });
         };
 
-        // Find the earliest booked check-in strictly after a given check-in date
+        // Find earliest booked check-in strictly after a given check-in date
         const getFirstBookedCheckInAfter = (checkInDateObj) => {
             if (!checkInDateObj) return null;
             const inMs = checkInDateObj.getTime();
@@ -746,28 +858,126 @@
             availabilityText.textContent = message;
         };
 
-        const updatePriceUI = (nights) => {
-            const validNights = Math.max(1, Math.min(60, Number(nights) || 1));
-            const base = nightlyRate * validNights;
-            const tax = Math.round(base * 0.18);
-            const total = base + tax;
-            const label = `${validNights} ${validNights === 1 ? "Night" : "Nights"}`;
+        // Synchronize room card preview, guest count pills, and itemized breakdown
+        const updatePriceAndRoomUI = (nightsOverride) => {
+            const activeRoom = getActiveRoom();
+            const guests = guestsSelect ? (parseInt(guestsSelect.value, 10) || 2) : 2;
 
+            // Sync hidden form input
+            if (roomTypeCodeInput) {
+                roomTypeCodeInput.value = activeRoom.code;
+            }
+
+            // Sync header rate
+            if (rateEyebrow) {
+                rateEyebrow.textContent = `${activeRoom.name} Rate`;
+            }
+            if (nightlyPriceDisplay) {
+                nightlyPriceDisplay.textContent = formatINR(activeRoom.price);
+            }
+            if (roomCapTag) {
+                roomCapTag.innerHTML = `<i class="fa-solid fa-users" aria-hidden="true"></i> Max ${activeRoom.maxOccupancy} Guests`;
+            }
+
+            // Sync room preview card details
+            if (roomPreviewName) roomPreviewName.textContent = activeRoom.name;
+            if (roomPreviewBed) roomPreviewBed.innerHTML = `<i class="fa-solid fa-hotel" aria-hidden="true"></i> ${activeRoom.bedConfig || "1 King Bed"}`;
+            if (roomPreviewRate) roomPreviewRate.innerHTML = `${formatINR(activeRoom.price)} <small>/ night</small>`;
+            if (roomPreviewCapacity) {
+                roomPreviewCapacity.innerHTML = `<i class="fa-solid fa-user-check" aria-hidden="true"></i> Base: ${activeRoom.baseOccupancy} &bull; Max: ${activeRoom.maxOccupancy} guests/room`;
+            }
+            if (roomPreviewSize) {
+                roomPreviewSize.innerHTML = activeRoom.roomSize ? `<i class="fa-solid fa-expand" aria-hidden="true"></i> ${activeRoom.roomSize}` : "";
+            }
+            if (roomPreviewAmenities && Array.isArray(activeRoom.amenities)) {
+                roomPreviewAmenities.innerHTML = activeRoom.amenities
+                    .slice(0, 4)
+                    .map((am) => `<span class="nj-room-amenity-chip">${am}</span>`)
+                    .join("");
+            }
+
+            // Determine stay nights
+            let nights = 2;
+            if (typeof nightsOverride === "number") {
+                nights = nightsOverride;
+            } else if (selectedCheckIn && selectedCheckOut && selectedCheckOut > selectedCheckIn) {
+                nights = Math.round((selectedCheckOut - selectedCheckIn) / 86400000);
+            }
+            nights = Math.max(1, Math.min(60, nights));
+
+            const calc = calculateClientPrice(activeRoom, guests, nights);
+
+            // Dynamic room allocation badge and occupancy warning notice
+            if (guestsAllocatedPill) {
+                guestsAllocatedPill.textContent = `${calc.roomsRequired} ${calc.roomsRequired === 1 ? "Room" : "Rooms"}`;
+            }
+
+            if (roomOccupancyAlert && roomOccupancyText) {
+                if (calc.occupancyWarning) {
+                    roomOccupancyAlert.hidden = false;
+                    roomOccupancyText.textContent = calc.occupancyWarning;
+                } else if (calc.extraGuestsCount > 0) {
+                    roomOccupancyAlert.hidden = false;
+                    roomOccupancyText.textContent = `${calc.extraGuestsCount} extra guest charge applied (${formatINR(activeRoom.extraGuestRate)}/night).`;
+                } else {
+                    roomOccupancyAlert.hidden = true;
+                    roomOccupancyText.textContent = "";
+                }
+            }
+
+            // Sync header nights badge
             if (headerNightsBadge) {
-                headerNightsBadge.textContent = label;
+                headerNightsBadge.textContent = `${nights} ${nights === 1 ? "Night" : "Nights"}`;
             }
             if (nightsCountText) {
-                nightsCountText.textContent = `${validNights} ${validNights === 1 ? "night" : "nights"}`;
+                nightsCountText.textContent = `${nights} ${nights === 1 ? "night" : "nights"}`;
+            }
+
+            // Itemized breakdown: Room charges
+            if (breakdownRoomName) {
+                breakdownRoomName.textContent = activeRoom.name;
+            }
+            if (breakdownRoomRate) {
+                breakdownRoomRate.textContent = formatINR(activeRoom.price);
+            }
+            if (breakdownRoomsBadge) {
+                if (calc.roomsRequired > 1) {
+                    breakdownRoomsBadge.hidden = false;
+                    breakdownRoomsBadge.textContent = `${calc.roomsRequired} Rooms`;
+                } else {
+                    breakdownRoomsBadge.hidden = true;
+                }
             }
             if (breakdownBaseAmount) {
-                breakdownBaseAmount.textContent = formatINR(base);
+                breakdownBaseAmount.textContent = formatINR(calc.roomBaseCharge);
+            }
+
+            // Itemized breakdown: Extra guest charges row
+            if (extraGuestBreakdownRow && breakdownExtraGuestLabel && breakdownExtraGuestAmount) {
+                if (calc.extraGuestCharge > 0) {
+                    extraGuestBreakdownRow.hidden = false;
+                    breakdownExtraGuestLabel.textContent = `${calc.extraGuestsCount} Extra ${calc.extraGuestsCount === 1 ? "Guest" : "Guests"} (${formatINR(activeRoom.extraGuestRate)}/nt \u00D7 ${nights} nts)`;
+                    breakdownExtraGuestAmount.textContent = formatINR(calc.extraGuestCharge);
+                } else {
+                    extraGuestBreakdownRow.hidden = true;
+                    breakdownExtraGuestAmount.textContent = formatINR(0);
+                }
+            }
+
+            // Itemized breakdown: Taxes & Statutory GST
+            if (breakdownGstLabel) {
+                breakdownGstLabel.textContent = `Taxes & ${calc.gstLabel}`;
             }
             if (breakdownTaxAmount) {
-                breakdownTaxAmount.textContent = formatINR(tax);
+                breakdownTaxAmount.textContent = formatINR(calc.taxAmount);
             }
+
+            // Final Total
             if (breakdownTotalAmount) {
-                breakdownTotalAmount.textContent = formatINR(total);
+                breakdownTotalAmount.textContent = formatINR(calc.totalPrice);
             }
+
+            return calc;
         };
 
         const syncTriggerDisplays = () => {
@@ -813,7 +1023,6 @@
                 timeZone: "UTC",
             });
 
-            // Disable Prev button if viewing current month
             if (calPrevBtn) {
                 const isCurrentOrPastMonth =
                     viewYear < todayUTC.getUTCFullYear() ||
@@ -821,12 +1030,11 @@
                 calPrevBtn.disabled = isCurrentOrPastMonth;
             }
 
-            const firstWeekday = monthDate.getUTCDay(); // 0 (Sun) - 6 (Sat)
+            const firstWeekday = monthDate.getUTCDay();
             const daysInMonth = new Date(Date.UTC(viewYear, viewMonth + 1, 0)).getUTCDate();
 
             calDaysGrid.innerHTML = "";
 
-            // Leading blank cells
             for (let i = 0; i < firstWeekday; i++) {
                 const emptyCell = document.createElement("span");
                 emptyCell.className = "nj-cal-day is-empty";
@@ -859,7 +1067,6 @@
                     btn.classList.add("is-today");
                 }
 
-                // Determine if this date is disabled in the current selection mode
                 let isDisabled = false;
                 if (isPast) {
                     isDisabled = true;
@@ -881,7 +1088,6 @@
                         btn.classList.add("is-booked");
                         btn.title = "Reserved";
                     } else if (cellMs === firstConflictAfterCheckIn?.getTime()) {
-                        // Checkout on the morning another reservation checks in is allowed!
                         btn.classList.add("is-checkout-only");
                         btn.title = "Available for check-out";
                     } else if (nightBooked) {
@@ -893,7 +1099,6 @@
 
                 btn.disabled = isDisabled;
 
-                // Highlight selected Check-In, Check-Out, and Range
                 const inMs = selectedCheckIn ? selectedCheckIn.getTime() : null;
                 const outMs = selectedCheckOut ? selectedCheckOut.getTime() : null;
                 const hoverMs = hoverDate ? hoverDate.getTime() : null;
@@ -951,7 +1156,6 @@
 
         const closeCalendar = () => {
             if (!calendarWidget || calendarWidget.hidden) return;
-            // If user opened calendar, picked check-in, and closed before picking check-out, auto-set 1-night or next valid checkout
             if (selectedCheckIn && (!selectedCheckOut || selectedCheckOut <= selectedCheckIn)) {
                 const nextDay = new Date(selectedCheckIn.getTime() + 86400000);
                 selectedCheckOut = nextDay;
@@ -970,7 +1174,6 @@
                 selectedCheckIn = clickedDate;
                 if (checkInInput) checkInInput.value = toISO(clickedDate);
 
-                // Check if existing selectedCheckOut is still valid & non-overlapping
                 const firstConflict = getFirstBookedCheckInAfter(selectedCheckIn);
                 const isExistingOutValid =
                     selectedCheckOut &&
@@ -991,7 +1194,6 @@
                 syncTriggerDisplays();
                 renderCalendar();
             } else {
-                // In checkout mode: if user clicks on or before selectedCheckIn, treat as new check-in
                 if (!selectedCheckIn || clickedMs <= selectedCheckIn.getTime()) {
                     if (isNightBooked(clickedDate)) return;
                     selectedCheckIn = clickedDate;
@@ -1013,7 +1215,6 @@
                 renderCalendar();
                 evaluateDatesAndAvailability("calendar");
 
-                // Automatically close calendar after a short pause so user sees their completed range
                 setTimeout(() => {
                     closeCalendar();
                 }, 180);
@@ -1043,6 +1244,7 @@
             if (!inDate || !outDate) {
                 setBannerState("unavailable", "Please select both check-in and check-out dates.");
                 setReserveButtonState(false, "Select Stay Dates");
+                updatePriceAndRoomUI(1);
                 return;
             }
 
@@ -1065,9 +1267,10 @@
                 return;
             }
 
-            updatePriceUI(nights);
+            // Immediately update UI with local dynamic pricing calculations
+            const localPricing = updatePriceAndRoomUI(nights);
 
-            // Fast client-side overlap pre-check against embedded reservedRanges
+            // Fast client-side overlap pre-check
             const localConflict = reservedRanges.find((r) => {
                 const rIn = parseISO(r.checkIn);
                 const rOut = parseISO(r.checkOut);
@@ -1083,12 +1286,13 @@
                 return;
             }
 
-            // Local check passed: dates are in future, valid range, and non-conflicting
             setReserveButtonState(true);
 
-            // Live server-side availability verification
             if (!listingId) {
-                setBannerState("available", "Dates are available for instant reservation!");
+                const msg = localPricing.occupancyWarning
+                    ? `Available: ${localPricing.occupancyWarning}`
+                    : "Dates and room are available for instant reservation!";
+                setBannerState("available", msg);
                 return;
             }
 
@@ -1097,9 +1301,12 @@
             }
             activeAbortController = new AbortController();
 
-            setBannerState("checking", "Checking real-time room availability...");
+            setBannerState("checking", "Verifying room availability & real-time pricing...");
             try {
-                const url = `/listings/${encodeURIComponent(listingId)}/availability?checkIn=${encodeURIComponent(checkInInput.value)}&checkOut=${encodeURIComponent(checkOutInput.value)}`;
+                const guests = guestsSelect ? (parseInt(guestsSelect.value, 10) || 2) : 2;
+                const activeRoom = getActiveRoom();
+                const url = `/listings/${encodeURIComponent(listingId)}/availability?checkIn=${encodeURIComponent(checkInInput.value)}&checkOut=${encodeURIComponent(checkOutInput.value)}&guestsCount=${encodeURIComponent(guests)}&roomTypeCode=${encodeURIComponent(activeRoom.code)}`;
+
                 const res = await fetch(url, {
                     headers: { Accept: "application/json" },
                     signal: activeAbortController.signal,
@@ -1114,11 +1321,11 @@
                 }
 
                 if (data.priceBreakdown && typeof data.priceBreakdown.nights === "number") {
-                    updatePriceUI(data.priceBreakdown.nights);
+                    updatePriceAndRoomUI(data.priceBreakdown.nights);
                 }
 
                 if (res.ok && data.available) {
-                    setBannerState("available", data.message || "Dates are available for instant reservation!");
+                    setBannerState("available", data.message || "Dates and room are available for instant reservation!");
                     setReserveButtonState(true);
                 } else {
                     setBannerState("unavailable", data.message || "Selected dates are unavailable.");
@@ -1174,6 +1381,11 @@
             calResetBtn.addEventListener("click", () => {
                 if (checkInInput) checkInInput.value = initialCheckInISO;
                 if (checkOutInput) checkOutInput.value = initialCheckOutISO;
+                if (guestsSelect) guestsSelect.value = "2";
+                if (roomTypeSelect && roomTypes.length > 0) {
+                    const deluxe = roomTypes.find((r) => r.code === "deluxe") || roomTypes[0];
+                    roomTypeSelect.value = deluxe.code;
+                }
                 selectedCheckIn = parseISO(initialCheckInISO);
                 selectedCheckOut = parseISO(initialCheckOutISO);
                 activePickerMode = "checkin";
@@ -1193,7 +1405,7 @@
             calCloseTopBtn.addEventListener("click", closeCalendar);
         }
 
-        // Close calendar when clicking outside #njDatePickerSection or pressing Escape
+        // Close calendar when clicking outside or pressing Escape
         document.addEventListener("click", (e) => {
             if (!calendarWidget || calendarWidget.hidden) return;
             const dateSection = document.getElementById("njDatePickerSection");
@@ -1207,7 +1419,20 @@
             }
         });
 
-        // Support programmatic change events on #njCheckInInput & #njCheckOutInput
+        // Event listeners for Guests & Room Type changes
+        if (guestsSelect) {
+            guestsSelect.addEventListener("change", () => {
+                evaluateDatesAndAvailability("guests");
+            });
+        }
+
+        if (roomTypeSelect) {
+            roomTypeSelect.addEventListener("change", () => {
+                evaluateDatesAndAvailability("roomType");
+            });
+        }
+
+        // Support programmatic change events on checkIn / checkOut
         if (checkInInput) {
             checkInInput.addEventListener("change", () => evaluateDatesAndAvailability("checkin"));
         }
@@ -1233,4 +1458,68 @@
         renderCalendar();
         evaluateDatesAndAvailability("init");
     }
+
+    // =========================================================================
+    // 10. Premium Flash Alert Notification Auto-Dismissal & Smooth Exit
+    // =========================================================================
+    const flashAlerts = document.querySelectorAll(".nj-flash-alert");
+    flashAlerts.forEach((alert) => {
+        const dismissDelay = parseInt(alert.getAttribute("data-auto-dismiss") || "4500", 10);
+        let remainingTime = dismissDelay;
+        let startTime = Date.now();
+        let timeoutId = null;
+
+        const dismissAlert = () => {
+            if (alert.classList.contains("nj-flash-dismissing")) return;
+            alert.classList.add("nj-flash-dismissing");
+
+            const cleanup = () => {
+                const wrapper = alert.closest(".nj-flash-wrapper");
+                alert.remove();
+                if (wrapper && wrapper.children.length === 0) {
+                    wrapper.remove();
+                }
+            };
+
+            alert.addEventListener("animationend", cleanup, { once: true });
+            // Fallback timeout in case animationend does not fire
+            setTimeout(cleanup, 400);
+        };
+
+        const startTimer = () => {
+            startTime = Date.now();
+            timeoutId = setTimeout(dismissAlert, remainingTime);
+        };
+
+        const pauseTimer = () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+                const elapsed = Date.now() - startTime;
+                remainingTime = Math.max(800, remainingTime - elapsed);
+            }
+        };
+
+        // Pause on user hover so they can comfortably read, resume on leave
+        alert.addEventListener("mouseenter", pauseTimer);
+        alert.addEventListener("mouseleave", () => {
+            if (!alert.classList.contains("nj-flash-dismissing")) {
+                startTimer();
+            }
+        });
+
+        // Intercept close button click for smooth custom exit animation
+        const closeBtn = alert.querySelector(".nj-flash-close-btn");
+        if (closeBtn) {
+            closeBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (timeoutId) clearTimeout(timeoutId);
+                dismissAlert();
+            });
+        }
+
+        // Start initial auto-dismiss timer
+        startTimer();
+    });
 })();

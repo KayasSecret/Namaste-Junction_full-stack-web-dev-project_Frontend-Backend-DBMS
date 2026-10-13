@@ -1,0 +1,385 @@
+/* ==========================================================================
+   cards.css — Premium Property Listing Cards & Grid
+   Namaste Junction | Premium Travel Platform
+   ========================================================================== */
+
+/* ==========================================================================
+   3. Premium Property Listing Cards
+   ========================================================================== */
+.nj-listing-col {
+    display: flex;
+}
+
+.listing-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    width: 100%;
+}
+
+.card.listing-card.nj-stay-card {
+    width: 100%;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(226, 232, 240, 0.9) !important;
+    background: #ffffff;
+    overflow: hidden;
+    margin-bottom: 0;
+    box-shadow: 0 10px 28px -10px rgba(15, 23, 42, 0.08);
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.28s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.listing-link:hover .card.listing-card.nj-stay-card {
+    transform: translateY(-6px);
+    border-color: rgba(254, 66, 77, 0.35) !important;
+    box-shadow: 0 22px 44px -12px rgba(15, 23, 42, 0.16),
+                0 6px 16px -4px rgba(254, 66, 77, 0.12);
+}
+
+/* ------ Card Media & Overlays ------ */
+.nj-card-media {
+    position: relative;
+    height: 16.25rem;
+    width: 100%;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.card-img-top.nj-card-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.listing-link:hover .card-img-top.nj-card-img {
+    transform: scale(1.06);
+}
+
+.card-img-overlay.nj-card-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 1;
+    background: linear-gradient(
+        180deg,
+        rgba(15, 23, 42, 0.38) 0%,
+        rgba(15, 23, 42, 0.02) 45%,
+        rgba(15, 23, 42, 0.68) 100%
+    );
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.listing-link:hover .card-img-overlay.nj-card-overlay {
+    background: linear-gradient(
+        180deg,
+        rgba(15, 23, 42, 0.32) 0%,
+        rgba(15, 23, 42, 0.04) 45%,
+        rgba(15, 23, 42, 0.74) 100%
+    );
+}
+
+.nj-card-top-badges {
+    position: absolute;
+    top: 0.9rem;
+    left: 0.95rem;
+    right: 0.95rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+.nj-badge-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    padding: 0.34rem 0.78rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #ffffff;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.nj-tone-coral {
+    background: linear-gradient(135deg, rgba(254, 66, 77, 0.92), rgba(255, 117, 85, 0.92));
+}
+
+.nj-tone-amber {
+    background: linear-gradient(135deg, rgba(217, 119, 6, 0.92), rgba(245, 158, 11, 0.92));
+}
+
+.nj-tone-emerald {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.92), rgba(16, 185, 129, 0.92));
+}
+
+.nj-tone-sky {
+    background: linear-gradient(135deg, rgba(2, 132, 199, 0.92), rgba(56, 189, 248, 0.92));
+}
+
+.nj-tone-violet {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.92), rgba(168, 85, 247, 0.92));
+}
+
+.nj-badge-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.32rem 0.68rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #f8fafc;
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+.nj-badge-rating i {
+    color: #facc15;
+    font-size: 0.72rem;
+}
+
+.nj-card-location-bar {
+    position: absolute;
+    bottom: 0.85rem;
+    left: 0.95rem;
+    right: 0.95rem;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.nj-location-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    padding: 0.32rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.62);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #f8fafc;
+    font-size: 0.78rem;
+    font-weight: 600;
+    max-width: 100%;
+}
+
+.nj-location-chip i {
+    color: #ff758c;
+    flex-shrink: 0;
+}
+
+.nj-location-chip span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ------ Card Body & Typography ------ */
+.card-body.nj-card-body {
+    padding: 1.25rem 1.35rem 1.3rem 1.35rem !important;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.nj-card-title {
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.35;
+    margin: 0 0 0.45rem 0;
+    letter-spacing: -0.01em;
+    transition: color 0.22s ease;
+}
+
+.listing-link:hover .nj-card-title {
+    color: #fe424d;
+}
+
+.nj-card-desc {
+    font-size: 0.86rem;
+    color: #64748b;
+    line-height: 1.55;
+    margin: 0 0 0.9rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.nj-card-perks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.85rem;
+    margin-bottom: 1.05rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.nj-card-perks span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.nj-card-perks i {
+    color: #10b981;
+    font-size: 0.75rem;
+}
+
+/* ------ Card Footer: Price & Explore CTA ------ */
+.nj-card-footer {
+    margin-top: auto;
+    padding-top: 0.95rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.nj-price-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.nj-price-main {
+    display: flex;
+    align-items: baseline;
+    gap: 0.28rem;
+}
+
+.nj-price-currency {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+}
+
+.nj-price-unit {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.tax-info {
+    display: none;
+}
+
+.tax-info.nj-tax-badge {
+    margin-top: 0.18rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #059669;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    width: fit-content;
+}
+
+.nj-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.48rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(254, 66, 77, 0.08);
+    color: #fe424d;
+    font-size: 0.82rem;
+    font-weight: 700;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.nj-card-cta i {
+    font-size: 0.76rem;
+    transition: transform 0.25s ease;
+}
+
+.listing-link:hover .nj-card-cta {
+    background: linear-gradient(135deg, #fe424d 0%, #ff7555 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 14px -3px rgba(254, 66, 77, 0.45);
+}
+
+.listing-link:hover .nj-card-cta i {
+    transform: translateX(3px);
+}
+
+/* ------ Empty Filter State ------ */
+.nj-empty-state {
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    margin-top: 1rem;
+    border-radius: 1.35rem;
+    background: #f8fafc;
+    border: 1.5px dashed #cbd5e1;
+}
+
+.nj-empty-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: rgba(254, 66, 77, 0.1);
+    color: #fe424d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.nj-empty-state h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.4rem;
+}
+
+.nj-empty-state p {
+    font-size: 0.92rem;
+    color: #64748b;
+    margin-bottom: 1.25rem;
+}
+
+.nj-btn-reset-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.58rem 1.25rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #fe424d 0%, #ff7555 100%);
+    color: #ffffff;
+    font-size: 0.88rem;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 6px 16px -4px rgba(254, 66, 77, 0.45);
+}
+
+.nj-btn-reset-filters:hover {
+    color: #ffffff;
+    filter: brightness(1.05);
+}
+
+
+/* ------ Listing Cards Responsive Styles ------ */
+@media (max-width: 575.98px) {
+    .nj-card-media {
+        height: 14.5rem;
+    }
+}

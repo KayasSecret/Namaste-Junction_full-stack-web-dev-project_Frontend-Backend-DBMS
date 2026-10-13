@@ -1,5 +1,5 @@
 /* ==========================================================================
-   base.css — Body, Typography, Layout Foundations
+   base.css — Body, Typography, Layout Foundations & Global Flash Alerts
    Namaste Junction | Premium Travel Platform
    ========================================================================== */
 
@@ -15,4 +15,244 @@ body {
 /* Keep the main content area flexible so footer stays at bottom */
 .container {
     flex: 1;
+}
+
+/* ==========================================================================
+   Premium Flash Alert Notifications (Success & Danger)
+   Theme: Namaste Junction Coral-Red, Warm White, Elevated Shadow
+   ========================================================================== */
+
+.nj-flash-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 1.25rem auto 1.35rem auto;
+    position: relative;
+    z-index: 1050;
+    padding: 0 0.75rem;
+    pointer-events: none; /* Allows clicks through wrapper to page content */
+}
+
+.nj-flash-alert {
+    pointer-events: auto; /* Re-enable pointer events on the alert card */
+    background: #ffffff !important;
+    border: 1px solid rgba(254, 66, 77, 0.22) !important;
+    border-radius: 1.25rem !important;
+    padding: 0.95rem 1.15rem 0.95rem 1.1rem !important;
+    width: 100%;
+    max-width: 580px;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 18px 40px -12px rgba(254, 66, 77, 0.2), 0 4px 14px -2px rgba(15, 23, 42, 0.06) !important;
+    animation: njFlashSlideIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: #0f172a !important;
+}
+
+.nj-flash-alert:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 46px -12px rgba(254, 66, 77, 0.26), 0 6px 18px -2px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Glowing Left Indicator Accent */
+.nj-flash-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4.5px;
+}
+
+.nj-flash-success .nj-flash-indicator {
+    background: linear-gradient(180deg, #fe424d 0%, #ff6b57 55%, #ff8e53 100%);
+}
+
+.nj-flash-danger .nj-flash-indicator {
+    background: linear-gradient(180deg, #dc2626 0%, #ef4444 100%);
+}
+
+/* Circular Icon Badge */
+.nj-flash-icon-box {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.05rem;
+    transition: transform 0.25s ease;
+}
+
+.nj-flash-alert:hover .nj-flash-icon-box {
+    transform: scale(1.08) rotate(5deg);
+}
+
+.nj-flash-success .nj-flash-icon-box {
+    background: linear-gradient(135deg, rgba(254, 66, 77, 0.12) 0%, rgba(255, 107, 87, 0.18) 100%);
+    color: #fe424d;
+    box-shadow: 0 0 0 4px rgba(254, 66, 77, 0.06);
+}
+
+.nj-flash-danger .nj-flash-icon-box {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(239, 68, 68, 0.18) 100%);
+    color: #dc2626;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.06);
+}
+
+/* Alert Body Text */
+.nj-flash-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.nj-flash-title {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.nj-flash-success .nj-flash-title {
+    color: #fe424d;
+}
+
+.nj-flash-danger .nj-flash-title {
+    color: #dc2626;
+}
+
+.nj-flash-message {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    line-height: 1.38;
+    word-break: break-word;
+}
+
+/* Modern Close (X) Button */
+.nj-flash-close-btn {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.88rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    margin-left: 0.25rem;
+    padding: 0;
+}
+
+.nj-flash-close-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    transform: scale(1.08);
+}
+
+.nj-flash-close-btn:active {
+    transform: scale(0.94);
+}
+
+/* Bottom Progress Track & Countdown Bar */
+.nj-flash-progress-track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+}
+
+.nj-flash-progress-bar {
+    height: 100%;
+    width: 100%;
+    transform-origin: left center;
+    animation: njFlashCountdown 4.5s linear forwards;
+}
+
+.nj-flash-success .nj-flash-progress-bar {
+    background: linear-gradient(90deg, #fe424d 0%, #ff8e53 100%);
+}
+
+.nj-flash-danger .nj-flash-progress-bar {
+    background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+}
+
+/* Hover-to-pause auto dismissal countdown */
+.nj-flash-alert:hover .nj-flash-progress-bar {
+    animation-play-state: paused;
+}
+
+/* Keyframe Animations */
+@keyframes njFlashSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-18px) scale(0.96);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes njFlashSlideOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        max-height: 120px;
+        margin-bottom: 0;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.96);
+        max-height: 0;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        border-width: 0 !important;
+    }
+}
+
+@keyframes njFlashCountdown {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* Dismissing state triggered by timer or user click */
+.nj-flash-alert.nj-flash-dismissing {
+    animation: njFlashSlideOut 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    pointer-events: none;
+}
+
+/* Accessibility: Respect Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .nj-flash-alert {
+        animation: none;
+    }
+    .nj-flash-alert.nj-flash-dismissing {
+        animation: none;
+        opacity: 0;
+    }
+    .nj-flash-progress-bar {
+        display: none;
+    }
 }

@@ -21,6 +21,8 @@ module.exports.signup = async (req, res, next) => {
             if (err) {
                 return next(err);
             }
+            req.session.sessionCreatedAt = Date.now();
+            req.session.lastActivity = Date.now();
             req.flash("success", "Welcome to NamasteJunction");
             return req.session.save(() => res.redirect("/listings"));
         });
@@ -35,24 +37,41 @@ module.exports.renderLoginForm = (req, res) => {
     if (req.isAuthenticated()) {
         return res.redirect("/listings");
     }
+    if (req.query.expired === "idle") {
+        req.flash("error", "Your session expired due to inactivity. Please log in again.");
+    } else if (req.query.expired === "absolute") {
+        req.flash("error", "Your session has expired. Please log in again.");
+    }
     res.render("users/login.ejs");
 };
 
 // Login Route Controller
 module.exports.login = async (req, res) => {
+    req.session.sessionCreatedAt = Date.now();
+    req.session.lastActivity = Date.now();
     req.flash("success", "Welcome back to NamasteJunction! You are logged in!");
     let redirectUrl = res.locals.redirectUrl || "/listings";
     return req.session.save(() => res.redirect(redirectUrl));
 };
 
-// Logout Route Controller — securely logs out and invalidates the authenticated session
+// Logout Route Controller — securely logs out, destroys the server-side session, and clears the session cookie
 module.exports.logout = (req, res, next) => {
     req.logout((err) => {
         if (err) {
             return next(err);
         }
-        req.flash("success", "You are logged out!");
-        return req.session.save(() => res.redirect("/listings"));
+        req.session.destroy((destroyErr) => {
+            if (destroyErr) {
+                return next(destroyErr);
+            }
+            res.clearCookie("connect.sid", {
+                path: "/",
+                httpOnly: true,
+                sameSite: "lax",
+                secure: process.env.NODE_ENV === "production",
+            });
+            return res.redirect("/listings");
+        });
     });
 };
 

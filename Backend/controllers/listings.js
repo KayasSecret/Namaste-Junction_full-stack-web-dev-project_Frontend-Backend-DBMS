@@ -1,7 +1,10 @@
 // Core Functionality in this listings.js
+const path = require("path");
+const fs = require("fs");
 const Listing = require("../models/listing.js");
 const Booking = require("../models/booking.js");
 const { getTodayUTC, formatDateISO } = require("./bookings.js");
+const { cloudinary, hasCloudinaryCredentials, uploadsDir } = require("../cloudConfig.js");
 
 // Index Route Controller
 module.exports.index = async (req, res) => {
@@ -94,10 +97,6 @@ module.exports.updateListing = async (req, res) => {
     req.flash("success", "Listing Updated!");
     res.redirect(`/listings/${id}`);  
 };
-
-const path = require("path");
-const fs = require("fs");
-const { cloudinary, hasCloudinaryCredentials, uploadsDir } = require("../cloudConfig.js");
 
 // Delete Route Controller
 module.exports.destroyListing = async (req, res) => {

@@ -55,20 +55,7 @@ function formatDateISO(dateObj) {
     return d.toISOString().slice(0, 10);
 }
 
-function calculateBookingPrice(listingPrice, nights) {
-    const nightlyRate = Math.max(0, Number(listingPrice) || 0);
-    const validNights = Math.max(1, Number(nights) || 1);
-    const basePrice = nightlyRate * validNights;
-    const taxAmount = Math.round(basePrice * 0.18);
-    const totalPrice = basePrice + taxAmount;
-    return {
-        nightlyRate,
-        nights: validNights,
-        basePrice,
-        taxAmount,
-        totalPrice,
-    };
-}
+const { calculateBookingPrice } = require("../utils/pricing.js");
 
 function generateBookingCode() {
     const now = new Date();
@@ -77,7 +64,7 @@ function generateBookingCode() {
     return `NJ-${ymd}-${token}`;
 }
 
-// GET /listings/:id/availability — Real-time JSON availability & server-side price check
+// GET /listings/:id/availability — Real-time JSON availability & dynamic server-side pricing
 module.exports.checkAvailability = async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
@@ -99,12 +86,23 @@ module.exports.checkAvailability = async (req, res) => {
         checkOut: formatDateISO(b.checkOut),
     }));
 
-    const { checkIn, checkOut } = req.query;
+    const { checkIn, checkOut, guestsCount, roomType, roomTypeCode } = req.query;
+    const selectedRoomCode = roomTypeCode || roomType || "deluxe";
+    const parsedGuests = Math.max(1, Math.min(12, Number.parseInt(guestsCount, 10) || 2));
+
     if (!checkIn || !checkOut) {
+        const previewBreakdown = calculateBookingPrice({
+            listing,
+            nights: 1,
+            guestsCount: parsedGuests,
+            roomTypeCode: selectedRoomCode,
+        });
+
         return res.json({
             available: true,
             reservedRanges,
-            nightlyRate: Number(listing.price) || 0,
+            nightlyRate: previewBreakdown.nightlyRate,
+            priceBreakdown: previewBreakdown,
         });
     }
 
@@ -148,7 +146,12 @@ module.exports.checkAvailability = async (req, res) => {
         (b) => b.checkIn < checkOutDate && b.checkOut > checkInDate
     );
 
-    const priceBreakdown = calculateBookingPrice(listing.price, nights);
+    const priceBreakdown = calculateBookingPrice({
+        listing,
+        nights,
+        guestsCount: parsedGuests,
+        roomTypeCode: selectedRoomCode,
+    });
 
     if (conflict) {
         return res.json({
@@ -163,7 +166,9 @@ module.exports.checkAvailability = async (req, res) => {
         available: true,
         reservedRanges,
         priceBreakdown,
-        message: "Dates are available for instant reservation!",
+        message: priceBreakdown.occupancyNote
+            ? `Available: ${priceBreakdown.occupancyNote}`
+            : "Dates and room are available for instant reservation!",
     });
 };
 
@@ -191,11 +196,8 @@ module.exports.createBooking = async (req, res) => {
     const payload = req.body.booking || req.body || {};
     const checkInDate = parseUTCDate(payload.checkIn);
     const checkOutDate = parseUTCDate(payload.checkOut);
-    const guestsCount = Number.parseInt(payload.guestsCount, 10) || 2;
-    const paymentMethod = payload.paymentMethod === "online_pending" ? "online_pending" : "pay_at_property";
-    const specialRequests = typeof payload.specialRequests === "string"
-        ? payload.specialRequests.trim().slice(0, 400)
-        : "";
+    const guestsCount = Math.max(1, Math.min(12, Number.parseInt(payload.guestsCount, 10) || 2));
+    const roomTypeCode = payload.roomTypeCode || payload.roomType || "deluxe";
 
     const todayUTC = getTodayUTC();
 
@@ -220,12 +222,13 @@ module.exports.createBooking = async (req, res) => {
         return req.session.save(() => res.redirect(`/listings/${id}`));
     }
 
-    if (guestsCount < 1 || guestsCount > 12) {
-        req.flash("error", "Guest count must be between 1 and 12 guests.");
-        return req.session.save(() => res.redirect(`/listings/${id}`));
-    }
-
-    const priceData = calculateBookingPrice(listing.price, nights);
+    // Server-side authoritative price recalculation
+    const priceData = calculateBookingPrice({
+        listing,
+        nights,
+        guestsCount,
+        roomTypeCode,
+    });
 
     // Serialize concurrent booking attempts for this listing
     const result = await withListingLock(listing._id, async () => {
@@ -251,15 +254,25 @@ module.exports.createBooking = async (req, res) => {
             checkIn: checkInDate,
             checkOut: checkOutDate,
             nights: priceData.nights,
-            guestsCount,
+            guestsCount: priceData.guestsCount,
+            roomsCount: priceData.roomsRequired,
+            roomType: {
+                code: priceData.roomTypeCode,
+                name: priceData.roomTypeName,
+                nightlyRate: priceData.nightlyRate,
+                bedConfig: priceData.bedConfig,
+            },
             nightlyRate: priceData.nightlyRate,
-            basePrice: priceData.basePrice,
+            basePrice: priceData.roomBaseCharge,
+            extraGuestCharges: priceData.extraGuestCharge,
+            gstRate: priceData.gstRate,
+            gstLabel: priceData.gstLabel,
             taxAmount: priceData.taxAmount,
             totalPrice: priceData.totalPrice,
             status: "confirmed",
-            paymentMethod,
-            paymentStatus: paymentMethod === "online_pending" ? "pending" : "pay_at_property",
-            specialRequests,
+            paymentMethod: "pay_at_property",
+            paymentStatus: "pay_at_property",
+            specialRequests: "",
         });
 
         await newBooking.save();
@@ -369,42 +382,6 @@ module.exports.cancelBooking = async (req, res) => {
     await booking.save();
 
     req.flash("success", `Reservation ${booking.bookingCode} has been cancelled and dates have been released.`);
-    const redirectBack = req.query.from === "dashboard" ? "/bookings" : `/bookings/${booking._id}`;
-    return req.session.save(() => res.redirect(redirectBack));
-};
-
-// PATCH / POST /bookings/:bookingId/status — Host-Only Reservation Management
-module.exports.updateHostBookingStatus = async (req, res) => {
-    const { bookingId } = req.params;
-    const booking = await Booking.findById(bookingId);
-
-    if (!booking) {
-        req.flash("error", "Reservation not found.");
-        return req.session.save(() => res.redirect("/bookings"));
-    }
-
-    const isHost = booking.host && booking.host.equals(req.user._id);
-    if (!isHost) {
-        req.flash("error", "Access denied: Only the property host can update reservation status.");
-        return req.session.save(() => res.redirect("/bookings"));
-    }
-
-    const { status, paymentStatus } = req.body;
-    if (status && ["confirmed", "completed", "cancelled"].includes(status)) {
-        booking.status = status;
-        if (status === "cancelled" && !booking.cancelledAt) {
-            booking.cancelledBy = "host";
-            booking.cancelledAt = new Date();
-        }
-    }
-
-    if (paymentStatus && ["pay_at_property", "pending", "paid", "refunded"].includes(paymentStatus)) {
-        booking.paymentStatus = paymentStatus;
-    }
-
-    await booking.save();
-
-    req.flash("success", `Updated reservation ${booking.bookingCode}.`);
     const redirectBack = req.query.from === "dashboard" ? "/bookings" : `/bookings/${booking._id}`;
     return req.session.save(() => res.redirect(redirectBack));
 };

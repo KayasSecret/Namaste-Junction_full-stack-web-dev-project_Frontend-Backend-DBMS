@@ -21,7 +21,6 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/namastejunction";
 const dbUrl = process.env.ATLASDB_URL;
 
 main()
@@ -43,29 +42,35 @@ app.use(methodOverride("_method"));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "../Frontend/public")));
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   crypto: {
     secret: process.env.SECRET,
   },
-  touchAfter: 24 * 3600,
+  touchAfter: 60, // Refresh session touch in Mongo at most once per 60 seconds
+  ttl: 2 * 60 * 60, // Server-side session TTL in MongoStore: 2 hours
 });
 
 store.on("error", (err) => {
-  console.log("ERROR in MONGO SESSION STORE", err)
+  console.log("ERROR in MONGO SESSION STORE", err);
 });
 
-const sessionOption = ({ 
+// Browser-session-only cookie configuration:
+// Omitting expires and maxAge ensures the cookie is sent without an expiration timestamp,
+// instructing the browser to discard the cookie upon browser session exit.
+const sessionOption = {
   store,
   secret: process.env.SECRET,
-  resave: false, 
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false, // Prevent persisting unauthenticated empty guest sessions
   cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true
-  } 
-});
+    httpOnly: true,
+    sameSite: "lax",
+    secure: isProduction,
+  },
+};
 
 app.use(session(sessionOption));
 app.use(flash());
@@ -79,22 +84,61 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Server-Side Session Activity & Timeout Enforcement Middleware
+// Enforces a 1-hour idle timeout and 12-hour absolute session ceiling on authenticated sessions
+const SESSION_IDLE_TIMEOUT_MS = 60 * 60 * 1000; // 1 hour idle timeout
+const SESSION_ABSOLUTE_TIMEOUT_MS = 12 * 60 * 60 * 1000; // 12 hours absolute lifetime
+
 app.use((req, res, next) => {
+  if (req.session && req.isAuthenticated && req.isAuthenticated()) {
+    const now = Date.now();
+    const lastActivity = req.session.lastActivity;
+    const createdAt = req.session.sessionCreatedAt;
+
+    // Check idle timeout
+    if (lastActivity && now - lastActivity > SESSION_IDLE_TIMEOUT_MS) {
+      req.logout((err) => {
+        req.session.destroy(() => {
+          res.clearCookie("connect.sid", {
+            path: "/",
+            httpOnly: true,
+            sameSite: "lax",
+            secure: isProduction,
+          });
+          return res.redirect("/login?expired=idle");
+        });
+      });
+      return;
+    }
+
+    // Check absolute session ceiling
+    if (createdAt && now - createdAt > SESSION_ABSOLUTE_TIMEOUT_MS) {
+      req.logout((err) => {
+        req.session.destroy(() => {
+          res.clearCookie("connect.sid", {
+            path: "/",
+            httpOnly: true,
+            sameSite: "lax",
+            secure: isProduction,
+          });
+          return res.redirect("/login?expired=absolute");
+        });
+      });
+      return;
+    }
+
+    // Record activity timestamp and session creation if not set
+    req.session.lastActivity = now;
+    if (!req.session.sessionCreatedAt) {
+      req.session.sessionCreatedAt = now;
+    }
+  }
+
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user;
   next();
 });
-
-// app.get("/demouser", async (req, res) => {
-//   let fakeUser = new User({
-//     email: "student23@gmail.com",
-//     username: "delta-student"
-//   });
-
-//   let registeredUser = await User.register(fakeUser, "HelloStudent");
-//   res.send(registeredUser);
-// });
 
 // Root Route Redirect
 app.get("/", (req, res) => {

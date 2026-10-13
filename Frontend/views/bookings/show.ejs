@@ -173,6 +173,14 @@
           <!-- Stay Details & Guest Information -->
           <div class="nj-voucher-meta-grid">
             <div class="nj-voucher-meta-item">
+              <span class="nj-meta-label">Room Type</span>
+              <strong class="nj-meta-val"><%= booking.roomType && booking.roomType.name ? booking.roomType.name : "Standard Room" %></strong>
+            </div>
+            <div class="nj-voucher-meta-item">
+              <span class="nj-meta-label">Rooms Allocated</span>
+              <strong class="nj-meta-val"><%= booking.roomsCount || 1 %> <%= (booking.roomsCount || 1) === 1 ? "Room" : "Rooms" %></strong>
+            </div>
+            <div class="nj-voucher-meta-item">
               <span class="nj-meta-label">Total Duration</span>
               <strong class="nj-meta-val"><%= booking.nights %> <%= booking.nights === 1 ? "Night" : "Nights" %></strong>
             </div>
@@ -211,15 +219,24 @@
 
             <div class="nj-voucher-price-rows">
               <div class="nj-voucher-price-row">
-                <span>&#8377;<%= Number(booking.nightlyRate).toLocaleString("en-IN") %> &times; <%= booking.nights %> <%= booking.nights === 1 ? "night" : "nights" %></span>
+                <span>
+                  &#8377;<%= Number(booking.nightlyRate).toLocaleString("en-IN") %> &times; <%= booking.nights %> <%= booking.nights === 1 ? "night" : "nights" %>
+                  <% if ((booking.roomsCount || 1) > 1) { %> &times; <%= booking.roomsCount %> rooms<% } %>
+                </span>
                 <strong>&#8377;<%= Number(booking.basePrice).toLocaleString("en-IN") %></strong>
               </div>
+              <% if (booking.extraGuestCharges && booking.extraGuestCharges > 0) { %>
+                <div class="nj-voucher-price-row">
+                  <span>Extra Guest Surcharge</span>
+                  <strong>&#8377;<%= Number(booking.extraGuestCharges).toLocaleString("en-IN") %></strong>
+                </div>
+              <% } %>
               <div class="nj-voucher-price-row">
                 <span>Hospitality &amp; Cleaning Fee</span>
                 <strong class="nj-free-tag">FREE</strong>
               </div>
               <div class="nj-voucher-price-row">
-                <span>GST &amp; Occupancy Taxes (18%)</span>
+                <span><%= booking.gstLabel || `GST (${booking.gstRate ? (booking.gstRate * 100).toFixed(0) : 12}%)` %></span>
                 <strong>&#8377;<%= Number(booking.taxAmount).toLocaleString("en-IN") %></strong>
               </div>
               <div class="nj-voucher-price-row nj-voucher-price-total">
@@ -259,38 +276,6 @@
               </div>
             <% } %>
 
-            <!-- Host Management Panel (Only shown when logged-in user is the Property Host) -->
-            <% if (isHost) { %>
-              <div class="nj-host-manage-card mt-3">
-                <h4 class="nj-host-manage-title">
-                  <i class="fa-solid fa-user-gear" aria-hidden="true"></i>
-                  Host Reservation Controls
-                </h4>
-                <form action="/bookings/<%= booking._id %>/status?_method=PATCH" method="POST" class="nj-host-status-form">
-                  <div class="mb-2">
-                    <label class="form-label small fw-bold mb-1" for="hostBookingStatus">Reservation Status</label>
-                    <select id="hostBookingStatus" name="status" class="form-select form-select-sm">
-                      <option value="confirmed" <%= booking.status === "confirmed" ? "selected" : "" %>>Confirmed</option>
-                      <option value="completed" <%= booking.status === "completed" ? "selected" : "" %>>Completed Stay</option>
-                      <option value="cancelled" <%= booking.status === "cancelled" ? "selected" : "" %>>Cancelled</option>
-                    </select>
-                  </div>
-                  <div class="mb-2">
-                    <label class="form-label small fw-bold mb-1" for="hostPaymentStatus">Payment Status</label>
-                    <select id="hostPaymentStatus" name="paymentStatus" class="form-select form-select-sm">
-                      <option value="pay_at_property" <%= booking.paymentStatus === "pay_at_property" ? "selected" : "" %>>Pay at Property</option>
-                      <option value="pending" <%= booking.paymentStatus === "pending" ? "selected" : "" %>>Pending</option>
-                      <option value="paid" <%= booking.paymentStatus === "paid" ? "selected" : "" %>>Paid</option>
-                      <option value="refunded" <%= booking.paymentStatus === "refunded" ? "selected" : "" %>>Refunded</option>
-                    </select>
-                  </div>
-                  <button type="submit" class="btn nj-btn-primary btn-sm w-100">
-                    <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
-                    <span>Update Reservation Status</span>
-                  </button>
-                </form>
-              </div>
-            <% } %>
           </div>
         </div>
       </div>

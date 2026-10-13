@@ -305,12 +305,10 @@
     </div>
   </section>
 
-  <!-- ====== Main Two-Column Content Layout ====== -->
-  <div class="row g-4 nj-show-main-grid">
-    <!-- Left Column: Host Info, Description, Amenities & Owner Controls -->
-    <div class="col-lg-8">
-      <!-- Host & Property Overview Card -->
-      <div class="nj-detail-surface">
+  <!-- ====== 1. Property Overview Section (Hosted By, About, Signature Amenities) ====== -->
+  <section class="nj-show-overview-section mb-4" aria-label="Property Overview">
+    <!-- Host & Property Overview Card -->
+    <div class="nj-detail-surface">
         <div class="nj-host-header">
           <div class="nj-host-profile">
             <div class="nj-host-avatar" aria-hidden="true"><%= hostInitial %></div>
@@ -405,10 +403,12 @@
           </div>
         <% } %>
       </div>
-    </div>
+  </section>
 
-    <!-- Right Column: Sticky Hotel-Style Booking & Price Breakdown Panel -->
-    <div class="col-lg-4">
+  <!-- ====== 2. Full-Width Hotel-Style Booking & Price Breakdown Section (Directly Below Overview) ====== -->
+  <section class="nj-show-booking-section mb-5" aria-label="Hotel reservation and pricing">
+    <div class="row">
+      <div class="col-12">
       <%
         const nowUTC = new Date();
         const todayUTCDate = new Date(Date.UTC(nowUTC.getFullYear(), nowUTC.getMonth(), nowUTC.getDate()));
@@ -449,26 +449,47 @@
             timeZone: "UTC",
           });
 
-        const defaultBaseTotal = basePrice * defaultNights;
-        const defaultTaxTotal = Math.round(defaultBaseTotal * 0.18);
-        const defaultGrandTotal = defaultBaseTotal + defaultTaxTotal;
+        const listingRoomTypes = (listing && Array.isArray(listing.roomTypes) && listing.roomTypes.length > 0)
+          ? listing.roomTypes
+          : [
+              { code: "standard", name: "Standard Room", price: Math.round(basePrice * 0.85), maxOccupancy: 2, baseOccupancy: 2, extraGuestRate: 0, bedConfig: "1 Queen Bed", roomSize: "280 sq.ft", amenities: ["Ensuite Bathroom", "Free Wi-Fi", "Air Conditioning", "Daily Housekeeping"] },
+              { code: "deluxe", name: "Deluxe Room", price: basePrice, maxOccupancy: 3, baseOccupancy: 2, extraGuestRate: Math.round(basePrice * 0.12), bedConfig: "1 King Bed", roomSize: "380 sq.ft", amenities: ["Private Balcony", "High-Speed Wi-Fi", "Smart TV", "Mini Fridge", "Complimentary Tea & Coffee"] },
+              { code: "suite", name: "Executive Suite", price: Math.round(basePrice * 1.45), maxOccupancy: 4, baseOccupancy: 2, extraGuestRate: Math.round(basePrice * 0.15), bedConfig: "1 King Bed + 1 Sofa Bed", roomSize: "550 sq.ft", amenities: ["Scenic Panoramic View", "Separate Living Lounge", "Luxury Soaking Tub", "Complimentary Breakfast"] },
+              { code: "family", name: "Family Suite", price: Math.round(basePrice * 1.85), maxOccupancy: 6, baseOccupancy: 4, extraGuestRate: Math.round(basePrice * 0.10), bedConfig: "2 Queen Beds + 1 Daybed", roomSize: "680 sq.ft", amenities: ["Spacious Living & Dining", "Two Full Bathrooms", "Balcony Deck", "Kids Welcome Kit"] }
+            ];
+
+        // Select Deluxe as default room, or first available
+        const defaultRoom = listingRoomTypes.find((r) => r.code === "deluxe") || listingRoomTypes[0];
+        const defaultRoomPrice = Number(defaultRoom.price) || basePrice;
+        const defaultRoomsRequired = 1;
+        const defaultBaseTotal = defaultRoomPrice * defaultRoomsRequired * defaultNights;
+        const defaultExtraGuestCharge = 0;
+        const defaultSubtotal = defaultBaseTotal + defaultExtraGuestCharge;
+        const defaultDailyTariffPerRoom = defaultRoomPrice;
+        const defaultGstRate = defaultDailyTariffPerRoom > 7500 ? 0.18 : (defaultDailyTariffPerRoom > 1000 ? 0.12 : 0);
+        const defaultGstLabel = defaultGstRate === 0.18 ? "GST (18%)" : (defaultGstRate === 0.12 ? "GST (12%)" : "GST (Exempt)");
+        const defaultTaxTotal = Math.round(defaultSubtotal * defaultGstRate);
+        const defaultGrandTotal = defaultSubtotal + defaultTaxTotal;
       %>
       <aside
         class="nj-booking-card"
         id="njBookingPanel"
         aria-label="Property reservation and pricing panel"
         data-listing-id="<%= listing._id %>"
-        data-nightly-rate="<%= basePrice %>"
+        data-base-price="<%= basePrice %>"
+        data-nightly-rate="<%= defaultRoomPrice %>"
+        data-selected-room-code="<%= defaultRoom.code %>"
         data-today-iso="<%= todayISO %>"
         data-reserved-ranges='<%- JSON.stringify(safeReservedRanges) %>'
+        data-room-types='<%- JSON.stringify(listingRoomTypes) %>'
       >
         <!-- 1. Nightly Rate & Rating Header -->
         <div class="nj-booking-top">
           <div>
-            <span class="nj-booking-eyebrow">Nightly Rate</span>
+            <span class="nj-booking-eyebrow" id="njRateEyebrow"><%= defaultRoom.name %> Rate</span>
             <div class="nj-booking-price-line">
-              <span class="nj-booking-price">&#8377;<%= basePrice.toLocaleString("en-IN") %></span>
-              <span class="nj-booking-per">/ night</span>
+              <span class="nj-booking-price" id="njNightlyPriceDisplay">&#8377;<%= defaultRoomPrice.toLocaleString("en-IN") %></span>
+              <span class="nj-booking-per" id="njNightlyPriceUnit">/ night</span>
             </div>
           </div>
           <div class="nj-booking-rating-pill">
@@ -485,7 +506,7 @@
           method="POST"
           novalidate
         >
-          <!-- Hidden Inputs Synced with Custom Calendar -->
+          <!-- Hidden Inputs Synced with Custom Calendar & Room Type Selection -->
           <input
             type="hidden"
             id="njCheckInInput"
@@ -500,9 +521,19 @@
             value="<%= defaultCheckOutISO %>"
             required
           >
+          <input
+            type="hidden"
+            id="njRoomTypeCodeInput"
+            name="booking[roomTypeCode]"
+            value="<%= defaultRoom.code %>"
+            required
+          >
 
-          <!-- 2. Modern Date Range Selector & Custom Calendar Widget -->
-          <div class="nj-booking-section nj-booking-dates-section" id="njDatePickerSection">
+          <div class="row g-4 nj-booking-form-grid">
+            <!-- Left Sub-Column: Stay Dates & Room Category Selection -->
+            <div class="col-lg-7 nj-booking-col-left">
+              <!-- 2. Modern Date Range Selector & Custom Calendar Widget -->
+              <div class="nj-booking-section nj-booking-dates-section" id="njDatePickerSection">
             <div class="nj-booking-section-head">
               <span class="nj-booking-section-title">
                 <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
@@ -616,12 +647,16 @@
             </div>
           </div>
 
-          <!-- 3. Guests, Payment Option & Special Requests -->
+          <!-- 3. Dynamic Guests & Room Type Selection -->
           <div class="nj-booking-options-box">
+            <!-- Guest Selection -->
             <div class="nj-booking-option-row">
-              <label for="njGuestsSelect" class="nj-booking-field-label">
-                <i class="fa-solid fa-user-group" aria-hidden="true"></i> Guests
-              </label>
+              <div class="nj-field-header-row">
+                <label for="njGuestsSelect" class="nj-booking-field-label mb-0">
+                  <i class="fa-solid fa-user-group" aria-hidden="true"></i> Guests
+                </label>
+                <span class="nj-guest-note-pill" id="njGuestsAllocatedPill">1 Room</span>
+              </div>
               <select
                 id="njGuestsSelect"
                 name="booking[guestsCount]"
@@ -631,46 +666,93 @@
                 <option value="2" selected>2 Guests (Standard Double)</option>
                 <option value="3">3 Guests</option>
                 <option value="4">4 Guests</option>
-                <option value="5">5 Guests</option>
-                <option value="6">6 Guests</option>
-                <option value="8">8 Guests (Group Stay)</option>
+                <option value="5">5 Guests (Large Group)</option>
+                <option value="6">6 Guests (Max Group)</option>
               </select>
             </div>
 
-            <div class="nj-booking-option-row">
-              <label for="njPaymentMethodSelect" class="nj-booking-field-label">
-                <i class="fa-solid fa-wallet" aria-hidden="true"></i> Payment Option
-              </label>
+            <!-- Room Type Selection (Placed immediately after Guests) -->
+            <div class="nj-booking-option-row nj-room-type-section">
+              <div class="nj-field-header-row">
+                <label for="njRoomTypeSelect" class="nj-booking-field-label mb-0">
+                  <i class="fa-solid fa-bed" aria-hidden="true"></i> Room Type
+                </label>
+                <span class="nj-room-cap-tag" id="njRoomCapTag">
+                  <i class="fa-solid fa-users" aria-hidden="true"></i> Max <%= defaultRoom.maxOccupancy %> Guests
+                </span>
+              </div>
+
               <select
-                id="njPaymentMethodSelect"
-                name="booking[paymentMethod]"
-                class="form-select nj-booking-select"
+                id="njRoomTypeSelect"
+                class="form-select nj-booking-select nj-room-type-select"
+                aria-label="Select Room Category"
               >
-                <option value="pay_at_property" selected>Pay at Property upon Check-in</option>
-                <option value="online_pending">Online Payment (Pending Link)</option>
+                <% listingRoomTypes.forEach((room) => { %>
+                  <option
+                    value="<%= room.code %>"
+                    <%= room.code === defaultRoom.code ? "selected" : "" %>
+                    data-price="<%= room.price %>"
+                    data-max-occupancy="<%= room.maxOccupancy %>"
+                    data-base-occupancy="<%= room.baseOccupancy %>"
+                    data-extra-rate="<%= room.extraGuestRate || 0 %>"
+                    data-bed="<%= room.bedConfig || '1 King Bed' %>"
+                    data-size="<%= room.roomSize || '' %>"
+                    data-name="<%= room.name %>"
+                  >
+                    <%= room.name %> — &#8377;<%= Number(room.price).toLocaleString("en-IN") %> / night
+                  </option>
+                <% }) %>
               </select>
-            </div>
 
-            <div class="nj-booking-option-row">
-              <label for="njSpecialRequestsInput" class="nj-booking-field-label">
-                <i class="fa-regular fa-message" aria-hidden="true"></i> Special Requests (Optional)
-              </label>
-              <input
-                type="text"
-                id="njSpecialRequestsInput"
-                name="booking[specialRequests]"
-                class="form-control nj-booking-text-input"
-                placeholder="Early check-in, dietary notes, airport pickup..."
-                maxlength="400"
-              >
+              <!-- Dynamic Interactive Room Card Details Preview -->
+              <div class="nj-room-preview-card" id="njRoomPreviewCard">
+                <div class="nj-room-preview-top">
+                  <div class="nj-room-preview-title-wrap">
+                    <strong class="nj-room-preview-name" id="njRoomPreviewName"><%= defaultRoom.name %></strong>
+                    <span class="nj-room-preview-bed" id="njRoomPreviewBed">
+                      <i class="fa-solid fa-hotel" aria-hidden="true"></i> <%= defaultRoom.bedConfig %>
+                    </span>
+                  </div>
+                  <span class="nj-room-preview-rate" id="njRoomPreviewRate">
+                    &#8377;<%= Number(defaultRoom.price).toLocaleString("en-IN") %> <small>/ night</small>
+                  </span>
+                </div>
+
+                <div class="nj-room-preview-meta">
+                  <span id="njRoomPreviewCapacity">
+                    <i class="fa-solid fa-user-check" aria-hidden="true"></i>
+                    Base: <%= defaultRoom.baseOccupancy %> &bull; Max: <%= defaultRoom.maxOccupancy %> guests/room
+                  </span>
+                  <% if (defaultRoom.roomSize) { %>
+                    <span id="njRoomPreviewSize">
+                      <i class="fa-solid fa-expand" aria-hidden="true"></i> <%= defaultRoom.roomSize %>
+                    </span>
+                  <% } %>
+                </div>
+
+                <div class="nj-room-amenities-tags" id="njRoomPreviewAmenities">
+                  <% (defaultRoom.amenities || []).slice(0, 4).forEach((am) => { %>
+                    <span class="nj-room-amenity-chip"><%= am %></span>
+                  <% }) %>
+                </div>
+
+                <!-- Dynamic Multi-Room / Extra Guest Alert Notice -->
+                <div class="nj-room-occupancy-alert" id="njRoomOccupancyAlert" hidden>
+                  <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                  <span id="njRoomOccupancyText"></span>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- 4. Live Availability Status & Reserved Dates -->
-          <div class="nj-booking-status-stack">
+        <!-- Right Sub-Column: Availability Status, Itemized Breakdown & Reserve CTA -->
+        <div class="col-lg-5 nj-booking-col-right">
+            <!-- 4. Live Availability Status & Reserved Dates -->
+            <div class="nj-booking-status-stack">
             <div id="njAvailabilityBanner" class="nj-availability-banner is-available" role="status" aria-live="polite">
               <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-              <span id="njAvailabilityText">Dates are available for instant reservation!</span>
+              <span id="njAvailabilityText">Dates and room are available for instant reservation!</span>
             </div>
 
             <% if (safeReservedRanges.length > 0) { %>
@@ -692,24 +774,38 @@
           <div class="nj-price-breakdown" id="njPriceBreakdownBox">
             <div class="nj-breakdown-header">
               <i class="fa-solid fa-receipt" aria-hidden="true"></i>
-              <span>Price Breakdown</span>
+              <span>Itemized Price Breakdown</span>
             </div>
+
+            <!-- Room Base Charge Row -->
             <div class="nj-breakdown-row">
-              <span id="njBreakdownNightsLabel">
-                &#8377;<%= basePrice.toLocaleString("en-IN") %> &times; <strong id="njNightsCountText"><%= defaultNights %> nights</strong>
+              <span id="njBreakdownRoomLabel">
+                <span id="njBreakdownRoomName"><%= defaultRoom.name %></span> &bull; <span id="njBreakdownRoomRate">&#8377;<%= defaultRoomPrice.toLocaleString("en-IN") %></span> &times; <strong id="njNightsCountText"><%= defaultNights %> nights</strong>
+                <span id="njBreakdownRoomsBadge" class="nj-breakdown-mini-badge" hidden></span>
               </span>
               <span class="nj-breakdown-val" id="njBreakdownBaseAmount">&#8377;<%= defaultBaseTotal.toLocaleString("en-IN") %></span>
             </div>
+
+            <!-- Extra Guest Charges Row (Dynamic: only visible if extra guests apply) -->
+            <div class="nj-breakdown-row nj-extra-guest-row" id="njExtraGuestBreakdownRow" hidden>
+              <span id="njBreakdownExtraGuestLabel">Extra Guest Charges</span>
+              <span class="nj-breakdown-val" id="njBreakdownExtraGuestAmount">&#8377;0</span>
+            </div>
+
+            <!-- Statutory Indian Hotel GST Row -->
             <div class="nj-breakdown-row">
-              <span>Taxes &amp; GST (18%)</span>
+              <span id="njBreakdownGstLabel">Taxes &amp; <%= defaultGstLabel %></span>
               <span class="nj-breakdown-val" id="njBreakdownTaxAmount">&#8377;<%= defaultTaxTotal.toLocaleString("en-IN") %></span>
             </div>
+
+            <!-- Legitimate Fee Row -->
             <div class="nj-breakdown-row">
               <span>Service &amp; booking fee</span>
               <span class="nj-free-tag">FREE</span>
             </div>
+
             <div class="nj-breakdown-total">
-              <span>Total (incl. taxes)</span>
+              <span>Total Payable (incl. taxes)</span>
               <span id="njBreakdownTotalAmount">&#8377;<%= defaultGrandTotal.toLocaleString("en-IN") %></span>
             </div>
           </div>
@@ -732,19 +828,28 @@
               </button>
               <p class="nj-booking-charge-note">
                 <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-                <span>Instant confirmation ID &bull; Free cancellation before check-in</span>
+                <span>Instant confirmation ID &bull; Pay at property upon check-in</span>
               </p>
+              <% if (!currUser) { %>
+                <p class="nj-booking-login-note text-center mt-2 mb-0 text-muted" style="font-size: 0.78rem;">
+                  <i class="fa-solid fa-lock" aria-hidden="true"></i> You will be prompted to log in to confirm your reservation.
+                </p>
+              <% } %>
             <% } %>
           </div>
-        </form>
 
-        <div class="nj-booking-trust">
-          <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified Property</span>
-          <span><i class="fa-solid fa-bolt" aria-hidden="true"></i> Instant Support</span>
+          <!-- Trust Badges -->
+          <div class="nj-booking-trust">
+            <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified Property</span>
+            <span><i class="fa-solid fa-bolt" aria-hidden="true"></i> Instant Confirmation</span>
+          </div>
         </div>
-      </aside>
-    </div>
-  </div>
+      </div>
+    </form>
+  </aside>
+</div>
+</div>
+</section>
 
   <!-- ====== Reviews & Star-Rating Section ====== -->
   <section id="reviewsSection" class="nj-reviews-section" aria-labelledby="reviewsHeading">

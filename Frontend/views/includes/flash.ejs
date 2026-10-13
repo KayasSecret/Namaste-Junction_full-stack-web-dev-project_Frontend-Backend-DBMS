@@ -1,15 +1,61 @@
-<!-- ==== This code is for SUCCESS ==== -->
-<% if(success && success.length) { %>
-        <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
-            <%= success %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<!-- =========================================================================
+     flash.ejs — Premium Namaste Junction Flash Notifications
+     Unified with Coral-Red, White, and Premium UI Theme
+     ========================================================================= -->
+
+<!-- ==== SUCCESS NOTIFICATION ==== -->
+<% if (typeof success !== "undefined" && success && success.length) { %>
+    <div class="nj-flash-wrapper" role="region" aria-label="Success Notification">
+        <div class="alert alert-dismissible fade show nj-flash-alert nj-flash-success" role="alert" data-auto-dismiss="4500">
+            <div class="nj-flash-indicator" aria-hidden="true"></div>
+            
+            <div class="nj-flash-icon-box" aria-hidden="true">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div class="nj-flash-body">
+                <span class="nj-flash-title">Success</span>
+                <p class="nj-flash-message">
+                    <%= Array.isArray(success) ? success.join(". ") : success %>
+                </p>
+            </div>
+
+            <button type="button" class="nj-flash-close-btn" data-bs-dismiss="alert" aria-label="Close notification">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+
+            <!-- Progress countdown bar that visually tracks automatic dismissal -->
+            <div class="nj-flash-progress-track" aria-hidden="true">
+                <div class="nj-flash-progress-bar"></div>
+            </div>
         </div>
+    </div>
 <% } %>
 
-<!-- ==== This code is for ERROR ==== -->
-<% if(error && error.length) { %>
-    <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
-        <%= error %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<!-- ==== ERROR NOTIFICATION ==== -->
+<% if (typeof error !== "undefined" && error && error.length) { %>
+    <div class="nj-flash-wrapper" role="region" aria-label="Error Notification">
+        <div class="alert alert-dismissible fade show nj-flash-alert nj-flash-danger" role="alert" data-auto-dismiss="5000">
+            <div class="nj-flash-indicator" aria-hidden="true"></div>
+
+            <div class="nj-flash-icon-box" aria-hidden="true">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div class="nj-flash-body">
+                <span class="nj-flash-title">Attention</span>
+                <p class="nj-flash-message">
+                    <%= Array.isArray(error) ? error.join(". ") : error %>
+                </p>
+            </div>
+
+            <button type="button" class="nj-flash-close-btn" data-bs-dismiss="alert" aria-label="Close notification">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+
+            <div class="nj-flash-progress-track" aria-hidden="true">
+                <div class="nj-flash-progress-bar"></div>
+            </div>
+        </div>
     </div>
 <% } %>

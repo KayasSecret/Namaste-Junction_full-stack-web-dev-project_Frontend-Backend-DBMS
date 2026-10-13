@@ -49,6 +49,30 @@ const bookingSchema = new Schema({
         max: 12,
         default: 2,
     },
+    roomType: {
+        code: { type: String, default: "deluxe" },
+        name: { type: String, default: "Deluxe Room" },
+        nightlyRate: { type: Number, default: 0 },
+        bedConfig: { type: String, default: "1 King Bed" },
+    },
+    roomsCount: {
+        type: Number,
+        default: 1,
+        min: 1,
+    },
+    extraGuestCharges: {
+        type: Number,
+        default: 0,
+        min: 0,
+    },
+    gstRate: {
+        type: Number,
+        default: 0.18,
+    },
+    gstLabel: {
+        type: String,
+        default: "GST (18%)",
+    },
     nightlyRate: {
         type: Number,
         required: true,
