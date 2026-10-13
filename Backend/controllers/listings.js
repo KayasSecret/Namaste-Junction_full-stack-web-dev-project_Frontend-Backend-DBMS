@@ -8,7 +8,7 @@ const { cloudinary, hasCloudinaryCredentials, uploadsDir } = require("../cloudCo
 
 // Index Route Controller
 module.exports.index = async (req, res) => {
-    const allListings = await Listing.find({});
+    const allListings = await Listing.find({}).populate("reviews");
     res.render("listings/index.ejs", { allListings });
 };
 

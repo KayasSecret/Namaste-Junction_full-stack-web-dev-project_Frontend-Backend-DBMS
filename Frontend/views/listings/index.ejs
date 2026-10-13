@@ -2,13 +2,29 @@
 
 <%
   const badgePresets = [
-    { label: "Guest Favorite", icon: "fa-fire", tone: "coral", rating: "4.95" },
-    { label: "Premier Stay", icon: "fa-crown", tone: "amber", rating: "4.92" },
-    { label: "Scenic Escape", icon: "fa-mountain-sun", tone: "emerald", rating: "4.89" },
-    { label: "Coastal Gem", icon: "fa-umbrella-beach", tone: "sky", rating: "4.96" },
-    { label: "Royal Heritage", icon: "fa-landmark", tone: "violet", rating: "4.94" },
-    { label: "Eco Sanctuary", icon: "fa-leaf", tone: "emerald", rating: "4.91" }
+    { label: "Guest Favorite", icon: "fa-fire", tone: "coral" },
+    { label: "Premier Stay", icon: "fa-crown", tone: "amber" },
+    { label: "Scenic Escape", icon: "fa-mountain-sun", tone: "emerald" },
+    { label: "Coastal Gem", icon: "fa-umbrella-beach", tone: "sky" },
+    { label: "Royal Heritage", icon: "fa-landmark", tone: "violet" },
+    { label: "Eco Sanctuary", icon: "fa-leaf", tone: "emerald" }
   ];
+
+  let totalPlatformRatingSum = 0;
+  let totalPlatformReviewCount = 0;
+  for (const l of allListings) {
+    if (Array.isArray(l.reviews) && l.reviews.length > 0) {
+      for (const r of l.reviews) {
+        if (r && r.rating) {
+          totalPlatformRatingSum += Number(r.rating);
+          totalPlatformReviewCount++;
+        }
+      }
+    }
+  }
+  const platformAvgRating = totalPlatformReviewCount > 0
+    ? (totalPlatformRatingSum / totalPlatformReviewCount).toFixed(1)
+    : null;
 %>
 
 <div class="nj-dashboard-page">
@@ -42,15 +58,15 @@
         <div class="nj-stat-card">
           <span class="nj-stat-icon nj-stat-icon-gold"><i class="fa-solid fa-star" aria-hidden="true"></i></span>
           <div>
-            <strong class="nj-stat-value">4.9 / 5</strong>
+            <strong class="nj-stat-value"><%= platformAvgRating ? platformAvgRating + ' / 5' : (allListings.length > 0 ? "Featured" : "—") %></strong>
             <span class="nj-stat-label">Traveler Rating</span>
           </div>
         </div>
         <div class="nj-stat-card">
           <span class="nj-stat-icon nj-stat-icon-emerald"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i></span>
           <div>
-            <strong class="nj-stat-value">100%</strong>
-            <span class="nj-stat-label">Verified Hosts</span>
+            <strong class="nj-stat-value"><%= allListings.length > 0 ? "100%" : "—" %></strong>
+            <span class="nj-stat-label">Verified Stays</span>
           </div>
         </div>
       </div>
@@ -120,100 +136,125 @@
 
   <!-- ====== Listings Grid Section ====== -->
   <section class="nj-listings-section" aria-label="Available property listings">
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4 nj-listings-grid" id="njListingsGrid">
-      <% for (let i = 0; i < allListings.length; i++) {
-           const listing = allListings[i];
-           const preset = badgePresets[i % badgePresets.length];
-           const basePrice = listing.price || 0;
-           const totalWithTax = Math.round(basePrice * 1.18);
-           const locationLabel = [listing.location, listing.country].filter(Boolean).join(", ") || "Featured Destination";
-      %>
-        <div class="col nj-listing-col">
-          <a
-            href="/listings/<%= listing._id %>"
-            class="listing-link"
-            data-search-text="<%= [listing.title, listing.description, listing.location, listing.country, preset.label].filter(Boolean).join(' ').toLowerCase() %>"
-          >
-            <article class="card listing-card nj-stay-card h-100">
-              <!-- Card Image & Badges -->
-              <div class="nj-card-media">
-                <img
-                  class="card-img-top nj-card-img"
-                  src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80' %>"
-                  alt="<%= listing.title %>"
-                  loading="lazy"
-                >
-                <div class="card-img-overlay nj-card-overlay"></div>
+    <% if (allListings.length === 0) { %>
+      <div class="nj-empty-state">
+        <div class="nj-empty-icon">
+          <i class="fa-solid fa-hotel" aria-hidden="true"></i>
+        </div>
+        <h3>No properties available yet</h3>
+        <p>Be the first host to share your sanctuary with travelers worldwide!</p>
+        <a href="/listings/new" class="btn nj-btn-reset-filters text-decoration-none">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          Add New Property
+        </a>
+      </div>
+    <% } else { %>
+      <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4 nj-listings-grid" id="njListingsGrid">
+        <% for (let i = 0; i < allListings.length; i++) {
+             const listing = allListings[i];
+             const preset = badgePresets[i % badgePresets.length];
+             const basePrice = listing.price || 0;
+             const totalWithTax = Math.round(basePrice * 1.18);
+             const locationLabel = [listing.location, listing.country].filter(Boolean).join(", ") || "Featured Destination";
+             const listingReviews = Array.isArray(listing.reviews) ? listing.reviews : [];
+             const listingRating = listingReviews.length > 0
+               ? (listingReviews.reduce((sum, r) => sum + (Number(r.rating) || 5), 0) / listingReviews.length).toFixed(1)
+               : null;
+        %>
+          <div class="col nj-listing-col">
+            <a
+              href="/listings/<%= listing._id %>"
+              class="listing-link"
+              data-search-text="<%= [listing.title, listing.description, listing.location, listing.country, preset.label].filter(Boolean).join(' ').toLowerCase() %>"
+            >
+              <article class="card listing-card nj-stay-card h-100">
+                <!-- Card Image & Badges -->
+                <div class="nj-card-media">
+                  <img
+                    class="card-img-top nj-card-img"
+                    src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80' %>"
+                    alt="<%= listing.title %>"
+                    loading="lazy"
+                  >
+                  <div class="card-img-overlay nj-card-overlay"></div>
 
-                <!-- Top Overlay Badges -->
-                <div class="nj-card-top-badges">
-                  <span class="nj-badge-category nj-tone-<%= preset.tone %>">
-                    <i class="fa-solid <%= preset.icon %>" aria-hidden="true"></i>
-                    <%= preset.label %>
-                  </span>
-                  <span class="nj-badge-rating" aria-label="Rated <%= preset.rating %> out of 5">
-                    <i class="fa-solid fa-star" aria-hidden="true"></i>
-                    <%= preset.rating %>
-                  </span>
-                </div>
-
-                <!-- Bottom Overlay Location Pill -->
-                <div class="nj-card-location-bar">
-                  <span class="nj-location-chip">
-                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                    <span><%= locationLabel %></span>
-                  </span>
-                </div>
-              </div>
-
-              <!-- Card Content Body -->
-              <div class="card-body nj-card-body">
-                <h2 class="nj-card-title"><%= listing.title %></h2>
-
-                <p class="nj-card-desc">
-                  <%= listing.description ? listing.description : "Handpicked luxury stay featuring scenic views, verified hospitality, and modern amenities." %>
-                </p>
-
-                <div class="nj-card-perks">
-                  <span><i class="fa-solid fa-wifi" aria-hidden="true"></i> Fast Wi-Fi</span>
-                  <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Free Cancellation</span>
-                </div>
-
-                <!-- Price & CTA Footer -->
-                <div class="nj-card-footer">
-                  <div class="nj-price-block">
-                    <div class="nj-price-main">
-                      <span class="nj-price-currency">&#8377;<%= basePrice.toLocaleString("en-IN") %></span>
-                      <span class="nj-price-unit">/ night</span>
-                    </div>
-                    <div class="tax-info nj-tax-badge">
-                      &#8377;<%= totalWithTax.toLocaleString("en-IN") %> total incl. 18% GST
-                    </div>
+                  <!-- Top Overlay Badges -->
+                  <div class="nj-card-top-badges">
+                    <span class="nj-badge-category nj-tone-<%= preset.tone %>">
+                      <i class="fa-solid <%= preset.icon %>" aria-hidden="true"></i>
+                      <%= preset.label %>
+                    </span>
+                    <% if (listingRating) { %>
+                      <span class="nj-badge-rating" aria-label="Rated <%= listingRating %> out of 5">
+                        <i class="fa-solid fa-star" aria-hidden="true"></i>
+                        <%= listingRating %>
+                      </span>
+                    <% } else { %>
+                      <span class="nj-badge-rating" aria-label="New stay">
+                        <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+                        New
+                      </span>
+                    <% } %>
                   </div>
 
-                  <span class="nj-card-cta">
-                    <span>Explore</span>
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                  </span>
+                  <!-- Bottom Overlay Location Pill -->
+                  <div class="nj-card-location-bar">
+                    <span class="nj-location-chip">
+                      <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                      <span><%= locationLabel %></span>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </article>
-          </a>
-        </div>
-      <% } %>
-    </div>
 
-    <!-- Empty Filter / Search State -->
-    <div id="njEmptySearchState" class="nj-empty-state" hidden>
-      <div class="nj-empty-icon">
-        <i class="fa-solid fa-compass-drafting" aria-hidden="true"></i>
+                <!-- Card Content Body -->
+                <div class="card-body nj-card-body">
+                  <h2 class="nj-card-title"><%= listing.title %></h2>
+
+                  <p class="nj-card-desc">
+                    <%= listing.description ? listing.description : "Handpicked luxury stay featuring scenic views, verified hospitality, and modern amenities." %>
+                  </p>
+
+                  <div class="nj-card-perks">
+                    <span><i class="fa-solid fa-wifi" aria-hidden="true"></i> Fast Wi-Fi</span>
+                    <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Free Cancellation</span>
+                  </div>
+
+                  <!-- Price & CTA Footer -->
+                  <div class="nj-card-footer">
+                    <div class="nj-price-block">
+                      <div class="nj-price-main">
+                        <span class="nj-price-currency">&#8377;<%= basePrice.toLocaleString("en-IN") %></span>
+                        <span class="nj-price-unit">/ night</span>
+                      </div>
+                      <div class="tax-info nj-tax-badge">
+                        &#8377;<%= totalWithTax.toLocaleString("en-IN") %> total incl. 18% GST
+                      </div>
+                    </div>
+
+                    <span class="nj-card-cta">
+                      <span>Explore</span>
+                      <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </a>
+          </div>
+        <% } %>
       </div>
-      <h3>No matching stays found</h3>
-      <p>Try selecting another category tab or clearing your destination search filter.</p>
-      <button type="button" class="btn nj-btn-reset-filters" id="njResetFiltersBtn">
-        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
-        Show All Stays
-      </button>
-    </div>
+
+      <!-- Empty Filter / Search State -->
+      <div id="njEmptySearchState" class="nj-empty-state" hidden>
+        <div class="nj-empty-icon">
+          <i class="fa-solid fa-compass-drafting" aria-hidden="true"></i>
+        </div>
+        <h3>No matching stays found</h3>
+        <p>Try selecting another category tab or clearing your destination search filter.</p>
+        <button type="button" class="btn nj-btn-reset-filters" id="njResetFiltersBtn">
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+          Show All Stays
+        </button>
+      </div>
+    <% } %>
   </section>
 </div>

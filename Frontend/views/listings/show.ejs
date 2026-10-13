@@ -10,7 +10,7 @@
   const reviewCount = Array.isArray(listing.reviews) ? listing.reviews.length : 0;
   const avgRating = reviewCount > 0
     ? (listing.reviews.reduce((sum, r) => sum + (Number(r.rating) || 5), 0) / reviewCount).toFixed(2)
-    : "4.92";
+    : null;
 
   const isListingOwner = Boolean(currUser && listing.owner && listing.owner._id && listing.owner._id.equals(currUser._id));
 
@@ -57,7 +57,7 @@
       </button>
       <a href="#reviewsSection" class="nj-quick-chip">
         <i class="fa-solid fa-star" aria-hidden="true"></i>
-        <span><%= avgRating %> (<%= reviewCount %> <%= reviewCount === 1 ? "review" : "reviews" %>)</span>
+        <span><%= avgRating ? `${avgRating} (${reviewCount} ${reviewCount === 1 ? "review" : "reviews"})` : "New (No reviews yet)" %></span>
       </a>
     </div>
   </nav>
@@ -253,7 +253,7 @@
           </span>
           <span class="nj-hero-rating-pill">
             <i class="fa-solid fa-star" aria-hidden="true"></i>
-            <strong><%= avgRating %></strong>
+            <strong><%= avgRating || "New" %></strong>
             <span>Guest Rating</span>
           </span>
         </div>
@@ -866,7 +866,7 @@
 
       <div class="nj-reviews-summary-pill">
         <i class="fa-solid fa-star" aria-hidden="true"></i>
-        <strong><%= avgRating %></strong>
+        <strong><%= avgRating || "New" %></strong>
         <span>&bull; <%= reviewCount %> <%= reviewCount === 1 ? "verified review" : "verified reviews" %></span>
       </div>
     </div>
