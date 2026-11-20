@@ -633,6 +633,16 @@
     }
 }
 
+/* Login page: hide the visual hero panel on mobile only */
+@media (max-width: 767.98px) {
+    .auth-split-row > .auth-visual-login {
+        display: none;
+    }
+    .auth-page-wrapper:has(.auth-visual-login) {
+        margin-top: 0.75rem;
+    }
+}
+
 /* ==========================================================================
    User Profile Dashboard & Edit Profile Page (.nj-profile-*)
    ========================================================================== */

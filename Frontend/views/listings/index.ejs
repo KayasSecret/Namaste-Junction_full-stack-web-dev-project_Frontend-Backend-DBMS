@@ -50,23 +50,29 @@
       <div class="nj-hero-stats" aria-label="Platform highlights">
         <div class="nj-stat-card">
           <span class="nj-stat-icon"><i class="fa-solid fa-house-chimney-window" aria-hidden="true"></i></span>
-          <div>
+          <div class="nj-stat-body">
             <strong class="nj-stat-value" id="njVisibleCount"><%= allListings.length %></strong>
-            <span class="nj-stat-label">Curated Stays</span>
+            <span class="nj-stat-label"><span class="nj-stat-desktop-text">Curated </span>Stays</span>
           </div>
         </div>
         <div class="nj-stat-card">
           <span class="nj-stat-icon nj-stat-icon-gold"><i class="fa-solid fa-star" aria-hidden="true"></i></span>
-          <div>
-            <strong class="nj-stat-value"><%= platformAvgRating ? platformAvgRating + ' / 5' : (allListings.length > 0 ? "Featured" : "—") %></strong>
-            <span class="nj-stat-label">Traveler Rating</span>
+          <div class="nj-stat-body">
+            <strong class="nj-stat-value">
+              <span class="nj-stat-desktop-text"><%= platformAvgRating ? platformAvgRating + ' / 5' : (allListings.length > 0 ? "Featured" : "—") %></span>
+              <span class="nj-stat-mobile-text">Top</span>
+            </strong>
+            <span class="nj-stat-label">
+              <span class="nj-stat-desktop-text">Traveler Rating</span>
+              <span class="nj-stat-mobile-text">Rated</span>
+            </span>
           </div>
         </div>
         <div class="nj-stat-card">
           <span class="nj-stat-icon nj-stat-icon-emerald"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i></span>
-          <div>
+          <div class="nj-stat-body">
             <strong class="nj-stat-value"><%= allListings.length > 0 ? "100%" : "—" %></strong>
-            <span class="nj-stat-label">Verified Stays</span>
+            <span class="nj-stat-label">Verified<span class="nj-stat-desktop-text"> Stays</span></span>
           </div>
         </div>
       </div>
@@ -161,7 +167,7 @@
                ? (listingReviews.reduce((sum, r) => sum + (Number(r.rating) || 5), 0) / listingReviews.length).toFixed(1)
                : null;
         %>
-          <div class="col nj-listing-col">
+          <div class="col nj-listing-col<%= i >= 3 ? ' nj-mobile-hidden-card' : '' %>">
             <a
               href="/listings/<%= listing._id %>"
               class="listing-link"
@@ -241,6 +247,14 @@
             </a>
           </div>
         <% } %>
+      </div>
+
+      <!-- Mobile-Only Load More Pagination Button -->
+      <div class="nj-load-more-wrap" id="njLoadMoreWrap" <%= allListings.length <= 3 ? "hidden" : "" %>>
+        <button type="button" class="btn nj-btn-load-more" id="njLoadMoreBtn">
+          <span>Load More</span>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
       </div>
 
       <!-- Empty Filter / Search State -->

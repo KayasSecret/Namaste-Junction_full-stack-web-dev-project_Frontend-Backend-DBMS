@@ -556,10 +556,83 @@
     }
 }
 
-/* Mobile & Tablet Drawer (max-width: 991.98px) */
+/* Mobile & Tablet Header & Drawer (max-width: 991.98px) */
 @media (max-width: 991.98px) {
+    .nj-navbar {
+        min-height: 4.15rem;
+        padding: 0.45rem 0;
+    }
+
+    .nj-navbar .nj-nav-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start !important;
+        column-gap: 0.75rem;
+        row-gap: 0;
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+    }
+
+    /* Place 3-line hamburger toggle at the extreme left corner */
+    .nj-toggler {
+        order: 1;
+        flex: 0 0 auto;
+        margin: 0;
+        width: 2.45rem;
+        height: 2.45rem;
+        padding: 0.45rem 0.52rem !important;
+        border-radius: 0.72rem !important;
+    }
+
+    /* Shift brand logo & title slightly to the right of the hamburger toggle in a single row */
+    .nj-brand {
+        order: 2;
+        flex: 0 1 auto;
+        min-width: 0;
+        max-width: calc(100% - 3.25rem);
+        margin-right: 0 !important;
+        padding: 0.15rem 0;
+        gap: 0.65rem;
+    }
+
+    .nj-brand-icon-wrap {
+        width: 2.45rem;
+        height: 2.45rem;
+        border-radius: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .nj-compass-icon {
+        font-size: 1.32rem;
+    }
+
+    .nj-brand-text {
+        min-width: 0;
+        justify-content: center;
+    }
+
+    .nj-brand-title {
+        font-size: 1.16rem;
+        line-height: 1.12;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .nj-brand-tag {
+        font-size: 0.63rem;
+        margin-top: 0.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .nj-nav-collapse {
-        margin-top: 0.85rem;
+        order: 3;
+        flex: 0 0 100%;
+        width: 100%;
+        margin-top: 0.75rem;
         padding: 1.25rem;
         border-radius: 1.25rem;
         background: #ffffff;
@@ -616,5 +689,256 @@
         width: 100%;
         justify-content: center;
         text-align: center;
+    }
+}
+
+/* Mobile-Only Header: Search Outside Hamburger & Balanced Centered Brand (max-width: 767.98px) */
+@media (max-width: 767.98px) {
+    .nj-navbar {
+        min-height: auto;
+        padding: 0.5rem 0 0.58rem 0;
+    }
+
+    .nj-navbar.nj-navbar-scrolled {
+        padding: 0.42rem 0 0.5rem 0;
+    }
+
+    .nj-navbar .nj-nav-container {
+        column-gap: 0.65rem;
+        row-gap: 0.48rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .nj-toggler {
+        order: 1;
+        width: 2.35rem;
+        height: 2.35rem;
+        padding: 0.42rem 0.5rem !important;
+        border-radius: 0.68rem !important;
+        flex: 0 0 auto;
+    }
+
+    /* Shift brand logo & name slightly right so it sits balanced & centered relative to the hamburger toggle */
+    .nj-brand {
+        order: 2;
+        flex: 0 1 auto;
+        min-width: 0;
+        max-width: calc(100% - 3rem);
+        margin-left: auto !important;
+        margin-right: auto !important;
+        transform: translateX(-0.6rem);
+        padding: 0.1rem 0;
+        gap: 0.58rem;
+    }
+
+    .nj-brand-icon-wrap {
+        width: 2.35rem;
+        height: 2.35rem;
+        border-radius: 0.7rem;
+    }
+
+    .nj-compass-icon {
+        font-size: 1.24rem;
+    }
+
+    .nj-brand-title {
+        font-size: 1.12rem;
+        line-height: 1.12;
+    }
+
+    .nj-brand-tag {
+        font-size: 0.6rem;
+        letter-spacing: 0.035em;
+        margin-top: 0.08rem;
+    }
+
+    /* Keep collapse container always visible on mobile so search bar renders below the logo row */
+    .nj-navbar .nj-nav-collapse,
+    .nj-navbar .nj-nav-collapse.collapse,
+    .nj-navbar .nj-nav-collapse.collapsing {
+        order: 3;
+        flex: 0 0 100%;
+        width: 100%;
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch !important;
+        height: auto !important;
+        overflow: visible !important;
+        visibility: visible !important;
+        transition: none !important;
+        margin-top: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        gap: 0 !important;
+    }
+
+    /* Search bar displayed directly in main header below the logo row */
+    .nj-navbar .nj-search-wrapper {
+        order: 1;
+        display: flex !important;
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .nj-navbar .nj-search-pill {
+        width: 100%;
+        min-height: 2.45rem;
+        padding: 0.2rem 0.25rem 0.2rem 0.85rem;
+        gap: 0.38rem;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    .nj-navbar .nj-search-pin {
+        font-size: 0.86rem;
+        margin-right: 0.1rem;
+    }
+
+    .nj-navbar .nj-search-input {
+        font-size: 0.82rem !important;
+        padding: 0.28rem 0.3rem !important;
+        min-width: 0;
+        text-overflow: ellipsis;
+    }
+
+    .nj-navbar .nj-btn-search {
+        padding: 0.36rem 0.85rem;
+        font-size: 0.78rem;
+        min-height: 1.92rem;
+        gap: 0.35rem;
+    }
+
+    /* Hamburger drawer items (Explore & Auth/Profile) hidden when collapsed, shown as card when expanded */
+    .nj-navbar .nj-nav-collapse:not(.show) .nj-nav-left,
+    .nj-navbar .nj-nav-collapse:not(.show) .nj-nav-right {
+        display: none !important;
+    }
+
+    .nj-navbar .nj-nav-collapse.show .nj-nav-left {
+        order: 2;
+        display: flex !important;
+        width: 100%;
+        margin-top: 0.6rem;
+        padding: 0.9rem 1rem 0.45rem 1rem;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-bottom: none;
+        border-radius: 1.1rem 1.1rem 0 0;
+    }
+
+    .nj-navbar .nj-nav-collapse.show .nj-nav-right {
+        order: 3;
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch !important;
+        width: 100%;
+        gap: 0.65rem;
+        padding: 0.35rem 1rem 0.95rem 1rem;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-top: none;
+        border-radius: 0 0 1.1rem 1.1rem;
+        box-shadow: 0 16px 32px -12px rgba(15, 23, 42, 0.14);
+    }
+}
+
+/* Compact Mobile Screens (max-width: 480px) */
+@media (max-width: 480px) {
+    .nj-navbar .nj-nav-container {
+        column-gap: 0.55rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .nj-toggler {
+        width: 2.28rem;
+        height: 2.28rem;
+        padding: 0.4rem 0.46rem !important;
+        border-radius: 0.65rem !important;
+    }
+
+    .nj-brand {
+        gap: 0.55rem;
+        max-width: calc(100% - 2.85rem);
+        transform: translateX(-0.55rem);
+    }
+
+    .nj-brand-icon-wrap {
+        width: 2.28rem;
+        height: 2.28rem;
+        border-radius: 0.68rem;
+    }
+
+    .nj-compass-icon {
+        font-size: 1.2rem;
+    }
+
+    .nj-brand-title {
+        font-size: 1.08rem;
+    }
+
+    .nj-brand-tag {
+        font-size: 0.58rem;
+        letter-spacing: 0.035em;
+    }
+}
+
+/* Ultra-Narrow Mobile Viewports (max-width: 350px) */
+@media (max-width: 350px) {
+    .nj-navbar .nj-nav-container {
+        column-gap: 0.45rem;
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+    }
+
+    .nj-toggler {
+        width: 2.15rem;
+        height: 2.15rem;
+        padding: 0.38rem 0.44rem !important;
+    }
+
+    .nj-brand {
+        gap: 0.48rem;
+        max-width: calc(100% - 2.65rem);
+        transform: translateX(-0.35rem);
+    }
+
+    .nj-brand-icon-wrap {
+        width: 2.15rem;
+        height: 2.15rem;
+        border-radius: 0.62rem;
+    }
+
+    .nj-compass-icon {
+        font-size: 1.1rem;
+    }
+
+    .nj-brand-title {
+        font-size: 1rem;
+    }
+
+    .nj-brand-tag {
+        font-size: 0.54rem;
+    }
+
+    .nj-navbar .nj-search-pill {
+        padding-left: 0.68rem;
+        min-height: 2.3rem;
+    }
+
+    .nj-navbar .nj-search-input {
+        font-size: 0.76rem !important;
+    }
+
+    .nj-navbar .nj-btn-search {
+        padding: 0.32rem 0.7rem;
+        font-size: 0.74rem;
     }
 }

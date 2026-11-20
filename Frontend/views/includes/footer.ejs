@@ -13,7 +13,8 @@
           <span class="nj-footer-brand-name">Namaste<span>Junction</span></span>
         </a>
         <p class="nj-footer-desc">
-          Discover handpicked stays, beachfront villas, mountain cabins, and unforgettable travel experiences curated by passionate hosts worldwide.
+          <span class="nj-footer-text-full">Discover handpicked stays, beachfront villas, mountain cabins, and unforgettable travel experiences curated by passionate hosts worldwide.</span>
+          <span class="nj-footer-text-short">Handpicked stays and unforgettable travel experiences, curated by passionate hosts.</span>
         </p>
         <div class="nj-footer-badges">
           <span class="nj-footer-pill">
@@ -26,9 +27,9 @@
       </div>
 
       <!-- Column 2: Explore & Navigation -->
-      <div class="col-lg-2 col-md-6 col-6">
-        <h6 class="nj-footer-heading">Explore</h6>
-        <ul class="nj-footer-list">
+      <div class="col-lg-2 col-md-6 col-6 nj-footer-nav">
+        <h6 class="nj-footer-heading nj-footer-toggle" aria-controls="njFooterExplore">Explore</h6>
+        <ul class="nj-footer-list" id="njFooterExplore">
           <li><a href="/listings"><i class="fa-solid fa-angle-right" aria-hidden="true"></i> All Listings</a></li>
           <% if (!currUser) { %>
             <li><a href="/login"><i class="fa-solid fa-angle-right" aria-hidden="true"></i> Log in</a></li>
@@ -42,9 +43,9 @@
       </div>
 
       <!-- Column 3: Top Categories & Stays -->
-      <div class="col-lg-3 col-md-6 col-6">
-        <h6 class="nj-footer-heading">Popular Stays</h6>
-        <ul class="nj-footer-list">
+      <div class="col-lg-3 col-md-6 col-6 nj-footer-nav">
+        <h6 class="nj-footer-heading nj-footer-toggle" aria-controls="njFooterPopular">Popular Stays</h6>
+        <ul class="nj-footer-list" id="njFooterPopular">
           <li><a href="/listings?q=Beach"><i class="fa-solid fa-umbrella-beach" aria-hidden="true"></i> Beachfront Villas</a></li>
           <li><a href="/listings?q=Mountain"><i class="fa-solid fa-mountain-sun" aria-hidden="true"></i> Mountain Retreats</a></li>
           <li><a href="/listings?q=Villa"><i class="fa-brands fa-fort-awesome" aria-hidden="true"></i> Historic Castles &amp; Villas</a></li>
@@ -56,7 +57,8 @@
       <div class="col-lg-3 col-md-6">
         <h6 class="nj-footer-heading">Connect With Us</h6>
         <p class="nj-footer-connect-text">
-          Follow our travel journal for curated destinations and seasonal getaway inspiration.
+          <span class="nj-footer-text-full">Follow our travel journal for curated destinations and seasonal getaway inspiration.</span>
+          <span class="nj-footer-text-short">Follow us for travel inspiration.</span>
         </p>
         <div class="f-info-socials nj-footer-socials" aria-label="Social Media Links">
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="nj-social-btn nj-social-fb" aria-label="Facebook">

@@ -120,6 +120,12 @@
     const resetFiltersBtn = document.getElementById("njResetFiltersBtn");
     const visibleCountEl = document.getElementById("njVisibleCount");
     const taxSwitch = document.getElementById("flexSwitchCheckDefault");
+    const loadMoreWrap = document.getElementById("njLoadMoreWrap");
+    const loadMoreBtn = document.getElementById("njLoadMoreBtn");
+
+    const MOBILE_BATCH_SIZE = 3;
+    let mobileVisibleLimit = MOBILE_BATCH_SIZE;
+    let activeFilterQuery = "";
 
     if (taxSwitch) {
         taxSwitch.addEventListener("change", () => {
@@ -130,26 +136,54 @@
         });
     }
 
-    const filterListingCards = (query) => {
+    const applyListingVisibility = () => {
         if (!listingLinks.length) return;
-        const normalized = (query || "").trim().toLowerCase();
-        let visibleCount = 0;
+        const normalized = (activeFilterQuery || "").trim().toLowerCase();
+        let matchedCount = 0;
 
         listingLinks.forEach((link) => {
             const searchable = (link.getAttribute("data-search-text") || link.textContent || "").toLowerCase();
             const isMatch = !normalized || searchable.includes(normalized);
             const colWrapper = link.closest(".nj-listing-col") || link;
+
             colWrapper.style.display = isMatch ? "" : "none";
-            if (isMatch) visibleCount++;
+
+            if (isMatch) {
+                const isBeyondMobilePage = matchedCount >= mobileVisibleLimit;
+                colWrapper.classList.toggle("nj-mobile-hidden-card", isBeyondMobilePage);
+                matchedCount++;
+            } else {
+                colWrapper.classList.remove("nj-mobile-hidden-card");
+            }
         });
 
         if (visibleCountEl) {
-            visibleCountEl.textContent = String(visibleCount);
+            visibleCountEl.textContent = String(matchedCount);
         }
         if (emptyState) {
-            emptyState.hidden = visibleCount > 0;
+            emptyState.hidden = matchedCount > 0;
+        }
+        if (loadMoreWrap) {
+            loadMoreWrap.hidden = matchedCount <= mobileVisibleLimit;
         }
     };
+
+    const filterListingCards = (query) => {
+        activeFilterQuery = query || "";
+        mobileVisibleLimit = MOBILE_BATCH_SIZE;
+        applyListingVisibility();
+    };
+
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener("click", () => {
+            mobileVisibleLimit += MOBILE_BATCH_SIZE;
+            applyListingVisibility();
+        });
+    }
+
+    if (listingLinks.length > 0) {
+        applyListingVisibility();
+    }
 
     if (filterButtons.length > 0) {
         filterButtons.forEach((btn) => {
@@ -1678,4 +1712,52 @@
             }
         });
     }
+})();
+
+// Mobile Footer Accordion (Explore & Popular Stays) — active on mobile only
+(() => {
+    const footer = document.querySelector(".nj-footer");
+    if (!footer) return;
+
+    const toggles = footer.querySelectorAll(".nj-footer-toggle");
+    if (!toggles.length) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 767.98px)");
+
+    const syncAccessibility = () => {
+        const isMobile = mobileQuery.matches;
+        toggles.forEach((heading) => {
+            const section = heading.closest(".nj-footer-nav");
+            if (isMobile) {
+                heading.setAttribute("role", "button");
+                heading.setAttribute("tabindex", "0");
+                heading.setAttribute("aria-expanded", String(section.classList.contains("is-open")));
+            } else {
+                heading.removeAttribute("role");
+                heading.removeAttribute("tabindex");
+                heading.removeAttribute("aria-expanded");
+            }
+        });
+    };
+
+    const toggleSection = (heading) => {
+        if (!mobileQuery.matches) return;
+        const section = heading.closest(".nj-footer-nav");
+        const isOpen = section.classList.toggle("is-open");
+        heading.setAttribute("aria-expanded", String(isOpen));
+    };
+
+    toggles.forEach((heading) => {
+        heading.addEventListener("click", () => toggleSection(heading));
+        heading.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggleSection(heading);
+            }
+        });
+    });
+
+    footer.classList.add("nj-footer-collapsible");
+    syncAccessibility();
+    mobileQuery.addEventListener("change", syncAccessibility);
 })();

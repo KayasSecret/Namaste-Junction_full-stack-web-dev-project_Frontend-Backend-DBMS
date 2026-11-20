@@ -285,13 +285,181 @@
     font-size: 0.75rem;
 }
 
+/* Short copy variants are mobile-only */
+.nj-footer-text-short {
+    display: none;
+}
+
+/* ------ Mobile Footer (max-width: 767.98px) — tablet & desktop untouched ------ */
 @media (max-width: 767.98px) {
     .nj-footer-container {
-        padding-top: 2.5rem;
+        padding-top: 1.75rem;
+        padding-bottom: 1.25rem;
     }
+
+    .nj-footer-main {
+        --bs-gutter-y: 0;
+        padding-bottom: 1.25rem;
+    }
+
+    .nj-footer-main > [class*="col-"] {
+        width: 100%;
+    }
+
+    .nj-footer-text-full { display: none; }
+    .nj-footer-text-short { display: inline; }
+
+    /* Brand */
+    .nj-footer-brand {
+        margin-bottom: 0.6rem;
+    }
+
+    .nj-footer-desc {
+        font-size: 0.84rem;
+        line-height: 1.5;
+        margin-bottom: 0.85rem;
+        max-width: none;
+    }
+
+    .nj-footer-badges {
+        flex-wrap: nowrap;
+        gap: 0.45rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .nj-footer-pill {
+        padding: 0.32rem 0.65rem;
+        font-size: 0.72rem;
+        white-space: nowrap;
+    }
+
+    /* Explore & Popular Stays: single-column sections */
+    .nj-footer-nav {
+        border-top: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .nj-footer-nav + .nj-footer-nav {
+        margin-bottom: 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .nj-footer-nav .nj-footer-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 2.9rem;
+        margin: 0;
+        padding: 0;
+        font-size: 0.8rem;
+    }
+
+    .nj-footer-nav .nj-footer-heading::after {
+        display: none;
+    }
+
+    .nj-footer-nav .nj-footer-list {
+        gap: 0;
+        padding-bottom: 0.6rem;
+    }
+
+    .nj-footer-nav .nj-footer-list a {
+        display: flex;
+        min-height: 2.5rem;
+        font-size: 0.88rem;
+    }
+
+    .nj-footer-nav .nj-footer-list a i {
+        display: none;
+    }
+
+    /* Accordion behaviour (enabled by JS; without JS all links stay visible) */
+    .nj-footer-collapsible .nj-footer-toggle {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .nj-footer-collapsible .nj-footer-toggle::before {
+        content: "";
+        order: 2;
+        width: 0.5rem;
+        height: 0.5rem;
+        margin-right: 0.3rem;
+        border-right: 2px solid #ff758c;
+        border-bottom: 2px solid #ff758c;
+        transform: rotate(45deg) translateY(-2px);
+        transition: transform 0.25s ease;
+    }
+
+    .nj-footer-collapsible .nj-footer-nav.is-open .nj-footer-toggle::before {
+        transform: rotate(-135deg) translateY(-2px);
+    }
+
+    .nj-footer-collapsible .nj-footer-toggle:focus-visible {
+        outline: 2px solid #ff758c;
+        outline-offset: 2px;
+        border-radius: 0.35rem;
+    }
+
+    .nj-footer-collapsible .nj-footer-nav:not(.is-open) .nj-footer-list {
+        display: none;
+    }
+
+    /* Connect With Us */
+    .nj-footer-connect-text {
+        font-size: 0.84rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .nj-footer-socials {
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+    }
+
+    .nj-social-btn {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .nj-footer-locale {
+        flex-wrap: nowrap;
+    }
+
+    .nj-locale-badge {
+        padding: 0.42rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    /* Copyright & legal */
     .nj-footer-bottom {
         flex-direction: column;
         text-align: center;
         justify-content: center;
+        padding-top: 1.1rem;
+        gap: 0.4rem;
+    }
+
+    .nj-copyright {
+        font-size: 0.78rem;
+        line-height: 1.55;
+    }
+
+    .nj-legal-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.15rem 0.5rem;
+    }
+
+    .nj-legal-links a {
+        display: inline-block;
+        padding: 0.45rem 0.25rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 359.98px) {
+    .nj-footer-pill {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.68rem;
+        gap: 0.3rem;
     }
 }

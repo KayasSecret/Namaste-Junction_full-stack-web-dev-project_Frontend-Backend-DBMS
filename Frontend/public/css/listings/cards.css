@@ -377,7 +377,66 @@
 }
 
 
-/* ------ Listing Cards Responsive Styles ------ */
+/* ------ Listing Cards & Mobile Pagination Responsive Styles ------ */
+.nj-load-more-wrap {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .nj-listing-col.nj-mobile-hidden-card {
+        display: none !important;
+    }
+
+    .nj-load-more-wrap {
+        display: flex;
+        justify-content: center;
+        margin-top: 1.35rem;
+    }
+
+    .nj-load-more-wrap[hidden] {
+        display: none !important;
+    }
+
+    .nj-btn-load-more {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        padding: 0.72rem 1.8rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #fe424d 0%, #ff7555 100%);
+        color: #ffffff !important;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        border: none;
+        box-shadow: 0 10px 22px -6px rgba(254, 66, 77, 0.45);
+        transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+        min-width: 11.5rem;
+    }
+
+    .nj-btn-load-more:hover,
+    .nj-btn-load-more:focus-visible {
+        color: #ffffff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 14px 26px -6px rgba(254, 66, 77, 0.55);
+        filter: brightness(1.04);
+    }
+
+    .nj-btn-load-more:active {
+        transform: translateY(0);
+    }
+
+    .nj-btn-load-more i {
+        font-size: 0.78rem;
+        transition: transform 0.22s ease;
+    }
+
+    .nj-btn-load-more:hover i {
+        transform: translateY(2px);
+    }
+}
+
 @media (max-width: 575.98px) {
     .nj-card-media {
         height: 14.5rem;
